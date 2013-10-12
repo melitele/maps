@@ -1,0 +1,14 @@
+{
+  "name": "maps",
+  "repo": "code42day/maps",
+  "description": "façade for Google maps",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}
