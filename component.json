@@ -3,12 +3,20 @@
   "repo": "code42day/maps",
   "description": "façade for Google maps",
   "version": "0.0.1",
-  "keywords": [],
-  "dependencies": {},
-  "development": {},
+  "keywords": [
+    "maps", "google"
+  ],
+  "dependencies": {
+    "component/object": "0.0.3",
+    "code42day/load": "1.0.0"
+  },
   "license": "MIT",
   "main": "index.js",
   "scripts": [
-    "index.js"
+    "index.js",
+    "lib/info.js",
+    "lib/map.js",
+    "lib/marker.js",
+    "lib/util.js"
   ]
 }
