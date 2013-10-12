@@ -35,7 +35,9 @@ function init(opts, fn) {
 
 module.exports = {
   init: init,
+  info: require('./lib/info'),
   map: require('./lib/map'),
   marker: require('./lib/marker'),
-  info: require('./lib/info')
+  polyline: require('./lib/polyline'),
+  util: require('./lib/util')
 };
