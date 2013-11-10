@@ -1,4 +1,10 @@
 
+0.2.0 / 2013-11-10 
+==================
+
+ * add map.panToBounds method
+ * map.bounds returns an array of points
+
 0.1.0 / 2013-10-12 
 ==================
 
