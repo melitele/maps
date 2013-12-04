@@ -30,7 +30,7 @@
       maps.init({
         libraries: 'geometry'
       }, function () {
-        var _gm = google.maps, dataEl, points, bnds, path, mps;
+        var _gm = google.maps, dataEl, points, bnds, path, mps, spread;
 
         dataEl = document.querySelector('#data');
         points = JSON.parse(dataEl.getAttribute('data-markers'));
@@ -64,8 +64,12 @@
             position: pt
           });
         });
+        spread = maps.spread({
+          map: mps[1],
+          threshold: 20
+        });
         points.forEach(function (pt, i) {
-          maps.marker({
+          spread.add(maps.marker({
             map: mps[1],
             icon: {
               path: _gm.SymbolPath.CIRCLE,
@@ -76,8 +80,9 @@
             },
             position: pt,
             label: i + 1
-          });
+          }));
         });
+        spread.calculate();
       });
     </script>
     <style>

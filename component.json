@@ -19,6 +19,8 @@
     "lib/marker.js",
     "lib/label.js",
     "lib/polyline.js",
+    "lib/projection.js",
+    "lib/spread.js",
     "lib/util.js"
   ]
 }
