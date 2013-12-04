@@ -9,6 +9,8 @@
     </div>
     <div class="map" style="width:400px;height:400px;">
     </div>
+    <div class="map" style="width:400px;height:400px;">
+    </div>
     <script>
       var maps = require('maps');
       function bounds(points) {
@@ -62,7 +64,33 @@
             position: pt
           });
         });
+        points.forEach(function (pt, i) {
+          maps.marker({
+            map: mps[1],
+            icon: {
+              path: _gm.SymbolPath.CIRCLE,
+              fillColor: '#ef00fe',
+              fillOpacity: 1,
+              strokeWeight: 0,
+              scale: 10
+            },
+            position: pt,
+            label: i + 1
+          });
+        });
       });
     </script>
+    <style>
+      .map {
+        float: left;
+        margin: 10px;
+      }
+      .marker-label span {
+        font-size: 1em;
+        font-weight: bold;
+        color: white;
+        letter-spacing: .1px;
+      }
+    </style>
   </body>
 </html>

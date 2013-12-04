@@ -17,6 +17,7 @@
     "lib/info.js",
     "lib/map.js",
     "lib/marker.js",
+    "lib/label.js",
     "lib/polyline.js",
     "lib/util.js"
   ]
