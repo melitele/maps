@@ -35,6 +35,7 @@ function init(opts, fn) {
 
 module.exports = {
   init: init,
+  collate: require('./lib/collate'),
   info: require('./lib/info'),
   map: require('./lib/map'),
   marker: require('./lib/marker'),

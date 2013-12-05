@@ -11,6 +11,10 @@
     </div>
     <div class="map" style="width:400px;height:400px;">
     </div>
+    <div class="map" style="width:400px;height:400px;">
+    </div>
+    <div class="map" style="width:400px;height:400px;">
+    </div>
     <script>
       var maps = require('maps');
       function bounds(points) {
@@ -30,7 +34,7 @@
       maps.init({
         libraries: 'geometry'
       }, function () {
-        var _gm = google.maps, dataEl, points, bnds, path, mps, spread;
+        var _gm = google.maps, dataEl, points, bnds, path, mps, spread, collate, proj;
 
         dataEl = document.querySelector('#data');
         points = JSON.parse(dataEl.getAttribute('data-markers'));
@@ -83,7 +87,61 @@
           }));
         });
         spread.calculate();
-      });
+        collate = maps.collate({
+          map: mps[2]
+        });
+        points.forEach(function (pt, i) {
+          collate.add(maps.marker({
+            map: mps[2],
+            color: '#ef00fe',
+            position: pt
+          }));
+        });
+        collate.calculate();
+
+        spread = collate = undefined;
+        function calculate() {
+          if (spread && collate) {
+            spread.calculate();
+            collate.calculate();
+          }
+        }
+        proj = maps.projection({
+          map: mps[3],
+          calculate: calculate
+        });
+        spread = maps.spread({
+          map: mps[3],
+          projection: proj
+        });
+        collate = maps.collate({
+          map: mps[3],
+          projection: proj
+        });
+        points.forEach(function (pt, i) {
+          var m;
+          if (i % 2) {
+            m = maps.marker({
+	            map: mps[3],
+	            color: '#ef00fe',
+	            position: pt,
+	            zIndex: 1
+	          });
+            collate.add(m);
+          }
+          else {
+            m = maps.marker({
+              map: mps[3],
+              color: '#47cbf0',
+              position: pt,
+              zIndex: 2
+            });
+            spread.add(m);
+            collate.add(m, true);
+          }
+	      });
+	      calculate();
+	    });
     </script>
     <style>
       .map {

@@ -14,6 +14,7 @@
   "main": "index.js",
   "scripts": [
     "index.js",
+    "lib/collate.js",
     "lib/info.js",
     "lib/map.js",
     "lib/marker.js",
