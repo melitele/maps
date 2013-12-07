@@ -1,7 +1,7 @@
 
 # maps
 
-  façade for Google maps
+  façade for Google maps - check out the [demo](http://code42day.github.io/maps/)
 
 ## Installation
 

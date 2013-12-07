@@ -1,4 +1,11 @@
 
+0.4.0 / 2013-12-07
+==================
+
+ * add marker collator
+ * add marker spreader
+ * add marker label
+
 0.3.0 / 2013-11-10 
 ==================
 
