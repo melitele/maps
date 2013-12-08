@@ -12,6 +12,7 @@ function prepareUrl(url, params) {
 }
 
 function init(opts, fn) {
+  var protocol;
   if (!fn) {
     fn = opts;
     opts = {};
@@ -30,7 +31,11 @@ function init(opts, fn) {
   }, opts);
   // always use our callback
   opts.callback = "_google_maps_init";
-  load(prepareUrl('http://maps.googleapis.com/maps/api/js', opts));
+  protocol = window.location.protocol;
+  if (protocol == 'file:') {
+    protocol = 'http:';
+  }
+  load(prepareUrl(protocol + '//maps.googleapis.com/maps/api/js', opts));
 }
 
 module.exports = {
