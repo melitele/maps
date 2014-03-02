@@ -44,6 +44,7 @@ module.exports = {
   info: require('./lib/info'),
   map: require('./lib/map'),
   marker: require('./lib/marker'),
+  outline: require('./lib/outline'),
   polyline: require('./lib/polyline'),
   projection: require('./lib/projection'),
   spread: require('./lib/spread'),

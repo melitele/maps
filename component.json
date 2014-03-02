@@ -20,6 +20,7 @@
     "lib/map.js",
     "lib/marker.js",
     "lib/label.js",
+    "lib/outline.js",
     "lib/polyline.js",
     "lib/projection.js",
     "lib/spread.js",
