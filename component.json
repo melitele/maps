@@ -2,7 +2,7 @@
   "name": "maps",
   "repo": "code42day/maps",
   "description": "façade for Google maps",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "keywords": [
     "maps", "google"
   ],
