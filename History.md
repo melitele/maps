@@ -1,4 +1,11 @@
 
+0.5.1 / 2014-03-09
+==================
+
+ * set center animating map move
+ * reset collection of markers handled by projections
+ * restore marker label when readding to map
+
 0.5.0 / 2014-03-02
 ==================
 
