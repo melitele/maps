@@ -48,5 +48,6 @@ module.exports = {
   polyline: require('./lib/polyline'),
   projection: require('./lib/projection'),
   spread: require('./lib/spread'),
+  styles: require('./lib/styles'),
   util: require('./lib/util')
 };
