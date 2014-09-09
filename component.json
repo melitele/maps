@@ -24,6 +24,7 @@
     "lib/polyline.js",
     "lib/projection.js",
     "lib/spread.js",
+    "lib/styles.js",
     "lib/util.js"
   ]
 }
