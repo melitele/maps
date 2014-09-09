@@ -2,9 +2,10 @@
   "name": "maps",
   "repo": "code42day/maps",
   "description": "façade for Google maps",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "keywords": [
-    "maps", "google"
+    "maps",
+    "google"
   ],
   "demo": "http://code42day.github.io/maps/",
   "dependencies": {
