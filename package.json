@@ -1,0 +1,31 @@
+{
+  "name": "code42day-maps",
+  "version": "0.5.2",
+  "description": "façade for Google maps",
+  "main": "index.js",
+  "scripts": {
+    "test": "make check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/code42day/maps.git"
+  },
+  "keywords": [
+    "browser",
+    "maps"
+  ],
+  "dependencies": {
+    "code42day-load": "^1.0.1",
+    "object-component": "~0"
+  },
+  "browser": {
+    "load": "code42day-load",
+    "object": "object-component"
+  },
+  "author": "Damian Krzeminski <pirxpilot@code42day.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/code42day/maps/issues"
+  },
+  "homepage": "https://github.com/code42day/maps"
+}
