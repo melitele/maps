@@ -26,8 +26,7 @@ function init(opts, fn) {
   };
 
   opts = merge({
-    sensor: false,
-    v: '3.13'
+    v: '3.22'
   }, opts);
   // always use our callback
   opts.callback = "_google_maps_init";
