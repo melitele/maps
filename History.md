@@ -1,4 +1,9 @@
 
+0.6.0 / 2016-11-16
+==================
+
+ * default to released version of Google Maps API
+
 0.5.5 / 2016-11-05
 ==================
 
