@@ -1,15 +1,17 @@
+NODE_BIN=./node_modules/.bin
+
 all: check build
 
 check: lint
 
 lint:
-	jshint index.js lib
+	$(NODE_BIN)/jshint index.js lib
 
 build: build/build.js
 
 build/build.js: node_modules index.js
 	mkdir -p build
-	browserify --require ./index.js:maps --outfile $@
+	$(NODE_BIN)/browserify --require ./index.js:maps --outfile $@
 
 node_modules: package.json
 	npm install

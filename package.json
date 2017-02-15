@@ -18,6 +18,10 @@
     "code42day-load": "^1.0.1",
     "object-component": "~0"
   },
+  "devDependencies": {
+    "browserify": "~14",
+    "jshint": "^2.8.0"
+  },
   "browser": {
     "load": "code42day-load",
     "object": "object-component"
