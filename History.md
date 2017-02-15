@@ -1,4 +1,12 @@
 
+0.7.0 / 2017-02-15
+==================
+
+ * change package name
+ * remove references to component
+ * update links following the repo transfer
+ * specify key for the demo
+
 0.6.0 / 2016-11-16
 ==================
 
