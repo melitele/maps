@@ -1,3 +1,4 @@
+[![Build Status][travis-image]][travis-url]
 
 # maps
 
@@ -14,3 +15,6 @@
 ## License
 
   MIT © [Damian Krzeminski](https://pirxpilot.me)
+
+[travis-url]: https://travis-ci.org/melitele/maps
+[travis-image]: https://img.shields.io/travis/melitele/maps.svg
