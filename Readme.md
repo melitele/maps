@@ -6,7 +6,7 @@
 
 ## Installation
 
-    $ npm install --save code42day-maps
+    $ npm install --save google-maps-facade
 
 ## API
 

@@ -1,5 +1,5 @@
 {
-  "name": "code42day-maps",
+  "name": "google-maps-facade",
   "version": "0.6.0",
   "description": "façade for Google maps",
   "main": "index.js",
