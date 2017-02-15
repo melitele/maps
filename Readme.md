@@ -1,7 +1,7 @@
 
 # maps
 
-  façade for Google maps - check out the [demo](http://code42day.github.io/maps/)
+  façade for Google maps - check out the [demo](http://melitele.github.io/maps/)
 
 ## Installation
 
@@ -15,4 +15,4 @@
 
 ## License
 
-  MIT
+  MIT © [Damian Krzeminski](https://pirxpilot.me)

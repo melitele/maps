@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/code42day/maps.git"
+    "url": "https://github.com/melitele/maps.git"
   },
   "keywords": [
     "browser",
@@ -26,10 +26,14 @@
     "load": "code42day-load",
     "object": "object-component"
   },
-  "author": "Damian Krzeminski <pirxpilot@code42day.com>",
+  "author": {
+    "name": "Damian Krzeminski",
+    "email": "pirxpilot@furkot.com",
+    "url": "https://pirxpilot.me"
+  },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/code42day/maps/issues"
+    "url": "https://github.com/melitele/maps/issues"
   },
-  "homepage": "https://github.com/code42day/maps"
+  "homepage": "https://github.com/melitele/maps"
 }
