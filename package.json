@@ -16,15 +16,14 @@
   ],
   "dependencies": {
     "dynload": "^1.0.2",
-    "object-component": "~0"
+    "lodash.assign": "^4.2.0"
   },
   "devDependencies": {
     "browserify": "~14",
     "jshint": "^2.8.0"
   },
   "browser": {
-    "load": "dynload",
-    "object": "object-component"
+    "load": "dynload"
   },
   "author": {
     "name": "Damian Krzeminski",
