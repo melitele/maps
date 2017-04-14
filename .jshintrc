@@ -3,6 +3,7 @@
   "unused": true,
   "laxbreak": true,
   "browser": true,
+  "mocha" : true,
   "globals": {
     "console": false,
     "exports": false,
