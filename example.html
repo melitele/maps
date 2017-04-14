@@ -25,7 +25,6 @@
       <p>Both spreader and collator used here: orange markers are collated while teal markers are spread.</p>
     </div>
     <script>
-      var maps = require('maps');
       function bounds(points) {
         return points.reduce(function(points, pt) {
           var i;
@@ -40,7 +39,7 @@
         }, [points[0].slice(), points[0].slice()]);
       }
 
-      maps.init({
+      var maps = require('maps').init({
         libraries: 'geometry',
         key: window.google_map_key_for_example || 'AIzaSyCc3mQKAZDKu5HCBpd_g4Jb9IUthtx3WA4'
       }, function () {
