@@ -9,7 +9,7 @@ lint:
 
 build: build/build.js
 
-build/build.js: node_modules index.js
+build/build.js: node_modules index.js lib/* lib/**/*
 	mkdir -p build
 	$(NODE_BIN)/browserify --require ./index.js:maps --outfile $@
 
