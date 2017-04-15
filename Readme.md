@@ -2,11 +2,11 @@
 
 # maps
 
-  façade for Google maps - check out the [demo](http://melitele.github.io/maps/)
+  façade for maps - check out the [demo](http://melitele.github.io/maps/)
 
 ## Installation
 
-    $ npm install --save google-maps-facade
+    $ npm install --save maps-facade
 
 ## API
 
