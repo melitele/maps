@@ -1,4 +1,9 @@
 
+0.8.0 / 2017-04-15
+==================
+
+ * change into a facade for various mapping frameworks, not just Google Maps API
+
 0.7.2 / 2017-04-14
 ==================
 
