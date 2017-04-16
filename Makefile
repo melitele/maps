@@ -9,10 +9,11 @@ lint:
 
 build: build/build.js
 
-build/build.js: node_modules index.js lib/* lib/**/*
+build/build.js: node_modules index.js lib/*.js lib/*/*/*.js
 	mkdir -p build
 	$(NODE_BIN)/browserify --require ./index.js:maps --outfile $@
 	echo "window.google_map_key_for_example = '${GOOGLE_MAPS_KEY}';" >> $@
+	echo "window.osm_map_style_url_for_example = '${OSM_MAP_STYLE}';" >> $@
 
 node_modules: package.json
 	npm install
