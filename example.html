@@ -43,7 +43,7 @@
         libraries: 'geometry',
         key: window.google_map_key_for_example || 'AIzaSyCc3mQKAZDKu5HCBpd_g4Jb9IUthtx3WA4'
       }, function () {
-        var _gm = google.maps, dataEl, points, bnds, path, mps, spread, collate, proj;
+        var dataEl, points, bnds, path, mps, spread, collate, proj;
 
         dataEl = document.querySelector('#data');
         points = JSON.parse(dataEl.getAttribute('data-markers'));
@@ -56,12 +56,11 @@
 	          scrollwheel: false,
 	          zoomControl: true,
 	          zoomControlOptions: {
-	              style: _gm.ZoomControlStyle.SMALL,
-	              position: _gm.ControlPosition.RIGHT_BOTTOM
+	              position: 'RB'
 	          },
 	          mapTypeControl: false,
 	          backgroundColor: '#e5c7e6',
-	          mapTypeId: _gm.MapTypeId.ROADMAP
+	          mapTypeId: 'roadmap'
 	        });
 	        map.fitBounds(bnds);
 	        maps.polyline({
@@ -90,7 +89,7 @@
           spread.add(maps.marker({
             map: mps[1],
             icon: {
-              path: _gm.SymbolPath.CIRCLE,
+              path: 'circle',
               fillColor: 'teal',
               fillOpacity: 1,
               strokeWeight: 0,
