@@ -1,4 +1,15 @@
 
+0.9.0 / 2017-04-18
+==================
+
+ * render attribution separately from the OSM map
+ * implement a wrapper around Mapbox GL map as a service
+ * google-polyline 2.0.3
+ * set zoom in addition to zoom in and out
+ * change google map type including custom
+ * old interface is not compatible with map switching
+ * use service-independent constants in the example
+
 0.8.0 / 2017-04-15
 ==================
 
