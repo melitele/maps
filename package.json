@@ -15,6 +15,7 @@
     "maps"
   ],
   "dependencies": {
+    "@pirxpilot/google-polyline": "^2.0.3",
     "dynload": "^1.0.2",
     "lodash.assign": "^4.2.0"
   },
