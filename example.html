@@ -32,9 +32,17 @@
     </div>
     <div class='example'>
       <div class="map osm"></div>
+      <div id="attribution"></div>
       <p>OSM map with collated markers</p>
     </div>
     <script>
+      function merge(to, from) {
+        Object.keys(from).forEach(function (key) {
+          to[key] = from[key];
+        });
+        return to;
+      }
+
       function bounds(points) {
         return points.reduce(function(points, pt) {
           var i;
@@ -53,7 +61,7 @@
         libraries: 'geometry',
         key: window.google_map_key_for_example || 'AIzaSyCc3mQKAZDKu5HCBpd_g4Jb9IUthtx3WA4'
       }, function () {
-        var dataEl, points, bnds, path, mps, spread, collate, proj, osmMaps, osmMps;
+        var dataEl, points, bnds, path, mps, spread, collate, proj, osmMaps, osmMps, attribution;
 
         dataEl = document.querySelector('#data');
         points = JSON.parse(dataEl.getAttribute('data-markers'));
@@ -174,15 +182,19 @@
         osmMaps = require('maps').init({
           service: 'mapbox'
         }, function () {});
-        osmMps = Array.prototype.slice.call(document.querySelectorAll('.map.osm')).map(function (mapEl) {
-          var map = osmMaps.map(mapEl, {
+        attribution = document.getElementById('attribution');
+        osmMps = Array.prototype.slice.call(document.querySelectorAll('.map.osm')).map(function (mapEl, i) {
+          var map = osmMaps.map(mapEl, merge({
             style: window.osm_map_style_url_for_example || 'mapbox://styles/mapbox/streets-v9',
             zoomControl: true,
             zoomControlOptions: {
               position: 'RB'
             },
             backgroundColor: '#e5c7e6'
-          }, function () {
+          }, i ? {
+            attributionControl: false,
+            attribution: attribution
+          } : {}), function () {
 	          osmMaps.polyline({
 	            map: map,
 	            color: '#a21bab',
@@ -246,6 +258,9 @@
       }
       .mapboxgl-ctrl-group > button.mapboxgl-ctrl-compass {
         display: none;
+      }
+      #attribution {
+        text-align: right;
       }
     </style>
   </body>
