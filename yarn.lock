@@ -439,6 +439,10 @@ events@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
 
+eviltransform@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/eviltransform/-/eviltransform-0.2.2.tgz#246c310edfca1c980103182c0c307f65ce00f270"
+
 evp_bytestokey@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/evp_bytestokey/-/evp_bytestokey-1.0.0.tgz#497b66ad9fef65cd7c08a6180824ba1476b66e53"
