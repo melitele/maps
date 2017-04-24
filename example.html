@@ -35,6 +35,14 @@
       <div id="attribution"></div>
       <p>OSM map with collated markers</p>
     </div>
+    <div class='example'>
+      <div class="map google"></div>
+      <p>Sample markers on Google map</p>
+    </div>
+    <div class='example'>
+      <div class="map osm"></div>
+      <p>Sample markers on OSM map</p>
+    </div>
     <script>
       function merge(to, from) {
         Object.keys(from).forEach(function (key) {
@@ -68,18 +76,21 @@
         bnds = bounds(points);
         path = dataEl.getAttribute('data-polyline');
 
-        // create 4 maps
-        mps = Array.prototype.slice.call(document.querySelectorAll('.map.google')).map(function (mapEl) {
+        // create 4 maps with polyline
+        mps = Array.prototype.slice.call(document.querySelectorAll('.map.google')).map(function (mapEl, i) {
           var map = maps.map(mapEl, {
             scrollwheel: false,
             zoomControl: true,
             zoomControlOptions: {
               position: 'RB'
-	          },
-	          mapTypeControl: false,
-	          backgroundColor: '#e5c7e6',
-	          mapTypeId: 'roadmap'
+            },
+            mapTypeControl: false,
+            backgroundColor: '#e5c7e6',
+            mapTypeId: 'roadmap'
           });
+          if (i > 3) {
+            return map;
+          }
           map.fitBounds(bnds);
           maps.polyline({
             map: map,
@@ -195,12 +206,18 @@
             attributionControl: false,
             attribution: attribution
           } : {}), function () {
-	          osmMaps.polyline({
-	            map: map,
-	            color: '#a21bab',
-	            path: path
-	          });
+            if (i > 1) {
+              return;
+            }
+            osmMaps.polyline({
+              map: map,
+              color: '#a21bab',
+              path: path
+            });
           });
+          if (i > 3) {
+            return map;
+          }
           map.fitBounds(bnds);
           return map;
         });
@@ -225,6 +242,49 @@
         });
         collate.calculate();
         osmMps[1].on('bounds_changed', collate.calculate.bind(collate));
+
+        [mps[4], osmMps[2]].forEach(function (mp, i) {
+          var i, srv = i % 2 ? osmMaps : maps;
+          mp.center([0.5, 0]);
+          mp.zoom(9);
+          for (i = 0; i <= 8; i += 1) {
+            srv.marker({
+              map: mp,
+              position: [i / 8, 3 / 8],
+              icon: {
+                strokeColor: '#0074D9', // azure
+                strokeWeight: 5,
+                path: 'forward_closed_arrow',
+                rotation: 45 * i,
+                scale: 5
+              }
+            });
+            srv.marker({
+              map: mp,
+              position: [i / 8, 1 / 8],
+              icon: {
+                strokeColor: '#0074D9', // azure
+                strokeWeight: 5,
+                path: 'circle',
+                scale: 1 + i
+              }
+            });
+            srv.marker({
+              map: mp,
+              position: [i / 8, -1 / 8],
+              color: 'orange',
+              icon: {
+                path: 'M 2 0 L 2 0.28125 L 2 13.6875 L 2 14 L 0.59375 14 L 0 14 L 0 14.59375 L 0 15.375 L 0 16 '
+                    + 'L 0.59375 16 L 4.40625 16 L 5 16 L 5 15.375 L 5 14.59375 L 5 14 L 4.40625 14 L 3 14 L 3 13.6875 '
+                    + 'L 3 9 L 16 5.5 L 3 2 L 3 0.28125 L 3 0 L 2.6875 0 L 2.3125 0 L 2 0 z ',
+                strokeColor: 'orange',
+                strokeWeight: 1,
+                scale: (i + 1) / 3,
+                anchor: [1, 16]
+              }
+           });
+          }
+        });
       });
     </script>
     <style>
