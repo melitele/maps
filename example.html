@@ -201,20 +201,18 @@
             zoomControlOptions: {
               position: 'RB'
             },
-            backgroundColor: '#e5c7e6'
+            backgroundColor: '#e5c7e6',
+            onReady: i <= 1 && function () {
+              osmMaps.polyline({
+                map: map,
+                color: '#a21bab',
+                path: path
+              });
+            }
           }, i ? {
             attributionControl: false,
             attribution: attribution
-          } : {}), function () {
-            if (i > 1) {
-              return;
-            }
-            osmMaps.polyline({
-              map: map,
-              color: '#a21bab',
-              path: path
-            });
-          });
+          } : {}));
           if (i > 3) {
             return map;
           }
