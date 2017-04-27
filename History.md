@@ -1,4 +1,26 @@
 
+1.0.0 / 2017-04-27
+==================
+
+ * implement polygon
+ * implement circle
+ * refactor polyline
+ * pass map ready callback in options
+ * handle markers with shapes other than circle
+ * component-query 0.0.3
+ * panBy method to pan map by offset
+ * handle events uniformly
+ * addControl method to add custom control to map
+ * pass parameters and retrieve results from projection as map-independent objects
+ * add safeguards to Mapbox map projection
+ * enforce integral (not fractional) zoom value
+ * only send query parameters that Google Maps understands
+ * add setter capability to bounds with fitBounds semantics
+ * add safeguards to Google map projection
+ * support setting position of street view control in Google map
+ * transform between GCJ-02 and WGS-84 when needed
+ * eviltransform 0.2.2
+
 0.9.0 / 2017-04-18
 ==================
 
