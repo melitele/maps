@@ -83,7 +83,7 @@ function collate(options) {
     calculate: calculate
   };
 }
-},{"./util":24}],2:[function(require,module,exports){
+},{"./util":30}],2:[function(require,module,exports){
 var merge = require('lodash.assign');
 var mixin = require('./mixin');
 
@@ -119,7 +119,7 @@ module.exports = {
   init: init
 };
 
-},{"./collate":1,"./map":3,"./mixin":4,"./outline":5,"./service/google":6,"./service/mapbox":16,"./spread":23,"./util":24,"lodash.assign":29}],3:[function(require,module,exports){
+},{"./collate":1,"./map":3,"./mixin":4,"./outline":5,"./service/google":8,"./service/mapbox":20,"./spread":29,"./util":30,"lodash.assign":37}],3:[function(require,module,exports){
 
 function zoomIn() {
   var self = this;
@@ -195,8 +195,99 @@ function outline(points) {
 }
 
 },{}],6:[function(require,module,exports){
-var load = require('load');
+
+var mouse = [
+  'click',
+  'mousemove',
+  'mouseover',
+  'mouseout',
+  'dragstart',
+  'drag',
+  'dragend'
+].reduce(function (result, e) {
+  result[e] = e;
+  return result;
+}, {});
+
+module.exports = {
+  mouse: mouse
+};
+
+},{}],7:[function(require,module,exports){
 var merge = require('lodash.assign');
+var object = require('./object');
+var util = require('./util');
+
+module.exports = circle;
+
+function circle(options) {
+  var _gm = util.gm(), _gcj02 = options.gcj20, self;
+
+  function add(map) {
+    if (map.gcj02) {
+      _gcj02 = map.gcj02();
+    }
+    self._m.setMap(map._m);
+    return self;
+  }
+
+  function remove() {
+    self._m.setMap(null);
+    return self;
+  }
+
+  function option(key, value) {
+    if (value === undefined) {
+      return self._m.get(key);
+    }
+    self._m.set(key, value);
+  }
+
+  function center(c) {
+    if (!c) {
+      c = self._m.getCenter();
+      return c && util.gll2ll(c, _gcj02);
+    }
+    self._m.setCenter(util.ll2gll(c, _gcj02));
+  }
+
+  function radius(r) {
+    if (r === undefined) {
+      return self._m.getRadius();
+    }
+    self._m.setRadius(r);
+  }
+
+  self = object({
+    add: add,
+    remove: remove,
+    option: option,
+    center: center,
+    radius: radius
+  });
+
+  options = merge({
+    editable: true,
+  }, options);
+
+  options.strokeColor = options.strokeColor || options.color;
+  if (options.map) {
+    if (options.map.gcj02) {
+      _gcj02 = options.map.gcj02();
+    }
+    options.map = options.map._m;
+  }
+  if (options.center) {
+    options.center = util.ll2gll(options.center, _gcj02);
+  }
+
+  self._m = new _gm.Circle(options);
+
+  return self;
+}
+
+},{"./object":13,"./util":18,"lodash.assign":37}],8:[function(require,module,exports){
+var load = require('load');
 
 function prepareUrl(url, params) {
   return url + '?' + Object.keys(params)
@@ -206,13 +297,14 @@ function prepareUrl(url, params) {
     .join('&');
 }
 
-function init(opts, fn) {
-  var protocol;
-  opts = merge({
-    v: '3'
-  }, opts);
-  // always use our callback
-  opts.callback = "_google_maps_init";
+function init(options, fn) {
+  var protocol, util, opts = {
+    v: options.v || '3',
+    key: options.key,
+    libraries: options.libraries,
+    // always use our callback
+    callback: '_google_maps_init'
+  };
   if (typeof window !== 'undefined') {
     window._google_maps_init = function() {
       delete window._google_maps_init;
@@ -228,20 +320,26 @@ function init(opts, fn) {
     }
     load(prepareUrl(protocol + '//maps.googleapis.com/maps/api/js', opts));
   }
+
+  util = require('./util');
+  util.isGCJ02 = util.isGCJ02 || options.isGCJ02;
+
   return {
+    circle: require('./circle'),
     info: require('./info'),
     map: require('./map'),
     marker: require('./marker'),
+    polygon: require('./polygon'),
     polyline: require('./polyline'),
     projection: require('./projection'),
     styles: require('./styles'),
-    util: require('./util')
+    util: util
   };
 }
 
 module.exports = init;
 
-},{"./info":7,"./map":9,"./marker":10,"./polyline":12,"./projection":13,"./styles":14,"./util":15,"load":28,"lodash.assign":29}],7:[function(require,module,exports){
+},{"./circle":7,"./info":9,"./map":11,"./marker":12,"./polygon":14,"./polyline":15,"./projection":16,"./styles":17,"./util":18,"load":35}],9:[function(require,module,exports){
 var merge = require('lodash.assign');
 var util = require('./util');
 
@@ -273,7 +371,7 @@ function info(options) {
   return self;
 }
 
-},{"./util":15,"lodash.assign":29}],8:[function(require,module,exports){
+},{"./util":18,"lodash.assign":37}],10:[function(require,module,exports){
 var merge = require('lodash.assign');
 var util = require('./util');
 
@@ -349,7 +447,7 @@ function label(options) {
   }
   return self;
 }
-},{"./util":15,"lodash.assign":29}],9:[function(require,module,exports){
+},{"./util":18,"lodash.assign":37}],11:[function(require,module,exports){
 var merge = require('lodash.assign');
 var object = require('./object');
 var util = require('./util');
@@ -379,23 +477,26 @@ function map(node, options) {
     TC: _gm.ControlPosition.TOP_CENTER,
     TL: _gm.ControlPosition.TOP_LEFT,
     TR: _gm.ControlPosition.TOP_RIGHT
-  }, self;
+  }, _gcj02 = options.gcj20, self;
 
   function element() {
     return node;
   }
 
-  function bounds() {
-    return util.gbounds2bounds(self._m.getBounds());
-  }
-
-  function fitBounds(bounds) {
-    self._m.fitBounds(util.bounds2gbounds(bounds));
-    return self;
+  function bounds(b) {
+    if (b === undefined) {
+      return util.gbounds2bounds(self._m.getBounds(), _gcj02);
+    }
+    self._m.fitBounds(util.bounds2gbounds(b, _gcj02));
   }
 
   function panToBounds(bounds) {
-    self._m.panToBounds(util.bounds2gbounds(bounds));
+    self._m.panToBounds(util.bounds2gbounds(bounds, _gcj02));
+    return self;
+  }
+
+  function panBy(x, y) {
+    self._m.panBy(x, y);
     return self;
   }
 
@@ -408,9 +509,9 @@ function map(node, options) {
 
   function center(c) {
     if (!c) {
-      return util.gll2ll(self._m.getCenter());
+      return util.gll2ll(self._m.getCenter(), _gcj02);
     }
-    self._m.panTo(util.ll2gll(c));
+    self._m.panTo(util.ll2gll(c, _gcj02));
   }
 
   function mapType(type) {
@@ -434,6 +535,18 @@ function map(node, options) {
     _gm.event.trigger(self._m, 'resize');
   }
 
+  function gcj02(v) {
+    if (v === undefined) {
+      return _gcj02;
+    }
+    _gcj02 = v;
+  }
+
+  function addControl(el, position) {
+    self._m.controls[controlPosition[position]].push(el);
+    return self;
+  }
+
   options = merge({
     streetViewControl: false,
     panControl: false,
@@ -443,23 +556,26 @@ function map(node, options) {
     mapTypeId: _gm.MapTypeId.TERRAIN
   }, options);
 
-  if (options.center) {
-    options.center = util.ll2gll(options.center);
-  }
-
   self = object({
+    gcj02: gcj02,
     bounds: bounds,
     element: element,
-    fitBounds: fitBounds,
+    fitBounds: bounds, // obsolete; use bounds(b)
     panToBounds: panToBounds,
+    panBy: panBy,
     center: center,
     zoom: zoom,
     mapType: mapType,
+    addControl: addControl,
     refresh: refresh
   });
 
+  if (options.center) {
+    options.center = util.ll2gll(options.center, _gcj02);
+  }
+
   options.mapTypeId = mapMapType(options.mapTypeId);
-  ['mapTypeControlOptions', 'zoomControlOptions'].forEach(function (ctrlOptions) {
+  ['mapTypeControlOptions', 'streetViewControlOptions', 'zoomControlOptions'].forEach(function (ctrlOptions) {
     ctrlOptions = options[ctrlOptions];
     if (ctrlOptions && ctrlOptions.position) {
       ctrlOptions.position = controlPosition[ctrlOptions.position] || ctrlOptions.position;
@@ -495,7 +611,7 @@ function map(node, options) {
   return self;
 }
 
-},{"./object":11,"./util":15,"lodash.assign":29}],10:[function(require,module,exports){
+},{"./object":13,"./util":18,"lodash.assign":37}],12:[function(require,module,exports){
 var label = require('./label');
 var merge = require('lodash.assign');
 var object = require('./object');
@@ -505,10 +621,14 @@ module.exports = marker;
 
 function marker(options) {
   var _gm = util.gm(), iconPath = {
-    circle: _gm.SymbolPath.CIRCLE
-  }, self, lbl;
+    circle: _gm.SymbolPath.CIRCLE,
+    forward_closed_arrow: _gm.SymbolPath.FORWARD_CLOSED_ARROW
+  }, _gcj02 = options.gcj20, self, lbl;
 
   function add(map) {
+    if (map.gcj02) {
+      _gcj02 = map.gcj02();
+    }
     self._m.setMap(map._m);
     if (lbl) {
       lbl.add(self);
@@ -527,6 +647,39 @@ function marker(options) {
     return self;
   }
 
+  function option(key, value) {
+    if (value === undefined) {
+      return self._m.get(key);
+    }
+    self._m.set(key, value);
+  }
+
+  function prepareIcon(icon) {
+    if (iconPath[icon.path] !== undefined) {
+      icon.path = iconPath[icon.path];
+    }
+    if (icon.anchor) {
+      icon.anchor = new _gm.Point(icon.anchor[0], icon.anchor[1]);
+    }
+    if (icon.origin) {
+      icon.origin = new _gm.Point(icon.origin[0], icon.origin[1]);
+    }
+    if (icon.size) {
+      icon.size = new _gm.Size(icon.size[0], icon.size[1]);
+    }
+    if (icon.scaledSize) {
+      icon.scaledSize = new _gm.Size(icon.scaledSize[0], icon.scaledSize[1]);
+    }
+    return icon;
+  }
+
+  function icon(i) {
+    if (i === undefined) {
+      return self._m.getIcon();
+    }
+    self._m.setIcon(prepareIcon(merge({}, i)));
+  }
+
   function zindex() {
     return self._m.getZIndex();
   }
@@ -535,15 +688,20 @@ function marker(options) {
     if (p === undefined) {
       return self._m.getPosition();
     }
+    if (Array.isArray(p)) {
+      p = util.ll2gll(p);
+    }
     self._m.setPosition(p);
   }
 
   self = object({
     animation: animation,
     add: add,
+    icon: icon,
+    option: option,
+    position: position,
     remove: remove,
-    zindex: zindex,
-    position: position
+    zindex: zindex
   });
 
   lbl = options.label;
@@ -552,21 +710,26 @@ function marker(options) {
     flat: true,
     icon: {
       path: 'circle',
-      fillColor: options.color,
-      fillOpacity: 1,
       strokeColor:  '#555555',
       strokeWeight: 2,
       scale: 7
     }
   }, options);
+  if (options.color !== undefined) {
+    options.icon.fillColor = options.color;
+    options.icon.fillOpacity = 1;
+  }
   if (options.map) {
+    if (options.map.gcj02) {
+      _gcj02 = options.map.gcj02();
+    }
     options.map = options.map._m;
   }
   if (options.position) {
-    options.position = util.ll2gll(options.position);
+    options.position = util.ll2gll(options.position, _gcj02);
   }
-  if (iconPath[options.icon.path] !== undefined) {
-    options.icon.path = iconPath[options.icon.path];
+  if (options.icon) {
+    prepareIcon(options.icon);
   }
   if (options.zIndex !== undefined) {
     options.zIndex = (options.zIndex.type === 'max' ? _gm.Marker.MAX_ZINDEX : 0) + options.zIndex.value;
@@ -584,18 +747,37 @@ function marker(options) {
   return self;
 }
 
-},{"./label":8,"./object":11,"./util":15,"lodash.assign":29}],11:[function(require,module,exports){
+},{"./label":10,"./object":13,"./util":18,"lodash.assign":37}],13:[function(require,module,exports){
+var mouse = require('../events').mouse;
 var util = require('./util');
 
 module.exports = init;
+
+function handleEvent(self, fn, e) {
+  fn.call(self, e);
+}
+
+function handleMouseEvent(self, fn, e) {
+  if (e && e.latLng) {
+    e.ll = util.gll2ll(e.latLng, self.gcj02);
+  }
+  handleEvent(self, fn, e);
+}
 
 function init(self) {
   var _gm = util.gm(), listeners = {};
 
   function on(event, fn) {
+    var handler;
     listeners[event] = listeners[event] || [];
+    if (mouse[event]) {
+      handler = handleMouseEvent.bind(undefined, self, fn);
+    }
+    else {
+      handler = handleEvent.bind(undefined, self, fn);
+    }
     listeners[event].push({
-      handler: _gm.event.addListener(self._m, event, fn),
+      handler: _gm.event.addListener(self._m, event, handler),
       fn: fn
     });
     return self;
@@ -603,11 +785,7 @@ function init(self) {
 
   function off(event, fn) {
     if (event === undefined) {
-      Object.keys(listeners).forEach(function(event) {
-        listeners[event].forEach(function (listener) {
-          _gm.event.removeListener(listener.handler);
-        });
-      });
+      _gm.event.clearInstanceListeners(self._m);
       listeners = {};
     }
     else {
@@ -615,6 +793,9 @@ function init(self) {
         if (listener.fn === fn) {
           _gm.event.removeListener(listener.handler);
           listeners.splice(i, 1);
+          if (!listeners.length) {
+            delete listeners[event];
+          }
           return true;
         }
       });
@@ -628,17 +809,20 @@ function init(self) {
   return self;
 }
 
-},{"./util":15}],12:[function(require,module,exports){
+},{"../events":6,"./util":18}],14:[function(require,module,exports){
 var merge = require('lodash.assign');
 var object = require('./object');
 var util = require('./util');
 
-module.exports = polyline;
+module.exports = polygon;
 
-function polyline(options) {
-  var _gm = util.gm(), self;
+function polygon(options) {
+  var _gm = util.gm(), _gcj02 = options.gcj20, self;
 
   function add(map) {
+    if (map.gcj02) {
+      _gcj02 = map.gcj02();
+    }
     self._m.setMap(map._m);
     return self;
   }
@@ -652,7 +836,7 @@ function polyline(options) {
     if (p === undefined) {
       return self._m.getPath();
     }
-    self._m.setPath(p);
+    self._m.setPath(util.path2gpath(p, _gcj02));
   }
 
   self = object({
@@ -668,12 +852,103 @@ function polyline(options) {
 
   options.strokeColor = options.strokeColor || options.color;
   if (options.map) {
+    if (options.map.gcj02) {
+      _gcj02 = options.map.gcj02();
+    }
     options.map = options.map._m;
   }
-  if (Array.isArray(options.path)) {
-    options.path = options.path.map(util.ll2gll);
-  } else if (typeof options.path === 'string') {
-    options.path = util.decodePath(options.path);
+  if (options.path) {
+    options.paths = util.path2gpath(options.path, _gcj02);
+    delete options.path;
+  }
+
+  self._m = new _gm.Polygon(options);
+
+  return self;
+}
+
+},{"./object":13,"./util":18,"lodash.assign":37}],15:[function(require,module,exports){
+var merge = require('lodash.assign');
+var object = require('./object');
+var util = require('./util');
+
+module.exports = polyline;
+
+function dashes(options) {
+  options.strokeOpacity = 0.1;
+  options.icons = [{
+    icon: {
+      path: 'M 0,-0.75 0,0.75',
+      fillOpacity: options.dashOpacity,
+      strokeOpacity: options.dashOpacity
+    },
+    offset: '0',
+    repeat: '15px'
+  }];
+}
+
+function polyline(options) {
+  var _gm = util.gm(), _gcj02 = options.gcj20, self;
+
+  function add(map) {
+    if (map.gcj02) {
+      _gcj02 = map.gcj02();
+    }
+    self._m.setMap(map._m);
+    return self;
+  }
+
+  function remove() {
+    self._m.setMap(null);
+    return self;
+  }
+
+  function option(key, value) {
+    if (value === undefined) {
+      return self._m.get(key);
+    }
+    if (key === 'dashOpacity') {
+      value = {
+        dashOpacity: value
+      };
+      dashes(value);
+      self._m.setOptions(value);
+      return;
+    }
+    self._m.set(key, value);
+  }
+
+  function path(p) {
+    if (p === undefined) {
+      return self._m.getPath();
+    }
+    self._m.setPath(util.path2gpath(p, _gcj02));
+  }
+
+  self = object({
+    add: add,
+    remove: remove,
+    option: option,
+    path: path
+  });
+
+  options = merge({
+    strokeOpacity: 0.8,
+    strokeWeight: 4
+  }, options);
+
+  options.strokeColor = options.strokeColor || options.color;
+  if (options.dashOpacity) {
+    dashes(options);
+  }
+  if (options.map) {
+    if (options.map.gcj02) {
+      _gcj02 = options.map.gcj02();
+    }
+    options.map = options.map._m;
+  }
+  if (options.path) {
+    options.path = util.path2gpath(options.path, _gcj02);
   }
 
   self._m = new _gm.Polyline(options);
@@ -681,16 +956,19 @@ function polyline(options) {
   return self;
 }
 
-},{"./object":11,"./util":15,"lodash.assign":29}],13:[function(require,module,exports){
+},{"./object":13,"./util":18,"lodash.assign":37}],16:[function(require,module,exports){
 var merge = require('lodash.assign');
 var util = require('./util');
 
 module.exports = projection;
 
 function projection(options) {
-  var _gm = util.gm(), _m;
+  var _gm = util.gm(), overlay, _m;
 
   function position(p) {
+    if (!isReady()) {
+      return;
+    }
     if (p._m) {
       p = p._m.getPosition();
     }
@@ -698,31 +976,63 @@ function projection(options) {
   }
 
   function location(x, y) {
-    var p = y === undefined ? x : new _gm.Point(x, y);
-    return _m.fromContainerPixelToLatLng(p);
+    if (!isReady()) {
+      return;
+    }
+    if (y !== undefined) {
+      x = new _gm.Point(x, y);
+    }
+    return _m.fromContainerPixelToLatLng(x);
   }
 
-  merge(new _gm.OverlayView(), {
-    onAdd: function() {
-      _m = this.getProjection();
-    },
-    onRemove: function () {},
-    draw: function () {
-      options.calculate();
+  function toMap(x, y) {
+    if (!isReady()) {
+      return;
     }
-  }).setMap(options.map._m);
+    if (y === undefined) {
+      y = x[1];
+      x = x[0];
+    }
+    return util.gll2ll(_m.fromContainerPixelToLatLng(new _gm.Point(x, y), options.map.gcj02()));
+  }
+
+  function toScreen(ll) {
+    var xy;
+    if (!isReady()) {
+      return;
+    }
+    xy = _m.fromLatLngToContainerPixel(util.ll2gll(ll, options.map.gcj02()));
+    return [xy.x, xy.y];
+  }
 
   function isReady() {
     return Boolean(_m);
   }
 
+  function remove() {
+    overlay.setMap();
+    _m = undefined;
+  }
+
+  overlay = merge(new _gm.OverlayView(), {
+    onAdd: function() {
+      _m = this.getProjection();
+    },
+    onRemove: function () {},
+    draw: options.calculate ? options.calculate.bind(options) : function () {}
+  });
+  overlay.setMap(options.map._m);
+
   return {
-    position: position,
-    location: location,
-    isReady: isReady
+    position: position, // obsolete, use toScreen
+    location: location, // obsolete, use to Map
+    toMap: toMap,
+    toScreen: toScreen,
+    isReady: isReady,
+    remove: remove
   };
 }
-},{"./util":15,"lodash.assign":29}],14:[function(require,module,exports){
+},{"./util":18,"lodash.assign":37}],17:[function(require,module,exports){
 var off = [
   { "visibility": "off" }
 ], on = [
@@ -793,31 +1103,63 @@ var styles = [
 
 module.exports = styles;
 
-},{}],15:[function(require,module,exports){
-function gll2ll(gll) {
-  return [gll.lng(), gll.lat()];
+},{}],18:[function(require,module,exports){
+var eviltransform = require('eviltransform');
+
+function gll2ll(gll, gcj02) {
+  var ll = [gll.lng(), gll.lat()];
+  if (!(gcj02 && this.isGCJ02(ll))) {
+    return ll;
+  }
+  ll = eviltransform.gcj2wgs(ll[1], ll[0]);
+  return [ll.lng, ll.lat];
 }
 
-function ll2gll(ll) {
+function ll2gll(ll, gcj02) {
   var LatLng = gm().LatLng;
-  return new LatLng(ll[1], ll[0]);
+  if (!(gcj02 && this.isGCJ02(ll))) {
+    return new LatLng(ll[1], ll[0]);
+  }
+  ll = eviltransform.wgs2gcj(ll[1], ll[0]);
+  return new LatLng(ll.lat, ll.lng);
 }
 
-function bounds2gbounds(b) {
+function bounds2gbounds(b, gcj02) {
   var LatLngBounds = gm().LatLngBounds;
-  b = b.map(ll2gll);
+  b = b.map(function (ll) {
+    return ll2gll.call(this, ll, gcj02);
+  }, this);
   return new LatLngBounds(b[0], b[1]);
 }
 
-function gbounds2bounds(gb) {
+function gbounds2bounds(gb, gcj02) {
   return gb && [
     gb.getSouthWest(),
     gb.getNorthEast()
-  ].map(gll2ll);
+  ].map(function (gll) {
+    return gll2ll.call(this, gll, gcj02);
+  }, this);
 }
 
 function decodePath(path) {
   return gm().geometry.encoding.decodePath(path);
+}
+
+function path2gpath(path, gcj02) {
+  if (path.gmPath) {
+    path = path.gmPath;
+  }
+  else if (Array.isArray(path)) {
+    if (Array.isArray(path[0])) {
+      path = path.gmPath = path.map(function (ll) {
+        return ll2gll(ll, gcj02);
+      });
+    }
+  }
+  else if (typeof path === 'string') {
+    path = decodePath(path);
+  }
+  return path;
 }
 
 function gm() {
@@ -833,21 +1175,171 @@ module.exports = {
   ll2gll: ll2gll,
   bounds2gbounds: bounds2gbounds,
   gbounds2bounds: gbounds2bounds,
+  path2gpath: path2gpath,
   gm: gm
 };
-},{}],16:[function(require,module,exports){
+},{"eviltransform":36}],19:[function(require,module,exports){
+var merge = require('lodash.assign');
+
+module.exports = circle;
+
+var paint = {
+  radius: 'circle-radius',
+  fillColor: 'circle-color',
+  fillOpacity: 'circle-opacity',
+  strokeColor: 'circle-stroke-color',
+  strokeOpacity: 'circle-stroke-opacity',
+  strokeWeight: 'circle-stroke-width'
+};
+
+function create(self, id, options) {
+  options = merge({
+    editable: true
+  }, options);
+
+  options.fillColor = options.fillColor || '#FFFFFF';
+  options.strokeColor = options.strokeColor || '#FFFFFF';
+
+  self._l = {
+    id: '' + id,
+    type: 'circle',
+    source: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: options.center || [0, 0]
+        }
+      }
+    },
+    paint: {
+      'circle-radius': options.radius || 0,
+      'circle-color': options.fillColor,
+      'circle-opacity': options.fillOpacity || 0,
+      'circle-stroke-color': options.strokeColor,
+      'circle-stroke-opacity': options.strokeOpacity || 1,
+      'circle-stroke-width': options.strokeWeight
+    }
+  };
+  return options;
+}
+
+var layer = require('./layer')(paint, create);
+
+function circle(options) {
+  var self;
+
+  function center(c) {
+    if (!c) {
+      return self._l.source.data.geometry.coordinates;
+    }
+    self._l.source.data.geometry.coordinates = c;
+    self.update();
+  }
+
+  function radius(r) {
+    return self.option('radius', r);
+  }
+
+  self = merge(layer(options), {
+    center: center,
+    radius: radius
+  });
+
+  return self;
+}
+
+},{"./layer":21,"lodash.assign":37}],20:[function(require,module,exports){
 module.exports = init;
 
 function init() {
   return {
+    circle: require('./circle'),
     map: require('./map'),
     marker: require('./marker'),
+    polygon: require('./polygon'),
     polyline: require('./polyline'),
     projection: require('./projection')
   };
 }
 
-},{"./map":17,"./marker":18,"./polyline":20,"./projection":21}],17:[function(require,module,exports){
+},{"./circle":19,"./map":22,"./marker":23,"./polygon":25,"./polyline":26,"./projection":27}],21:[function(require,module,exports){
+var object = require('./object');
+var merge = require('lodash.assign');
+
+module.exports = layer;
+
+var id = 0;
+
+function layer(paint, create) {
+
+  return function (options) {
+    var self;
+
+    function onadd() {
+      self._m.addLayer(merge({}, self._l));
+    }
+
+    function onremove() {
+      self._m.removeLayer(self._l.id);
+      self._m.removeSource(self._l.id);
+    }
+
+    function update() {
+      if (self._m) {
+        self._m.getSource(self._l.id).setData(self._l.source.data);
+      }
+    }
+
+    function option(key, value) {
+      var prop = paint[key];
+      if (value === undefined) {
+        if (prop) {
+          return self._l.paint[prop];
+        }
+        return options[key];
+      }
+
+      if (prop) {
+        if (typeof prop === 'function') {
+          value = prop(value);
+          merge(self._l.paint, value);
+          Object.keys(value).forEach(function (prop) {
+            self._m.setPaintProperty(self._l.id, prop, value[prop]);
+          });
+          return;
+        }
+        self._l.paint[prop] = value;
+        if (self._m) {
+          self._m.setPaintProperty(self._l.id, prop, value);
+        }
+        return;
+      }
+      options[key] = value;
+    }
+
+    self = object({
+      update: update,
+      option: option
+    }, {
+      onadd: onadd,
+      onremove: onremove
+    });
+
+    id += 1;
+    options = create(self, id, options);
+
+    if (options.map) {
+      self.add(options.map);
+    }
+
+    return self;
+  };
+
+}
+},{"./object":24,"lodash.assign":37}],22:[function(require,module,exports){
 var merge = require('lodash.assign');
 var object = require('./object');
 var util = require('./util');
@@ -856,13 +1348,40 @@ module.exports = map;
 
 /* global mapboxgl */
 
-function mapTypeControl(mapTypeControlOptions, customMapTypes, fn) {
+function customControl(options) {
   return {
     onAdd: function (map) {
       var ctrl = this;
       ctrl._map = map;
       ctrl._container = document.createElement('div');
       ctrl._container.className = 'mapboxgl-ctrl';
+      if (options.el) {
+        ctrl._container.appendChild(options.el);
+      }
+      if (options.onAdd) {
+        options.onAdd.call(ctrl, map);
+      }
+      return ctrl._container;
+    },
+    onRemove: function () {
+      var ctrl = this;
+      if (options.el) {
+        ctrl._container.removeChild(options.el);
+      }
+      if (options.onRemove) {
+        options.onRemove.call(ctrl);
+      }
+      ctrl._container.parentNode.removeChild(ctrl._container);
+      delete ctrl._container;
+      delete ctrl._map;
+    }
+  };
+}
+
+function mapTypeControl(mapTypeControlOptions, customMapTypes, fn) {
+  return customControl({
+    onAdd: function () {
+      var ctrl = this;
       ctrl._events = [];
       mapTypeControlOptions.mapTypeIds.forEach(function (id) {
         var type = ctrl._container.appendChild(document.createElement('div')),
@@ -876,7 +1395,6 @@ function mapTypeControl(mapTypeControlOptions, customMapTypes, fn) {
         type.addEventListener(ev.event, ev.fn);
         ctrl._events.push(ev);
       });
-      return ctrl._container;
     },
     onRemove: function () {
       var ctrl = this;
@@ -884,11 +1402,8 @@ function mapTypeControl(mapTypeControlOptions, customMapTypes, fn) {
         ev.type.removeEventListener(ev.event, ev.fn);
       });
       delete ctrl._events;
-      ctrl._container.parentNode.removeChild(this._container);
-      delete ctrl._container;
-      delete ctrl._map;
     }
-  };
+  });
 }
 
 function getAttribution(map) {
@@ -922,7 +1437,19 @@ function getAttribution(map) {
   return attributions.join(' ');
 }
 
-function map(node, options, fn) {
+function transition(prop) {
+  var _m = this;
+  _m[prop] = merge(function (options) {
+    if (options.zoom) {
+      options.zoom = Math.floor(options.zoom);
+    }
+    _m[prop].superior.apply(this, arguments);
+  }, {
+    superior: _m[prop]
+  });
+}
+
+function map(node, options) {
   var controlPosition = {
       BL: 'bottom-left',
       LB: 'bottom-left',
@@ -947,25 +1474,28 @@ function map(node, options, fn) {
 
   function zoom(z) {
     if (z === undefined) {
-      return self._m.getZoom() + 1;
+      return Math.round(self._m.getZoom() + 1);
     }
     self._m.setZoom(z - 1);
   }
 
-  function bounds() {
-    return util.mbounds2bounds(self._m.getBounds());
-  }
-
-  function fitBounds(bounds) {
-    self._m.fitBounds(bounds, {
+  function bounds(b) {
+    if (b === undefined) {
+      return util.mbounds2bounds(self._m.getBounds());
+    }
+    self._m.fitBounds(b, {
       padding: 100
     });
-    return self;
   }
 
   function panToBounds(bounds) {
     // display north-west corner
     self._m.panTo([bounds[1][0], bounds[0][1]]);
+    return self;
+  }
+
+  function panBy(x, y) {
+    self._m.panBy([x, y]);
     return self;
   }
 
@@ -979,7 +1509,14 @@ function map(node, options, fn) {
 
   function callback() {
     self.off('styledata', callback);
-    fn();
+    options.onReady();
+  }
+
+  function addControl(el, position) {
+    self._m.addControl(customControl({
+      el: el
+    }), controlPosition[position]);
+    return self;
   }
 
   options = merge({
@@ -993,9 +1530,11 @@ function map(node, options, fn) {
     center: center,
     zoom: zoom,
     bounds: bounds,
-    fitBounds: fitBounds,
+    fitBounds: bounds, // obsolete; use bounds(b)
     panToBounds: panToBounds,
+    panBy: panBy,
     mapType: mapType,
+    addControl: addControl,
     refresh: refresh
   });
 
@@ -1015,7 +1554,10 @@ function map(node, options, fn) {
 
   self._m = new mapboxgl.Map(options);
 
-  if (fn) {
+  // ensure integral zoom
+  ['flyTo', 'easeTo'].forEach(transition, self._m);
+
+  if (options.onReady) {
     self.on('styledata', callback);
   }
 
@@ -1041,63 +1583,232 @@ function map(node, options, fn) {
   return self;
 }
 
-},{"./object":19,"./util":22,"lodash.assign":29}],18:[function(require,module,exports){
+},{"./object":24,"./util":28,"lodash.assign":37}],23:[function(require,module,exports){
 var merge = require('lodash.assign');
 var object = require('./object');
+var q = require('query');
 var util = require('./util');
 
 module.exports = marker;
 
 var svgNS = "http://www.w3.org/2000/svg";
+var iconPath = {
+   circle: {
+     el: 'circle',
+     attributes: {
+       cx: zero,
+       cy: zero,
+       scale: 'r',
+       fillColor: 'fill',
+       fillOpacity: 'fill-opacity',
+       strokeColor: 'stroke',
+       strokeWeight: 'stroke-width'
+     },
+     viewBox: circle
+   },
+   forward_closed_arrow: {
+     el: 'polygon',
+     attributes: {
+       scale: points,
+       rotation: rotate,
+       fillColor: 'fill',
+       fillOpacity: 'fill-opacity',
+       strokeColor: 'stroke',
+       strokeWeight: strokeWidth
+     },
+     viewBox: polygon
+   },
+   path: {
+     el: 'path',
+     attributes: {
+       path: 'd',
+       scale: scale,
+       fillColor: 'fill',
+       fillOpacity: 'fill-opacity',
+       strokeColor: 'stroke',
+       strokeWeight: 'stroke-width'
+     },
+     viewBox: path
+   }
+};
 
 /* global mapboxgl */
 
+function offset(icon) {
+  var r;
+  if (icon.anchor) {
+    return [- Math.round(icon.anchor[0] * icon.scale), - Math.round(icon.anchor[1] * icon.scale)];
+  }
+  r = - icon.scale - Math.round(icon.strokeWeight / 2);
+  return [r, r];
+}
+
+function drawIcon(iEl, icon, attributes) {
+  Object.keys(attributes).forEach(function (attr) {
+    var name, value = icon[attr];
+    if (value !== undefined) {
+      name = attributes[attr];
+      if (typeof name === 'function') {
+        name = name(icon, attr);
+        value = name.value;
+        name = name.name;
+      }
+      iEl.setAttribute(name, value);
+    }
+  });
+}
+
+function draw(icon) {
+  var iP, vB, sEl, cEl;
+
+  iP = iconPath[icon.path] || iconPath.path;
+  vB = iP.viewBox(icon);
+
+  sEl = document.createElementNS(svgNS, 'svg');
+  sEl.setAttribute('width', vB[2]);
+  sEl.setAttribute('height', vB[3]);
+  sEl.setAttribute('viewBox', vB.join(' '));
+
+  cEl = sEl.appendChild(document.createElementNS(svgNS, iP.el));
+  drawIcon(cEl, icon, iP.attributes);
+
+  return sEl;
+}
+
+function circle(icon) {
+  var w = Math.round(icon.strokeWeight / 2), d = 2 * (icon.scale + w), r = - icon.scale - w;
+  return [r, r, d, d];
+}
+
+function polygon(icon) {
+  var d = 2 * (icon.scale + icon.strokeWeight + 1);
+  return [0, 0, d, d];
+}
+
+function path(icon) {
+  var d = Math.round(16 * icon.scale);
+  return [0, 0, d, d];
+}
+
+function zero(icon, attr) {
+  return {
+    name: attr,
+    value: 0
+  };
+}
+
+function points(icon) {
+  var w = icon.strokeWeight, r = icon.scale + w + 1, s = Math.floor(w / 2);
+  return {
+    name: 'points',
+    value: [
+      [r, s].join(','),
+      [2 * r - w, 2 * r - s].join(','),
+      [r, 2 * r - w - s].join(','),
+      [w, 2 * r - s].join(',')
+    ].join(' ')
+  };
+}
+
+function rotate(icon) {
+  var w = icon.strokeWeight, r = icon.scale + w + 1;
+  return {
+    name: 'transform',
+    value: 'rotate(' + [icon.rotation, r, r].join(' ') + ')'
+  };
+}
+
+function scale(icon) {
+  return {
+    name: 'transform',
+    value: 'scale(' + icon.scale + ')'
+  };
+}
+
+function strokeWidth(icon) {
+  return {
+    name: 'stroke-width',
+    value: icon.strokeWeight - 1
+  };
+}
+
 function marker(options) {
-  var self, el;
+  var self, el, map;
 
-  function offset(icon) {
-    var r = - icon.scale - 1;
-    return [r, r];
-  }
-
-  function circle(icon) {
-    var sEl, cEl, d = 2 * (icon.scale + 1), r = - icon.scale - 1;
-    sEl = document.createElementNS(svgNS, 'svg');
-    sEl.setAttribute('width', d);
-    sEl.setAttribute('height', d);
-    sEl.setAttribute('viewBox', [r, r, d, d].join(' '));
-
-    cEl = sEl.appendChild(document.createElementNS(svgNS, 'circle'));
-    cEl.setAttribute('cx', 0);
-    cEl.setAttribute('cy', 0);
-    cEl.setAttribute('r', icon.scale);
-    cEl.setAttribute('fill', icon.fillColor);
-    cEl.setAttribute('fill-opacity', icon.fillOpacity);
-    cEl.setAttribute('stroke', icon.strokeColor);
-    cEl.setAttribute('stroke-width', icon.strokeWeight);
-
-    return sEl;
-  }
-
-  function add(map) {
-    self._m.addTo(map._m);
+  function add(mp) {
+    if (self.position()) {
+      self._m.addTo(mp._m);
+    }
+    else {
+      map = mp;
+    }
     return self;
   }
 
   function remove() {
+    map = undefined;
     self._m.remove();
     return self;
   }
 
+  function option(key, value) {
+    if (value === undefined) {
+      return options[key];
+    }
+    options[key] = value;
+  }
+
   function position(p) {
     if (p === undefined) {
-      return util.mll2ll(self._m.setLngLat());
+      p = self._m.getLngLat();
+      if (!p) {
+        return;
+      }
+      return util.mll2ll(p);
     }
     self._m.setLngLat(p);
+    if (map) {
+      self.add(map);
+      map = undefined;
+    }
   }
 
   function animation() {
     //TODO implement bounce as a CSS transformation
+  }
+
+  function image(icon) {
+    var img;
+    if (!icon.url) {
+      return;
+    }
+    img = q('img', el);
+    if (!img) {
+      el.innerHTML = '';
+      img = el.appendChild(document.createElement('img'));
+    }
+    img.setAttribute('src', icon.url);
+  }
+
+  function icon(i) {
+    var iEl, path;
+    if (i === undefined) {
+      //TODO implement getter
+      return;
+    }
+    if (!i.path) {
+      return image(i);
+    }
+    path = iconPath[i.path] || iconPath.path;
+    iEl = q(path.el, el);
+    if (iEl) {
+      drawIcon(iEl, i, path.attributes);
+    }
+    else {
+      el.innerHTML = '';
+      i = merge(merge({}, options.icon), i);
+      el.appendChild(draw(i));
+    }
   }
 
   function zindex() {
@@ -1106,32 +1817,41 @@ function marker(options) {
 
   options = merge({
     flat: true,
-    icon: {
-      path: 'circle',
-      fillColor: options.color,
-      fillOpacity: 1,
-      strokeColor:  '#555555',
-      strokeWeight: 2,
-      scale: 7
-    }
+    icon: {}
   }, options);
-
-  el = document.createElement('div');
-  if (options.icon.path === 'circle') {
-    el.appendChild(circle(options.icon));
+  options.icon = merge({
+    path: 'circle',
+    strokeColor:  '#555555',
+    strokeWeight: 2,
+    scale: 7
+  }, options.icon);
+  if (options.color !== undefined) {
+    options.icon.fillColor = options.color;
+    options.icon.fillOpacity = 1;
+  }
+  else {
+    options.icon.fillOpacity = 0;
   }
 
+  el = document.createElement('div');
+
   self = object({
-    add: add,
-    remove: remove,
-    position: position,
     animation: animation,
+    add: add,
+    icon: icon,
+    option: option,
+    position: position,
+    remove: remove,
     zindex: zindex
-  }, el);
+  }, {
+    el: el
+  });
 
   self._m = new mapboxgl.Marker(el, {
     offset: offset(options.icon)
   });
+
+  self.icon(options.icon);
 
   if (options.position) {
     self.position(options.position);
@@ -1144,28 +1864,68 @@ function marker(options) {
   return self;
 }
 
-},{"./object":19,"./util":22,"lodash.assign":29}],19:[function(require,module,exports){
+},{"./object":24,"./util":28,"lodash.assign":37,"query":34}],24:[function(require,module,exports){
+var mouse = require('../events').mouse;
+var util = require('./util');
+
 module.exports = init;
 
 var events = {
-  bounds_changed: 'moveend'
+  bounds_changed: 'moveend',
+  center_changed: 'moveend',
+  zoom_changed: 'zoomend'
 };
 
-function init(self, el) {
-  var listeners = {};
+function handleEvent(self, fn, e) {
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  }
+  fn.call(self, e);
+}
+
+function handleMouseEvent(self, fn, e) {
+  if (e && e.lngLat) {
+    e.ll = util.mll2ll(e.lngLat);
+  }
+  else if (self._l) {
+    // layers are expected to have location
+    return;
+  }
+  handleEvent(self, fn, e);
+}
+
+function init(self, options) {
+  var listeners = {}, el = options && options.el;
 
   function on(event, fn) {
+    var handler;
     event = events[event] || event;
     if (el) {
-      el.addEventListener(event, fn);
+      handler = handleEvent.bind(undefined, self, fn);
+      el.addEventListener(event, handler);
     }
     else {
-      self._m.on(event, fn);
+      if (mouse[event]) {
+        handler = handleMouseEvent.bind(undefined, self, fn);
+      }
+      else {
+        handler = handleEvent.bind(undefined, self, fn);
+      }
+      if (self._l) {
+        if (self._m) {
+          self._m.on(event, self._l.id, handler);
+        }
+      }
+      else {
+        self._m.on(event, handler);
+      }
     }
     listeners[event] = listeners[event] || [];
     listeners[event].push({
       event: event,
-      fn: fn
+      layer: self._l && self._l.id,
+      fn: fn,
+      handler: handler
     });
     return self;
   }
@@ -1174,16 +1934,63 @@ function init(self, el) {
     if (event === undefined) {
       Object.keys(listeners).forEach(function(event) {
         listeners[event].forEach(function (listener) {
-          off(listener.event, listener.fn);
+          off(listener.event, listener.handler);
         });
       });
       listeners = {};
     }
-    else if (el) {
-      el.removeEventListener(event, fn);
-    }
     else {
-      self._m.off(event, fn);
+      event = events[event] || event;
+      listeners[event].some(function (listener, i, listeners) {
+        if (listener.fn === fn) {
+          if (el) {
+            el.removeEventListener(event, listener.handler);
+          }
+          else if (listener.layer) {
+            if (self._m) {
+              self._m.off(event, listener.layer, listener.handler);
+            }
+          }
+          else {
+            self._m.off(event, listener.handler);
+          }
+          listeners.splice(i, 1);
+          if (!listeners.length) {
+            delete listeners[event];
+          }
+          return true;
+        }
+      });
+    }
+    return self;
+  }
+
+  function add(map) {
+    if (!self._m) {
+      self._m = map._m;
+      Object.keys(listeners).forEach(function(event) {
+        listeners[event].forEach(function (listener) {
+          if (listener.layer) {
+            self._m.on(listener.event, listener.layer, listener.handler);
+          }
+        });
+      });      
+      options.onadd();
+    }
+    return self;
+  }
+
+  function remove() {
+    if (self._m) {      
+      Object.keys(listeners).forEach(function(event) {
+        listeners[event].forEach(function (listener) {
+          if (listener.layer) {
+            self._m.off(listener.event, listener.layer, listener.handler);
+          }
+        });
+      });
+      options.onremove();
+      delete self._m;
     }
     return self;
   }
@@ -1191,102 +1998,180 @@ function init(self, el) {
   self.on = on;
   self.off = off;
 
+  if (options) {
+    if (options.onadd) {
+      self.add = add;
+    }
+    if (options.onremove) {
+      self.remove = remove;
+    }
+  }
+
   return self;
 }
 
-},{}],20:[function(require,module,exports){
+},{"../events":6,"./util":28}],25:[function(require,module,exports){
 var merge = require('lodash.assign');
-var object = require('./object');
 var util = require('./util');
 
-module.exports = polyline;
+module.exports = polygon;
 
-var id = 0;
+var paint = {
+  fillColor: 'fill-color',
+  fillOpacity: 'fill-opacity',
+  strokeColor: 'fill-outline-color'
+};
 
-function polyline(options) {
-  var self, map;
-
-  function createLayer(path) {
-    if (typeof path === 'string') {
-      path = util.decodePath(path);
-    }
-    id += 1;
-    self._m = {
-      id: '' + id,
-      type: 'line',
-      source: {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: path
-          }
-        }
-      },
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round'
-      },
-      paint: {
-        'line-color': options.strokeColor,
-        'line-opacity': options.strokeOpacity,
-        'line-width': options.strokeWeight
-      }
-    };
-  }
-
-  function add(mp) {
-    map = mp;
-    map._m.addLayer(self._m);
-    return self;
-  }
-
-  function remove() {
-    if (map) {
-      map._m.removeLayer(self._m.id);
-      map = undefined;
-    }
-    return self;
-  }
-
-  function path(p) {
-    var mp;
-    if (p === undefined) {
-      return map && map.getLayer(self._m.id).source.data.geometry.coordinates;
-    }
-    mp = map;
-    remove();
-    createLayer(p);
-    if (mp) {
-      add(mp);
-    }
-  }
-
-  self = object({
-    add: add,
-    remove: remove,
-    path: path
-  });
-
+function create(self, id, options) {
   options = merge({
     strokeOpacity: 0.8,
     strokeWeight: 4
   }, options);
 
-  options.strokeColor = options.strokeColor || options.color;
+  options.fillColor = options.fillColor || '#FFFFFF';
+  options.strokeColor = options.strokeColor || '#FFFFFF';
 
-  createLayer(options.path);
-
-  if (options.map) {
-    self.add(options.map);
+  if (typeof options.path === 'string') {
+    options.path = util.decodePath(options.path);
   }
+  self._l = {
+    id: '' + id,
+    type: 'fill',
+    source: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates: [options.path]
+        }
+      }
+    },
+    paint: {
+      'fill-color': options.fillColor,
+      'fill-opacity': options.fillOpacity || 0,
+      'fill-outline-color': options.strokeColor
+    }
+  };
+
+  return options;
+}
+
+var layer = require('./layer')(paint, create);
+
+function polygon(options) {
+  var self;
+
+  function path(p) {
+    if (p === undefined) {
+      return self._l.source.data.geometry.coordinates;
+    }
+    self._l.source.data.geometry.coordinates = [p];
+    self.update();
+  }
+
+  self = layer(options);
+
+  self.path = path;
 
   return self;
 }
 
-},{"./object":19,"./util":22,"lodash.assign":29}],21:[function(require,module,exports){
+},{"./layer":21,"./util":28,"lodash.assign":37}],26:[function(require,module,exports){
+var merge = require('lodash.assign');
+var util = require('./util');
+
+module.exports = polyline;
+
+var paint = {
+  strokeColor: 'line-color',
+  strokeOpacity: 'line-opacity',
+  strokeWeight: 'line-width',
+  dashOpacity: function (value) {
+    return {
+      'line-opacity': value,
+      'line-dasharray': [2, 3]
+    };
+  }
+};
+
+// Mapbox implementation of LineString expects 2 points
+function validate(path) {
+  if (path && path.length >= 2) {
+    return path;
+  }
+  if (path && path.length === 1) {
+    return [path[0], path[0]];
+  }
+  return [[0, 0], [0, 0]];
+}
+
+function create(self, id, options) {
+  options = merge({
+    strokeOpacity: 0.8,
+    strokeWeight: 4
+  }, options);
+
+  options.strokeColor = options.strokeColor || options.color || '#FFFFFF';
+
+  if (typeof options.path === 'string') {
+    options.path = util.decodePath(options.path);
+  }
+  self._l = {
+    id: '' + id,
+    type: 'line',
+    source: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: validate(options.path)
+        }
+      }
+    },
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    paint: {
+      'line-color': options.strokeColor,
+      'line-opacity': options.strokeOpacity,
+      'line-width': options.strokeWeight
+    }
+  };
+
+  if (options.dashOpacity) {
+    merge(self._l.paint, paint.dashOpacity(options.dashOpacity));
+  }
+
+  return options;
+}
+
+var layer = require('./layer')(paint, create);
+
+function polyline(options) {
+  var self;
+
+  function path(p) {
+    if (p === undefined) {
+      return self._l.source.data.geometry.coordinates;
+    }
+    self._l.source.data.geometry.coordinates = validate(p);
+    self.update();
+  }
+
+  self = layer(options);
+
+  self.path = path;
+
+  return self;
+}
+
+},{"./layer":21,"./util":28,"lodash.assign":37}],27:[function(require,module,exports){
+var util = require('./util');
 
 module.exports = projection;
 
@@ -1304,19 +2189,36 @@ function projection(options) {
     return options.map._m.unproject(p);
   }
 
+  function toMap(x, y) {
+    return util.mll2ll(options.map._m.unproject(y === undefined ? x : [ x, y ]));
+  }
+
+  function toScreen(ll) {
+    var xy = options.map._m.project(ll);
+    return [xy.x, xy.y];
+  }
+
   function isReady() {
     return true;
   }
 
-  setTimeout(options.calculate.bind(options.calculate), 0);
+  function remove() {
+  }
+
+  if (options.calculate) {
+    setTimeout(options.calculate.bind(options.calculate), 0);
+  }
 
   return {
-    position: position,
-    location: location,
-    isReady: isReady
+    position: position, // obsolete, use toScreen
+    location: location, // obsolete, use to Map
+    toMap: toMap,
+    toScreen: toScreen,
+    isReady: isReady,
+    remove: remove
   };
 }
-},{}],22:[function(require,module,exports){
+},{"./util":28}],28:[function(require,module,exports){
 var polyline = require('@pirxpilot/google-polyline');
 
 function mll2ll(mll) {
@@ -1340,7 +2242,7 @@ module.exports = {
   decodePath: decodePath
 };
 
-},{"@pirxpilot/google-polyline":25}],23:[function(require,module,exports){
+},{"@pirxpilot/google-polyline":31}],29:[function(require,module,exports){
 var distance = require('./util').distance;
 var posSeq = [ [0, 0], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-2, -1], [-2, 0],
     [-2, 1], [-2, 2], [-1, 2], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [2, -1], [2, -2], [1, -2], [0, -2], [-1, -2],
@@ -1460,7 +2362,7 @@ function spread(options) {
     calculate: calculate
   };
 }
-},{"./util":24}],24:[function(require,module,exports){
+},{"./util":30}],30:[function(require,module,exports){
 function distance(p1, p2) {
   return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
@@ -1469,13 +2371,13 @@ module.exports = {
   distance: distance
 };
 
-},{}],25:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = {
   encode: require( './lib/encode' ),
   decode: require( './lib/decode' ),
 }
 
-},{"./lib/decode":26,"./lib/encode":27}],26:[function(require,module,exports){
+},{"./lib/decode":32,"./lib/encode":33}],32:[function(require,module,exports){
 module.exports = decode
 
 function decode( value, factor ) {
@@ -1539,7 +2441,7 @@ function integers( value, fn ) {
   }
 }
 
-},{}],27:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = encode
 
 
@@ -1588,7 +2490,30 @@ function chars( str, value ) {
   str.push(String.fromCharCode( value + 63 ))
 }
 
-},{}],28:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
+function one(selector, el) {
+  return el.querySelector(selector);
+}
+
+exports = module.exports = function(selector, el){
+  el = el || document;
+  return one(selector, el);
+};
+
+exports.all = function(selector, el){
+  el = el || document;
+  return el.querySelectorAll(selector);
+};
+
+exports.engine = function(obj){
+  if (!obj.one) throw new Error('.one callback required');
+  if (!obj.all) throw new Error('.all callback required');
+  one = obj.one;
+  exports.all = obj.all;
+  return exports;
+};
+
+},{}],35:[function(require,module,exports){
 module.exports = function load(src, async) {
   var s = document.createElement('script');
   s.src = src;
@@ -1599,7 +2524,167 @@ module.exports = function load(src, async) {
   return s;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
+"use strict";
+
+var exports;
+if (typeof module === "object" && exports) {
+	exports = module.exports;
+} else if (typeof window !== "undefined") {
+	exports = window["eviltransform"] = {};
+}
+
+var earthR = 6378137.0;
+
+function outOfChina(lat, lng) {
+	if ((lng < 72.004) || (lng > 137.8347)) {
+		return true;
+	}
+	if ((lat < 0.8293) || (lat > 55.8271)) {
+		return true;
+	}
+	return false;
+}
+
+function transform(x, y) {
+	var xy = x * y;
+	var absX = Math.sqrt(Math.abs(x));
+	var xPi = x * Math.PI;
+	var yPi = y * Math.PI;
+	var d = 20.0*Math.sin(6.0*xPi) + 20.0*Math.sin(2.0*xPi);
+
+	var lat = d;
+	var lng = d;
+
+	lat += 20.0*Math.sin(yPi) + 40.0*Math.sin(yPi/3.0);
+	lng += 20.0*Math.sin(xPi) + 40.0*Math.sin(xPi/3.0);
+
+	lat += 160.0*Math.sin(yPi/12.0) + 320*Math.sin(yPi/30.0);
+	lng += 150.0*Math.sin(xPi/12.0) + 300.0*Math.sin(xPi/30.0);
+
+	lat *= 2.0 / 3.0;
+	lng *= 2.0 / 3.0;
+
+	lat += -100.0 + 2.0*x + 3.0*y + 0.2*y*y + 0.1*xy + 0.2*absX;
+	lng += 300.0 + x + 2.0*y + 0.1*x*x + 0.1*xy + 0.1*absX;
+
+	return {lat: lat, lng: lng}
+}
+
+function delta(lat, lng) {
+	var ee = 0.00669342162296594323;
+	var d = transform(lng-105.0, lat-35.0);
+	var radLat = lat / 180.0 * Math.PI;
+	var magic = Math.sin(radLat);
+	magic = 1 - ee*magic*magic;
+	var sqrtMagic = Math.sqrt(magic);
+	d.lat = (d.lat * 180.0) / ((earthR * (1 - ee)) / (magic * sqrtMagic) * Math.PI);
+	d.lng = (d.lng * 180.0) / (earthR / sqrtMagic * Math.cos(radLat) * Math.PI);
+	return d;
+}
+
+function wgs2gcj(wgsLat, wgsLng) {
+	if (outOfChina(wgsLat, wgsLng)) {
+		return {lat: wgsLat, lng: wgsLng};
+	}
+	var d = delta(wgsLat, wgsLng);
+	return {lat: wgsLat + d.lat, lng: wgsLng + d.lng};
+}
+exports.wgs2gcj = wgs2gcj;
+
+function gcj2wgs(gcjLat, gcjLng) {
+	if (outOfChina(gcjLat, gcjLng)) {
+		return {lat: gcjLat, lng: gcjLng};
+	}
+	var d = delta(gcjLat, gcjLng);
+	return {lat: gcjLat - d.lat, lng: gcjLng - d.lng};
+}
+exports.gcj2wgs = gcj2wgs;
+
+function gcj2wgs_exact(gcjLat, gcjLng) {
+	// newCoord = oldCoord = gcjCoord
+	var newLat = gcjLat, newLng = gcjLng;
+	var oldLat = newLat, oldLng = newLng;
+	var threshold = 1e-6; // ~0.55 m equator & latitude
+
+	for (var i = 0; i < 30; i++) {
+		// oldCoord = newCoord
+		oldLat = newLat;
+		oldLng = newLng;
+		// newCoord = gcjCoord - wgs_to_gcj_delta(newCoord)
+		var tmp = wgs2gcj(newLat, newLng);
+		// approx difference using gcj-space difference
+		newLat -= gcjLat - tmp.lat;
+		newLng -= gcjLng - tmp.lng;
+		// diffchk
+		if (Math.max(Math.abs(oldLat - newLat), Math.abs(oldLng - newLng)) < threshold) {
+			break;
+		}
+	}
+	return {lat: newLat, lng: newLng};
+}
+exports.gcj2wgs_exact = gcj2wgs_exact;
+
+function distance(latA, lngA, latB, lngB) {
+	var pi180 = Math.PI / 180;
+	var arcLatA = latA * pi180;
+ 	var arcLatB = latB * pi180;
+	var x = Math.cos(arcLatA) * Math.cos(arcLatB) * Math.cos((lngA-lngB)*pi180);
+	var y = Math.sin(arcLatA) * Math.sin(arcLatB);
+	var s = x + y;
+	if (s > 1) {
+		s = 1;
+	}
+	if (s < -1) {
+		s = -1;
+	}
+	var alpha = Math.acos(s);
+	var distance = alpha * earthR;
+	return distance;
+}
+exports.distance = distance;
+
+function gcj2bd(gcjLat, gcjLng) {
+	if (outOfChina(gcjLat, gcjLng)) {
+		return {lat: gcjLat, lng: gcjLng};
+	}
+
+	var x = gcjLng, y = gcjLat;
+	var z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * Math.PI);
+	var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * Math.PI);
+	var bdLng = z * Math.cos(theta) + 0.0065;
+	var bdLat = z * Math.sin(theta) + 0.006;
+	return {lat: bdLat, lng: bdLng};
+}
+exports.gcj2bd = gcj2bd;
+
+function bd2gcj(bdLat, bdLng) {
+	if (outOfChina(bdLat, bdLng)) {
+		return {lat: bdLat, lng: bdLng};
+	}
+
+	var x = bdLng - 0.0065, y = bdLat - 0.006;
+	var z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * Math.PI);
+	var theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * Math.PI);
+	var gcjLng = z * Math.cos(theta);
+	var gcjLat = z * Math.sin(theta);
+	return {lat: gcjLat, lng: gcjLng};
+}
+exports.bd2gcj = bd2gcj;
+
+function wgs2bd(wgsLat, wgsLng) {
+	var gcj = wgs2gcj(wgsLat, wgsLng);
+	return gcj2bd(gcj.lat, gcj.lng);
+}
+exports.wgs2bd = wgs2bd;
+
+function bd2wgs(bdLat, bdLng) {
+	var gcj = bd2gcj(bdLat, bdLng);
+	return gcj2wgs(gcj.lat, gcj.lng);
+}
+exports.bd2wgs = bd2wgs;
+
+},{}],37:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
