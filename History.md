@@ -1,4 +1,16 @@
 
+1.0.1 / 2017-05-01
+==================
+
+ * prevent clicks on map objects rendered as layers from reaching map
+ * handle as a special kind of circular marker
+ * draggable layers
+ * handle mouse-sensitive outline for polylines
+ * let specific layer handle global map events
+ * expose calculating map coordinates for mouse event
+ * support changing visibility on map objects implemented as layers
+ * improve Mapbox markers
+
 1.0.0 / 2017-04-27
 ==================
 
