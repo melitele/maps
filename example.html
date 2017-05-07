@@ -243,7 +243,7 @@
         osmMps[1].on('bounds_changed', collate.calculate.bind(collate));
 
         [mps[4], osmMps[2]].forEach(function (mp, m) {
-          var i, srv = m % 2 ? osmMaps : maps;
+          var i, srv = m % 2 ? osmMaps : maps, mk;
           mp.center([0.5, 0]);
           mp.zoom(9);
           for (i = 0; i <= 8; i += 1) {
@@ -258,7 +258,7 @@
                 scale: 5
               }
             });
-            srv.marker({
+            mk = srv.marker({
               map: mp,
               position: [i / 8, 1 / 8],
               icon: {
@@ -268,6 +268,10 @@
                 scale: 1 + i
               }
             });
+            if (i === 3) {
+              mk.animation('bounce');
+              setTimeout(mk.animation, 15 * 1000);
+            }
             srv.marker({
               map: mp,
               position: [i / 8, -1 / 8],
@@ -282,14 +286,18 @@
                 anchor: [1, 16]
               }
             });
-            srv.marker({
+            mk = srv.marker({
               map: mp,
               position: [i / 8, -3 / 8],
               icon: {
                 url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTAgMEgyNlYyNkgxNkwxMyAzMEwxMCAyNkgwWiIgZmlsbD0iI2Y4MDAxMiIvPjxwYXRoIGQ9Ik0yIDJIMjRWMjRIMloiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjEuOCAxMC40TDcuNSA2LjZWNC40SDYuNFYxOS44SDQuMlYyMkg5LjdWMTkuOEg3LjVWMTQuM1oiIGZpbGw9IiNmODAwMTIiLz48L3N2Zz4=',
                 size: [26, 30]
               }
-           });
+            });
+            if (i === 4) {
+              mk.animation('bounce');
+              setTimeout(mk.animation, 15 * 1000);
+            }
           }
         });
       });
