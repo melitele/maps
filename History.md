@@ -1,4 +1,10 @@
 
+1.0.3 / 2017-05-07
+==================
+
+ * account for pixel ratio when calculating icon size and offset
+ * upgrade test to mapbox-gl 0.37.0
+
 1.0.2 / 2017-05-07
 ==================
 
