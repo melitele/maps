@@ -1,4 +1,14 @@
 
+1.0.2 / 2017-05-07
+==================
+
+ * marker bounce
+ * render map objects according to z-index
+ * implement dragging that bypasses Mapbox event handling to propagate drag events
+ * implement markers as map layers instead of DOM elements
+ * method to destroy map
+ * adjust Mapbox handle size to agree with Google
+
 1.0.1 / 2017-05-01
 ==================
 
