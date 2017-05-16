@@ -1,6 +1,6 @@
 {
   "name": "maps-facade",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "façade for maps",
   "main": "index.js",
   "scripts": {
