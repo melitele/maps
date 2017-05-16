@@ -1,4 +1,12 @@
 
+1.0.5 / 2017-05-16
+==================
+
+ * use dynload module directly
+ * remove unused component-query module
+ * fix service.util initialization
+ * fix package metadata
+
 1.0.4 / 2017-05-16
 ==================
 
