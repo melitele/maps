@@ -18,8 +18,7 @@
     "@pirxpilot/google-polyline": "^2.0.3",
     "component-query": "^0.0.3",
     "dynload": "^1.0.2",
-    "eviltransform": "^0.2.2",
-    "lodash.assign": "^4.2.0"
+    "eviltransform": "^0.2.2"
   },
   "devDependencies": {
     "browserify": "~14",
