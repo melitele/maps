@@ -27,9 +27,6 @@
     "mock-require": "^2.0.2",
     "should": "^11.2.1"
   },
-  "browser": {
-    "load": "dynload"
-  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/melitele/maps/issues"

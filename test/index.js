@@ -1,6 +1,6 @@
 var mock = require('mock-require');
 
-mock('load', function () {});
+mock('dynload', function () {});
 
 var maps = require('../lib');
 
