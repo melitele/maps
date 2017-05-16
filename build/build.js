@@ -83,8 +83,7 @@ function collate(options) {
     calculate: calculate
   };
 }
-},{"./util":30}],2:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"./util":34}],2:[function(require,module,exports){
 var mixin = require('./mixin');
 
 function init(opts, fn) {
@@ -102,15 +101,15 @@ function init(opts, fn) {
     service = require('./service/mapbox');
   }
   service = service(opts, fn);
-  merge(service, {
+  Object.assign(service, {
     collate: require('./collate'),
     outline: require('./outline'),
     spread: require('./spread')
   });
   service.map = mixin(service.map, require('./map'));
-  merge(service.util, require('./util'));
+  service.util = Object.assign(service.util || {}, require('./util'));
   if (!module.collate) {
-    merge(module, service); // compatibility with old interface
+    Object.assign(module, service); // compatibility with old interface
   }
   return service;
 }
@@ -119,7 +118,7 @@ module.exports = {
   init: init
 };
 
-},{"./collate":1,"./map":3,"./mixin":4,"./outline":5,"./service/google":8,"./service/mapbox":20,"./spread":29,"./util":30,"lodash.assign":37}],3:[function(require,module,exports){
+},{"./collate":1,"./map":3,"./mixin":4,"./outline":5,"./service/google":9,"./service/mapbox":24,"./spread":33,"./util":34}],3:[function(require,module,exports){
 
 function zoomIn() {
   var self = this;
@@ -196,25 +195,29 @@ function outline(points) {
 
 },{}],6:[function(require,module,exports){
 
-var mouse = [
-  'click',
-  'mousemove',
-  'mouseover',
-  'mouseout',
-  'dragstart',
-  'drag',
-  'dragend'
-].reduce(function (result, e) {
+function expand(result, e) {
   result[e] = e;
   return result;
-}, {});
+}
 
 module.exports = {
-  mouse: mouse
+  drag: [
+    'dragstart',
+    'drag',
+    'dragend'
+  ].reduce(expand, {}),
+  mouse: [
+    'click',
+    'mousemove',
+    'mouseover',
+    'mouseout',
+    'dragstart',
+    'drag',
+    'dragend'
+  ].reduce(expand, {})
 };
 
 },{}],7:[function(require,module,exports){
-var merge = require('lodash.assign');
 var object = require('./object');
 var util = require('./util');
 
@@ -266,7 +269,7 @@ function circle(options) {
     radius: radius
   });
 
-  options = merge({
+  options = Object.assign({
     editable: true,
   }, options);
 
@@ -286,8 +289,121 @@ function circle(options) {
   return self;
 }
 
-},{"./object":13,"./util":18,"lodash.assign":37}],8:[function(require,module,exports){
-var load = require('load');
+},{"./object":14,"./util":19}],8:[function(require,module,exports){
+var object = require('./object');
+var util = require('./util');
+
+module.exports = handle;
+
+function handle(options) {
+  var _gm = util.gm(), iconPath = {
+    circle: _gm.SymbolPath.CIRCLE,
+    forward_closed_arrow: _gm.SymbolPath.FORWARD_CLOSED_ARROW
+  }, _gcj02 = options.gcj20, self;
+
+  function add(map) {
+    if (!self._m) {
+      self._m = map._m;
+      if (map.gcj02) {
+        _gcj02 = map.gcj02();
+      }
+      self._l.setMap(map._m);
+    }
+    return self;
+  }
+
+  function remove() {
+    if (self._m) {
+      self._l.setMap(null);
+      delete self._m;
+    }
+    return self;
+  }
+
+  function option(key, value) {
+    if (value === undefined) {
+      return self._l.get(key);
+    }
+    self._l.set(key, value);
+  }
+
+  function prepareIcon(icon) {
+    if (iconPath[icon.path] !== undefined) {
+      icon.path = iconPath[icon.path];
+    }
+    if (icon.anchor) {
+      icon.anchor = new _gm.Point(icon.anchor[0], icon.anchor[1]);
+    }
+    if (icon.origin) {
+      icon.origin = new _gm.Point(icon.origin[0], icon.origin[1]);
+    }
+    if (icon.size) {
+      icon.size = new _gm.Size(icon.size[0], icon.size[1]);
+    }
+    if (icon.scaledSize) {
+      icon.scaledSize = new _gm.Size(icon.scaledSize[0], icon.scaledSize[1]);
+    }
+    return icon;
+  }
+
+  function zindex(zi) {
+    if (zi === undefined) {
+      return self._l.getZIndex();
+    }
+    self._l.setZIndex(zi);
+  }
+
+  function position(p) {
+    if (p === undefined) {
+      return util.gll2ll(self._l.getPosition(), _gcj02);
+    }
+    self._l.setPosition(util.ll2gll(p, _gcj02));
+  }
+
+  self = object({
+    add: add,
+    option: option,
+    position: position,
+    remove: remove,
+    zindex: zindex
+  });
+
+  options = Object.assign({
+    flat: true,
+    icon: {
+      path: 'circle',
+      strokeColor:  '#555555',
+      strokeWeight: 2,
+      scale: 7
+    }
+  }, options);
+  if (options.color !== undefined) {
+    options.icon.fillColor = options.color;
+    options.icon.fillOpacity = 1;
+  }
+  if (options.map) {
+    if (options.map.gcj02) {
+      _gcj02 = options.map.gcj02();
+    }
+    options.map = options.map._m;
+  }
+  if (options.position) {
+    options.position = util.ll2gll(options.position, _gcj02);
+  }
+  if (options.icon) {
+    prepareIcon(options.icon);
+  }
+  if (options.zIndex !== undefined) {
+    options.zIndex = (options.zIndex.type === 'max' ? _gm.Marker.MAX_ZINDEX : 0) + options.zIndex.value;
+  }
+
+  self._l = new _gm.Marker(options);
+
+  return self;
+}
+
+},{"./object":14,"./util":19}],9:[function(require,module,exports){
+var load = require('dynload');
 
 function prepareUrl(url, params) {
   return url + '?' + Object.keys(params)
@@ -326,6 +442,7 @@ function init(options, fn) {
 
   return {
     circle: require('./circle'),
+    handle: require('./handle'),
     info: require('./info'),
     map: require('./map'),
     marker: require('./marker'),
@@ -339,8 +456,7 @@ function init(options, fn) {
 
 module.exports = init;
 
-},{"./circle":7,"./info":9,"./map":11,"./marker":12,"./polygon":14,"./polyline":15,"./projection":16,"./styles":17,"./util":18,"load":35}],9:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"./circle":7,"./handle":8,"./info":10,"./map":12,"./marker":13,"./polygon":15,"./polyline":16,"./projection":17,"./styles":18,"./util":19,"dynload":38}],10:[function(require,module,exports){
 var util = require('./util');
 
 module.exports = info;
@@ -362,7 +478,7 @@ function info(options) {
     open: open,
     content: content
   };
-  options = merge({
+  options = Object.assign({
     maxWidth: 400
   }, options);
 
@@ -371,8 +487,7 @@ function info(options) {
   return self;
 }
 
-},{"./util":18,"lodash.assign":37}],10:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"./util":19}],11:[function(require,module,exports){
 var util = require('./util');
 
 module.exports = label;
@@ -436,7 +551,7 @@ function label(options) {
     remove: remove
   };
 
-  self._m = merge(new _gm.OverlayView(), {
+  self._m = Object.assign(new _gm.OverlayView(), {
     onAdd: onAdd,
     onRemove: onRemove,
     draw: draw
@@ -447,8 +562,8 @@ function label(options) {
   }
   return self;
 }
-},{"./util":18,"lodash.assign":37}],11:[function(require,module,exports){
-var merge = require('lodash.assign');
+
+},{"./util":19}],12:[function(require,module,exports){
 var object = require('./object');
 var util = require('./util');
 
@@ -547,7 +662,14 @@ function map(node, options) {
     return self;
   }
 
-  options = merge({
+  function destroy() {
+    if (self._m) {
+      self.off();
+      delete self._m;
+    }
+  }
+
+  options = Object.assign({
     streetViewControl: false,
     panControl: false,
     zoomControl: false,
@@ -557,17 +679,18 @@ function map(node, options) {
   }, options);
 
   self = object({
-    gcj02: gcj02,
+    addControl: addControl,
     bounds: bounds,
+    center: center,
+    destroy: destroy,
     element: element,
     fitBounds: bounds, // obsolete; use bounds(b)
-    panToBounds: panToBounds,
-    panBy: panBy,
-    center: center,
-    zoom: zoom,
+    gcj02: gcj02,
     mapType: mapType,
-    addControl: addControl,
-    refresh: refresh
+    panBy: panBy,
+    panToBounds: panToBounds,
+    refresh: refresh,
+    zoom: zoom
   });
 
   if (options.center) {
@@ -611,9 +734,8 @@ function map(node, options) {
   return self;
 }
 
-},{"./object":13,"./util":18,"lodash.assign":37}],12:[function(require,module,exports){
+},{"./object":14,"./util":19}],13:[function(require,module,exports){
 var label = require('./label');
-var merge = require('lodash.assign');
 var object = require('./object');
 var util = require('./util');
 
@@ -677,11 +799,14 @@ function marker(options) {
     if (i === undefined) {
       return self._m.getIcon();
     }
-    self._m.setIcon(prepareIcon(merge({}, i)));
+    self._m.setIcon(prepareIcon(Object.assign({}, i)));
   }
 
-  function zindex() {
-    return self._m.getZIndex();
+  function zindex(zi) {
+    if (zi === undefined) {
+      return self._m.getZIndex();
+    }
+    self._m.setZIndex(zi);
   }
 
   function position(p) {
@@ -706,7 +831,7 @@ function marker(options) {
 
   lbl = options.label;
   delete options.label;
-  options = merge({
+  options = Object.assign({
     flat: true,
     icon: {
       path: 'circle',
@@ -747,7 +872,7 @@ function marker(options) {
   return self;
 }
 
-},{"./label":10,"./object":13,"./util":18,"lodash.assign":37}],13:[function(require,module,exports){
+},{"./label":11,"./object":14,"./util":19}],14:[function(require,module,exports){
 var mouse = require('../events').mouse;
 var util = require('./util');
 
@@ -777,7 +902,7 @@ function init(self) {
       handler = handleEvent.bind(undefined, self, fn);
     }
     listeners[event].push({
-      handler: _gm.event.addListener(self._m, event, handler),
+      handler: _gm.event.addListener(self._l || self._m, event, handler),
       fn: fn
     });
     return self;
@@ -785,7 +910,7 @@ function init(self) {
 
   function off(event, fn) {
     if (event === undefined) {
-      _gm.event.clearInstanceListeners(self._m);
+      _gm.event.clearInstanceListeners(self._l || self._m);
       listeners = {};
     }
     else {
@@ -809,8 +934,7 @@ function init(self) {
   return self;
 }
 
-},{"../events":6,"./util":18}],14:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"../events":6,"./util":19}],15:[function(require,module,exports){
 var object = require('./object');
 var util = require('./util');
 
@@ -845,7 +969,7 @@ function polygon(options) {
     path: path
   });
 
-  options = merge({
+  options = Object.assign({
     strokeOpacity: 0.8,
     strokeWeight: 4
   }, options);
@@ -867,8 +991,7 @@ function polygon(options) {
   return self;
 }
 
-},{"./object":13,"./util":18,"lodash.assign":37}],15:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"./object":14,"./util":19}],16:[function(require,module,exports){
 var object = require('./object');
 var util = require('./util');
 
@@ -888,41 +1011,60 @@ function dashes(options) {
 }
 
 function polyline(options) {
-  var _gm = util.gm(), _gcj02 = options.gcj20, self;
+  var _gm = util.gm(), _gcj02 = options.gcj20, poly, self;
 
   function add(map) {
     if (map.gcj02) {
       _gcj02 = map.gcj02();
     }
     self._m.setMap(map._m);
+    if (poly) {
+      poly.setMap(map._m);
+    }
     return self;
   }
 
   function remove() {
     self._m.setMap(null);
+    if (poly) {
+      poly.setMap(null);
+    }
     return self;
   }
 
   function option(key, value) {
     if (value === undefined) {
-      return self._m.get(key);
+      return (poly || self._m).get(key);
     }
     if (key === 'dashOpacity') {
       value = {
         dashOpacity: value
       };
       dashes(value);
-      self._m.setOptions(value);
+      (poly || self._m).setOptions(value);
       return;
     }
-    self._m.set(key, value);
+    (poly || self._m).set(key, value);
+    if (poly) {
+      if (key === 'strokeOpacity' || key === 'strokeWeight') {
+        return;
+      }
+      else if (key === 'outlineZIndex') {
+        key = 'zIndex';
+      }
+      self._m.set(key, value);
+    }
   }
 
   function path(p) {
     if (p === undefined) {
       return self._m.getPath();
     }
-    self._m.setPath(util.path2gpath(p, _gcj02));
+    p = util.path2gpath(p, _gcj02);
+    self._m.setPath(p);
+    if (poly) {
+      poly.setPath(p);
+    }
   }
 
   self = object({
@@ -932,15 +1074,14 @@ function polyline(options) {
     path: path
   });
 
-  options = merge({
+  options = Object.assign({
     strokeOpacity: 0.8,
-    strokeWeight: 4
+    strokeWeight: 4,
+    margin: 10,
+    clickable: true
   }, options);
 
   options.strokeColor = options.strokeColor || options.color;
-  if (options.dashOpacity) {
-    dashes(options);
-  }
   if (options.map) {
     if (options.map.gcj02) {
       _gcj02 = options.map.gcj02();
@@ -951,13 +1092,29 @@ function polyline(options) {
     options.path = util.path2gpath(options.path, _gcj02);
   }
 
-  self._m = new _gm.Polyline(options);
+  if (options.clickable) {
+    poly = Object.assign({}, options);
+    poly.strokeOpacity = 0;
+    poly.strokeWeight = 2 * options.margin;
+    poly.zIndex = options.outlineZIndex;
+    options.clickable = false;
+  }
+  if (options.dashOpacity) {
+    dashes(options);
+  }
+
+  if (poly) {
+    self._m = new _gm.Polyline(poly);
+    poly = new _gm.Polyline(options);
+  }
+  else {
+    self._m = new _gm.Polyline(options);
+  }
 
   return self;
 }
 
-},{"./object":13,"./util":18,"lodash.assign":37}],16:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"./object":14,"./util":19}],17:[function(require,module,exports){
 var util = require('./util');
 
 module.exports = projection;
@@ -1014,7 +1171,7 @@ function projection(options) {
     _m = undefined;
   }
 
-  overlay = merge(new _gm.OverlayView(), {
+  overlay = Object.assign(new _gm.OverlayView(), {
     onAdd: function() {
       _m = this.getProjection();
     },
@@ -1032,7 +1189,8 @@ function projection(options) {
     remove: remove
   };
 }
-},{"./util":18,"lodash.assign":37}],17:[function(require,module,exports){
+
+},{"./util":19}],18:[function(require,module,exports){
 var off = [
   { "visibility": "off" }
 ], on = [
@@ -1103,11 +1261,15 @@ var styles = [
 
 module.exports = styles;
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var eviltransform = require('eviltransform');
 
 function gll2ll(gll, gcj02) {
-  var ll = [gll.lng(), gll.lat()];
+  var ll;
+  if (!gll) {
+    return;
+  }
+  ll = [gll.lng(), gll.lat()];
   if (!(gcj02 && this.isGCJ02(ll))) {
     return ll;
   }
@@ -1178,9 +1340,7 @@ module.exports = {
   path2gpath: path2gpath,
   gm: gm
 };
-},{"eviltransform":36}],19:[function(require,module,exports){
-var merge = require('lodash.assign');
-
+},{"eviltransform":39}],20:[function(require,module,exports){
 module.exports = circle;
 
 var paint = {
@@ -1193,7 +1353,7 @@ var paint = {
 };
 
 function create(self, id, options) {
-  options = merge({
+  options = Object.assign({
     editable: true
   }, options);
 
@@ -1243,20 +1403,232 @@ function circle(options) {
     return self.option('radius', r);
   }
 
-  self = merge(layer(options), {
+  self = layer({
     center: center,
     radius: radius
-  });
+  }, options);
 
   return self;
 }
 
-},{"./layer":21,"lodash.assign":37}],20:[function(require,module,exports){
+},{"./layer":25}],21:[function(require,module,exports){
+
+module.exports = draggable;
+
+function draggable(self, options) {
+  var draggable = false, events, inside, dragging, mousedown;
+
+  function mousemove(e) {
+    if (!dragging) {
+      if (mousedown) {
+        dragging = true;
+        mousedown = undefined;
+        self.fire('dragstart', e);
+      }
+      return;
+    }
+    self.fire('drag', e);
+  }
+
+  function mouseup(e) {
+    mousedown = undefined;
+    if (!dragging) {
+      return;
+    }
+    dragging = undefined;
+    if (!inside) {
+      events.mouseleave();
+    }
+    self._m.off('mousemove', mousemove);
+    self.fire('dragend', e);
+  }
+
+  function changeDraggable(d) {
+    var prop;
+    d = Boolean(d);
+    if (draggable === d) {
+      return;
+    }
+    draggable = d;
+    prop = draggable ? 'on' : 'off';
+    Object.keys(events).forEach(function (type) {
+      self[prop](type, events[type]);
+    });
+  }
+
+  events = {
+    mouseenter: function () {
+      inside = true;
+      if (dragging) {
+        return;
+      }
+      self._m.dragPan.disable();
+    },
+    mouseleave: function () {
+      inside = undefined;
+      if (dragging) {
+        return;
+      }
+      self._m.dragPan.enable();
+    },
+    mousedown: function () {
+      if (!inside || dragging) {
+        return;
+      }
+      mousedown = true;
+      self._m.on('mousemove', mousemove);
+      self._m.once('mouseup', mouseup);
+    }
+  };
+
+  self.changeDraggable = changeDraggable;
+
+  if (options.draggable) {
+    self.changeDraggable(true);
+  }
+
+  return self;
+}
+
+},{}],22:[function(require,module,exports){
+var draggable = require('./draggable');
+
+module.exports = handle;
+
+var paint = {
+  fillColor: 'circle-color',
+  fillOpacity: 'circle-opacity',
+  strokeColor: 'circle-stroke-color',
+  strokeOpacity: 'circle-stroke-opacity',
+  strokeWeight: 'circle-stroke-width',
+  scale: function (value) {
+    return {
+      'circle-radius': value - 1
+    };
+  }
+};
+
+function create(self, id, options) {
+  options = Object.assign({}, options.icon);
+
+  options.fillColor = options.fillColor || '#FFFFFF';
+  options.strokeColor = options.strokeColor || '#FFFFFF';
+
+  self._l = {
+    id: '' + id,
+    type: 'circle',
+    source: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: options.position || [0, 0]
+        }
+      }
+    },
+    layout: {},
+    paint: Object.assign({
+      'circle-color': options.fillColor,
+      'circle-opacity': options.fillOpacity || 0,
+      'circle-stroke-color': options.strokeColor,
+      'circle-stroke-opacity': options.strokeOpacity || 1,
+      'circle-stroke-width': options.strokeWeight
+    }, paint.scale(options.scale || 2))
+  };
+  return options;
+}
+
+var layer = require('./layer')(paint, create);
+
+function handle(options) {
+  var self;
+
+  function position(c) {
+    if (!c) {
+      return self._l.source.data.geometry.coordinates;
+    }
+    self._l.source.data.geometry.coordinates = c;
+    self.update();
+  }
+
+  self = layer({
+    eventTarget: true,
+    position: position,
+    zindexLevel: 1000000
+  }, options);
+  self = draggable(self, options);
+
+  return self;
+}
+
+},{"./draggable":21,"./layer":25}],23:[function(require,module,exports){
+
+var images = {};
+var imageQueue = {};
+var pixelRatio = window.devicePixelRatio || 1;
+
+function destroy() {
+  images = {};
+  imageQueue = {};
+}
+
+function addImage(map, name, img, url) {
+
+  function handler() {
+    if (map._m) {
+      map._m.addImage(name, img);
+    }
+    img.removeEventListener('load', handler);
+  }
+
+  img.addEventListener('load', handler);
+  img.setAttribute('src', url);
+}
+
+function add(map, name, url, size) {
+  var img;
+  if (images[name]) {
+    return;
+  }
+  if (map._m && map.ready) {
+    images[name] = true;
+    img = document.createElement('img');
+    if (size) {
+      img.setAttribute('width', (size[0] * pixelRatio) + 'px');
+      img.setAttribute('height', (size[1] * pixelRatio) + 'px');
+    }
+    addImage(map, name, img, url);
+  }
+  else {
+    imageQueue[name] = {
+      url: url,
+      size: size
+    };
+  }
+}
+
+function init(map) {
+  Object.keys(imageQueue).forEach(function (name) {
+    add(map, name, imageQueue[name].url, imageQueue[name].size);
+  });
+  imageQueue = {};
+}
+
+module.exports = {
+    add: add,
+    destroy: destroy,
+    init: init
+};
+
+},{}],24:[function(require,module,exports){
 module.exports = init;
 
 function init() {
   return {
     circle: require('./circle'),
+    handle: require('./handle'),
     map: require('./map'),
     marker: require('./marker'),
     polygon: require('./polygon'),
@@ -1265,39 +1637,143 @@ function init() {
   };
 }
 
-},{"./circle":19,"./map":22,"./marker":23,"./polygon":25,"./polyline":26,"./projection":27}],21:[function(require,module,exports){
+},{"./circle":20,"./handle":22,"./map":26,"./marker":27,"./polygon":29,"./polyline":30,"./projection":31}],25:[function(require,module,exports){
+var images = require('./images');
 var object = require('./object');
-var merge = require('lodash.assign');
 
 module.exports = layer;
 
 var id = 0;
+var loaded;
+var layers = [];
+
+function updateProperty(key) {
+  var params = this;
+  params.m[params.set](params.id, key, params.values[key]);
+}
+
+function updateProperties(m, layer, prop, set) {
+  Object.keys(layer[prop]).forEach(updateProperty, {
+    id: layer.id,
+    values: layer[prop],
+    m: m,
+    set: set,
+  });
+}
+
+function afterLayer(l) {
+  var zi, before;
+  zi = l.metadata.zindex;
+  if (layers[zi] && layers[zi].length) {
+    return layers[zi][0];
+  }
+  layers.some(function (ids, i) {
+    if (i > zi && ids.length) {
+      before = ids[0];
+      return true;
+    }
+  });
+  return before;
+}
 
 function layer(paint, create) {
 
-  return function (options) {
-    var self;
+  return function (self, options) {
+    var added, waiting;
+
+    function data() {
+      return (self._s || self._l.source).data;
+    }
+
+    function addLayer(l, before, moving) {
+      var zi = l.metadata.zindex;
+      layers[zi] = layers[zi] || [];
+      layers[zi].unshift(l.id);
+      if (!moving) {
+        self._m.addLayer(Object.assign({}, l), before);
+      }
+    }
+
+    function removeLayer(l, moving) {
+      var zi = l.metadata.zindex;
+      layers[zi].splice(layers[zi].indexOf(l.id), 1);
+      if (!layers[zi].length) {
+        delete layers[zi];
+      }
+      if (!moving) {
+        self._m.removeLayer(l.id);
+      }
+    }
+
+    function doAdd() {
+      if (!self._m) {
+        // object removed from map before it was rendered
+        return;
+      }
+      if (self._s) {
+        self._m.addSource(self._l.id, self._s);
+      }
+      if (self._under) {
+        addLayer(self._under, afterLayer(self._under));
+      }
+      addLayer(self._l, afterLayer(self._l));
+      added = true;
+      images.init({
+        _m: self._m,
+        ready: true
+      });
+    }
 
     function onadd() {
-      self._m.addLayer(merge({}, self._l));
+      if (added) {
+        return;
+      }
+      loaded = loaded || self._m.loaded();
+      if (loaded) {
+        return doAdd();
+      }
+      waiting = true;
+      self._m.once('load', doAdd);
     }
 
     function onremove() {
-      self._m.removeLayer(self._l.id);
+      if (!added) {
+        if (waiting) {
+          waiting = undefined;
+          self._m.off('load', doAdd);
+        }
+        return;
+      }
+      added = undefined;
+      removeLayer(self._l);
+      if (self._under) {
+        removeLayer(self._under);
+      }
       self._m.removeSource(self._l.id);
     }
 
-    function update() {
-      if (self._m) {
-        self._m.getSource(self._l.id).setData(self._l.source.data);
+    function update(layer) {
+      if (self._m && added) {
+        if (layer) {
+          updateProperties(self._m, self._l, 'paint', 'setPaintProperty');
+          updateProperties(self._m, self._l, 'layout', 'setLayoutProperty');
+          return;
+        }
+        self._m.getSource(self._l.id).setData(data());
       }
     }
 
     function option(key, value) {
-      var prop = paint[key];
+      var prop = paint[key], l = self._under || self._l;
       if (value === undefined) {
         if (prop) {
-          return self._l.paint[prop];
+          return l.paint[prop];
+        }
+        if (key === 'visible') {
+          return self._l.layout.visibility !== 'none';
+        }
+        if (key === 'zIndex') {
+          return self.zindex();
         }
         return options[key];
       }
@@ -1305,31 +1781,80 @@ function layer(paint, create) {
       if (prop) {
         if (typeof prop === 'function') {
           value = prop(value);
-          merge(self._l.paint, value);
-          Object.keys(value).forEach(function (prop) {
-            self._m.setPaintProperty(self._l.id, prop, value[prop]);
-          });
+          Object.assign(l.paint, value);
+          if (self._m && added) {
+            Object.keys(value).forEach(function (prop) {
+              self._m.setPaintProperty(l.id, prop, value[prop]);
+            });
+          }
           return;
         }
-        self._l.paint[prop] = value;
-        if (self._m) {
-          self._m.setPaintProperty(self._l.id, prop, value);
+        l.paint[prop] = value;
+        if (self._m && added) {
+          self._m.setPaintProperty(l.id, prop, value);
         }
         return;
+      }
+      if (key === 'visible') {
+        self._l.layout.visibility = value ? 'visible' : 'none';
+        if (self._m && added) {
+          self._m.setLayoutProperty(self._l.id, 'visibility', self._l.layout.visibility);
+        }
+      }
+      else if (key === 'draggable' && self.changeDraggable) {
+        self.changeDraggable(value);
+      }
+      else if (key === 'zIndex') {
+        self.zindex(value);
+      }
+      else if (key === 'outlineZIndex' && self._under) {
+        self.zindex(value, self._under);
       }
       options[key] = value;
     }
 
-    self = object({
+    function image(name, url, size) {
+      images.add({
+        _m: self._m,
+        ready: true
+      }, name, url, size);
+    }
+
+    function zindex(zi, l) {
+      l = l || self._l;
+      if (zi === undefined) {
+        return l.metadata.zindex - self.zindexLevel;
+      }
+      zi = Math.round(zi + self.zindexLevel);
+      if (zi !== l.metadata.zindex) {
+        if (self._m && added) {
+          removeLayer(l, true);
+        }
+        self._l.metadata.zindex = zi;
+        if (self._m && added) {
+          self._m.moveLayer(l.id, afterLayer(l));
+          addLayer(l, undefined, true);
+        }
+      }
+    }
+
+    self = object(Object.assign(self, {
+      image: image,
+      option: option,
       update: update,
-      option: option
-    }, {
+      zindex: zindex
+    }), {
       onadd: onadd,
       onremove: onremove
     });
 
     id += 1;
     options = create(self, id, options);
+    data().properties.map_facade = true;
+
+    self.zindexLevel = self.zindexLevel || 0;
+    self._l.metadata = self._l.metadata || {};
+    self._l.metadata.zindex = Math.round((options.zIndex || 0) + self.zindexLevel);
 
     if (options.map) {
       self.add(options.map);
@@ -1339,8 +1864,9 @@ function layer(paint, create) {
   };
 
 }
-},{"./object":24,"lodash.assign":37}],22:[function(require,module,exports){
-var merge = require('lodash.assign');
+
+},{"./images":23,"./object":28}],26:[function(require,module,exports){
+var images = require('./images');
 var object = require('./object');
 var util = require('./util');
 
@@ -1439,7 +1965,7 @@ function getAttribution(map) {
 
 function transition(prop) {
   var _m = this;
-  _m[prop] = merge(function (options) {
+  _m[prop] = Object.assign(function (options) {
     if (options.zoom) {
       options.zoom = Math.floor(options.zoom);
     }
@@ -1519,23 +2045,50 @@ function map(node, options) {
     return self;
   }
 
-  options = merge({
+  function ll(e) {
+    var features;
+    if (e.type === 'click') {
+      features = self._m.queryRenderedFeatures(e.point, {
+        filter: ['has', 'map_facade']
+      });
+      if (features && features.length) {
+        // swallow clicks on layers (for the same behavior as Google maps)
+        return;
+      }
+    }
+    if (e && e.lngLat) {
+      e.ll = util.mll2ll(e.lngLat);
+    }
+  }
+
+  function destroy() {
+    if (self._m) {
+      self.off();
+      self._m.remove();
+      images.destroy();
+      delete self._m;
+    }
+  }
+
+  options = Object.assign({
     container: node,
     scaleControl: true,
     mapTypeControl: false
   }, options);
 
   self = object({
-    element: element,
-    center: center,
-    zoom: zoom,
-    bounds: bounds,
-    fitBounds: bounds, // obsolete; use bounds(b)
-    panToBounds: panToBounds,
-    panBy: panBy,
-    mapType: mapType,
     addControl: addControl,
-    refresh: refresh
+    bounds: bounds,
+    center: center,
+    destroy: destroy,
+    element: element,
+    fitBounds: bounds, // obsolete; use bounds(b)
+    ll: ll,
+    mapType: mapType,
+    panBy: panBy,
+    panToBounds: panToBounds,
+    refresh: refresh,
+    zoom: zoom
   });
 
   if (options.zoom) {
@@ -1583,243 +2136,290 @@ function map(node, options) {
   return self;
 }
 
-},{"./object":24,"./util":28,"lodash.assign":37}],23:[function(require,module,exports){
-var merge = require('lodash.assign');
-var object = require('./object');
-var q = require('query');
-var util = require('./util');
+},{"./images":23,"./object":28,"./util":32}],27:[function(require,module,exports){
+// marker implemented as layer (without using Mapbox Marker)
+
+var draggable = require('./draggable');
 
 module.exports = marker;
 
-var svgNS = "http://www.w3.org/2000/svg";
-var iconPath = {
-   circle: {
-     el: 'circle',
-     attributes: {
-       cx: zero,
-       cy: zero,
-       scale: 'r',
-       fillColor: 'fill',
-       fillOpacity: 'fill-opacity',
-       strokeColor: 'stroke',
-       strokeWeight: 'stroke-width'
-     },
-     viewBox: circle
-   },
-   forward_closed_arrow: {
-     el: 'polygon',
-     attributes: {
-       scale: points,
-       rotation: rotate,
-       fillColor: 'fill',
-       fillOpacity: 'fill-opacity',
-       strokeColor: 'stroke',
-       strokeWeight: strokeWidth
-     },
-     viewBox: polygon
-   },
-   path: {
-     el: 'path',
-     attributes: {
-       path: 'd',
-       scale: scale,
-       fillColor: 'fill',
-       fillOpacity: 'fill-opacity',
-       strokeColor: 'stroke',
-       strokeWeight: 'stroke-width'
-     },
-     viewBox: path
-   }
+var paint = {
 };
 
-/* global mapboxgl */
+function create(self, id, options) {
+  options = Object.assign({}, options.icon);
+
+  self._l = {
+    id: '' + id,
+    source: {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        properties: {
+          marker: true
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: options.position || [0, 0]
+        }
+      }
+    },
+    metadata: {
+      marker: true
+    },
+    layout: {},
+    paint: {}
+  };
+  return options;
+}
+
+var layer = require('./layer')(paint, create);
+
+var SIZE = [16, 16];
+var pixelRatio = window.devicePixelRatio || 1;
 
 function offset(icon) {
-  var r;
+  var r, scale = icon.scale || 1, size = icon.size;
   if (icon.anchor) {
-    return [- Math.round(icon.anchor[0] * icon.scale), - Math.round(icon.anchor[1] * icon.scale)];
+    size = size || SIZE;
+    return [Math.round(pixelRatio * (size[0] / 2 / scale - icon.anchor[0])),
+            Math.round(pixelRatio * (size[1] / 2 / scale - icon.anchor[1]))];
   }
-  r = - icon.scale - Math.round(icon.strokeWeight / 2);
+  if (size) {
+    return [0, - Math.round(pixelRatio * size[1] / 2 / scale)];
+  }
+  r = - scale - Math.round(icon.strokeWeight / 2);
   return [r, r];
 }
 
-function drawIcon(iEl, icon, attributes) {
-  Object.keys(attributes).forEach(function (attr) {
-    var name, value = icon[attr];
-    if (value !== undefined) {
-      name = attributes[attr];
-      if (typeof name === 'function') {
-        name = name(icon, attr);
-        value = name.value;
-        name = name.name;
-      }
-      iEl.setAttribute(name, value);
-    }
-  });
-}
-
-function draw(icon) {
-  var iP, vB, sEl, cEl;
-
-  iP = iconPath[icon.path] || iconPath.path;
-  vB = iP.viewBox(icon);
-
-  sEl = document.createElementNS(svgNS, 'svg');
-  sEl.setAttribute('width', vB[2]);
-  sEl.setAttribute('height', vB[3]);
-  sEl.setAttribute('viewBox', vB.join(' '));
-
-  cEl = sEl.appendChild(document.createElementNS(svgNS, iP.el));
-  drawIcon(cEl, icon, iP.attributes);
-
-  return sEl;
-}
-
-function circle(icon) {
-  var w = Math.round(icon.strokeWeight / 2), d = 2 * (icon.scale + w), r = - icon.scale - w;
-  return [r, r, d, d];
-}
-
-function polygon(icon) {
-  var d = 2 * (icon.scale + icon.strokeWeight + 1);
-  return [0, 0, d, d];
-}
-
-function path(icon) {
-  var d = Math.round(16 * icon.scale);
-  return [0, 0, d, d];
-}
-
-function zero(icon, attr) {
-  return {
-    name: attr,
-    value: 0
-  };
-}
-
-function points(icon) {
-  var w = icon.strokeWeight, r = icon.scale + w + 1, s = Math.floor(w / 2);
-  return {
-    name: 'points',
-    value: [
-      [r, s].join(','),
-      [2 * r - w, 2 * r - s].join(','),
-      [r, 2 * r - w - s].join(','),
-      [w, 2 * r - s].join(',')
-    ].join(' ')
-  };
-}
-
-function rotate(icon) {
-  var w = icon.strokeWeight, r = icon.scale + w + 1;
-  return {
-    name: 'transform',
-    value: 'rotate(' + [icon.rotation, r, r].join(' ') + ')'
-  };
-}
-
-function scale(icon) {
-  return {
-    name: 'transform',
-    value: 'scale(' + icon.scale + ')'
-  };
-}
-
-function strokeWidth(icon) {
-  return {
-    name: 'stroke-width',
-    value: icon.strokeWeight - 1
-  };
-}
-
 function marker(options) {
-  var self, el, map;
-
-  function add(mp) {
-    if (self.position()) {
-      self._m.addTo(mp._m);
-    }
-    else {
-      map = mp;
-    }
-    return self;
-  }
+  var self, iconPath = {
+    circle: setIcon.bind(undefined, circle, 'circle'),
+    forward_closed_arrow: forwardClosedArrow
+  }, animating, interval;
 
   function remove() {
-    map = undefined;
-    self._m.remove();
-    return self;
-  }
-
-  function option(key, value) {
-    if (value === undefined) {
-      return options[key];
-    }
-    options[key] = value;
+    self.remove();
+    self._l.layout = {};
+    self._l.paint = {};
   }
 
   function position(p) {
     if (p === undefined) {
-      p = self._m.getLngLat();
-      if (!p) {
-        return;
+      return self._l.source.data.geometry.coordinates;
+    }
+    self._l.source.data.geometry.coordinates = p;
+    self.update();
+  }
+
+  function nextFrame(params) {
+    params.counter += params.delta;
+    if (params.counter === params.range || !params.counter) {
+      params.delta = - params.delta;
+    }
+  }
+
+  function animateSymbol(params) {
+    if (self._m._loaded) {
+      self._m.setPaintProperty(self._l.id, 'icon-translate', [0, - params.counter]);
+      nextFrame(params);
+    }
+  }
+
+  function animateCircle(params) {
+    if (self._m._loaded) {
+      self._m.setPaintProperty(self._l.id, 'circle-translate', [0, - params.counter]);
+      nextFrame(params);
+    }
+  }
+
+  function startBounce() {
+    var fn, params;
+    if (interval) {
+      return;
+    }
+    params = {
+      counter: 0,
+      delta: 4
+    };
+    if (self._l.type === 'symbol') {
+      params.range = Math.abs(self._l.layout['icon-offset'][1] * self._l.layout['icon-size']);
+      fn = animateSymbol;
+    }
+    else {
+      params.range = self._l.paint['circle-radius'] * 8;
+      fn = animateCircle;
+    }
+    params.range += params.delta - params.range % params.delta;
+    interval = setInterval(fn.bind(undefined, params), 200);
+  }
+
+  function stopBounce() {
+    if (!interval) {
+      return;
+    }
+    clearInterval(interval);
+    self._m.setPaintProperty(self._l.id,
+        self._l.type === 'symbol' ? 'icon-translate' : 'circle-translate', [0, 0]);
+    interval = undefined;
+    return true;
+  }
+
+  function animation(type) {
+    if (animating !== type) {
+      animating = type;
+      setTimeout(self.fire.bind(self, 'animation_changed'), 1);
+      if (type === 'bounce') {
+        startBounce();
       }
-      return util.mll2ll(p);
-    }
-    self._m.setLngLat(p);
-    if (map) {
-      self.add(map);
-      map = undefined;
+      else if (!type) {
+        stopBounce();
+      }
     }
   }
 
-  function animation() {
-    //TODO implement bounce as a CSS transformation
-  }
-
-  function image(icon) {
-    var img;
+  function image(icon, off) {
+    var name;
     if (!icon.url) {
       return;
     }
-    img = q('img', el);
-    if (!img) {
-      el.innerHTML = '';
-      img = el.appendChild(document.createElement('img'));
+    name = icon.path || icon.url;
+    self.image(name, icon.url, icon.size);
+    self._l.type = 'symbol';
+    self._l.layout['icon-image'] = name;
+    self._l.layout['icon-size'] = (icon.scale || 1) / pixelRatio;
+    self._l.layout['icon-rotate'] = icon.rotation || 0;
+    self._l.layout['icon-offset'] = off;
+  }
+
+  function circle(icon) {
+    self._l.type = 'circle';
+    self._l.paint['circle-radius'] = (icon.scale || 2) - 1;
+    self._l.paint['circle-color'] = icon.fillColor || '#FFFFFF';
+    self._l.paint['circle-opacity'] = icon.fillOpacity || 0;
+    self._l.paint['circle-stroke-color'] = icon.strokeColor;
+    self._l.paint['circle-stroke-opacity'] = icon.strokeOpacity || 1;
+    self._l.paint['circle-stroke-width'] = icon.strokeWeight;
+  }
+
+  function setIcon(fn, type, icon, off) {
+    var m, bounce;
+    if (self._l.type  && self._l.type !== type && self._m) {
+      m = self._m;
+      bounce = stopBounce();
+      remove();
+      fn(icon, off);
+      self.add({
+        _m: m
+      });
+      if (bounce) {
+        startBounce();
+      }
     }
-    img.setAttribute('src', icon.url);
+    else {
+      fn(icon, off);
+      self.update(true);
+    }
+  }
+
+  function forwardClosedArrow(icon) {
+    var d = 2 * (icon.scale + icon.strokeWeight + 1),
+      w = icon.strokeWeight,
+      r = icon.scale + w + 1,
+      s = Math.floor(w / 2),
+      points = [
+        [r, s].join(','),
+        [2 * r - w, 2 * r - s].join(','),
+        [r, 2 * r - w - s].join(','),
+        [w, 2 * r - s].join(',')
+      ].join(' '),
+      size = [d, 2 * d],
+      url = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size[0]
+        + '" height="' + size[1] + '" viewBox="0 0 ' + size.join(' ')
+        + '"><polygon points="' + points + '" stroke="' + icon.strokeColor
+        + '" stroke-width="' + (icon.strokeWeight - 1) + '"';
+
+    if (icon.fillColor) {
+     url += ' fill="' + icon.fillColor + '"';
+    }
+    if (icon.fillOpacity !== undefined) {
+      url += ' fill-opacity="' + icon.fillOpacity + '"';
+    }
+    url += '/></svg>';
+
+    return {
+      url: 'data:image/svg+xml;base64,' + btoa(url),
+      path: icon.path,
+      anchor: [d / 2, 0],
+      size: size,
+      scale: 1,
+      rotation: icon.rotation
+    };
+  }
+
+  function path(icon) {
+    var size = icon.size || SIZE,
+      scale = icon.scale || 1,
+      anchor = icon.anchor,
+      url;
+    if (icon.scale !== 1) {
+      size = [Math.round(size[0] * scale), Math.round(size[1] * scale)];
+    }
+    url = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size[0]
+      + '" height="' + size[1] + '" viewBox="0 0 ' + size.join(' ')
+      + '"><path d="' + icon.path + '" stroke="' + icon.strokeColor
+      + '" stroke-width="' + icon.strokeWeight + '"';
+
+    if (icon.fillColor) {
+     url += ' fill="' + icon.fillColor + '"';
+    }
+    if (icon.fillOpacity !== undefined) {
+      url += ' fill-opacity="' + icon.fillOpacity + '"';
+    }
+    if (scale !== 1) {
+      url += ' transform="scale(' + scale + ')"';
+    }
+    url += '/></svg>';
+
+    if (anchor) {
+      anchor = [Math.round(anchor[0] * scale), Math.round(anchor[1] * scale)];
+    }
+    return {
+      url: 'data:image/svg+xml;base64,' + btoa(url),
+      path: url,
+      anchor: anchor,
+      size: size,
+      scale: 1,
+      rotation: icon.rotation
+    };
   }
 
   function icon(i) {
-    var iEl, path;
+    var fn;
     if (i === undefined) {
       //TODO implement getter
       return;
     }
-    if (!i.path) {
-      return image(i);
+    if (i.path && !i.url) {
+      fn = iconPath[i.path] || path;
+      if (fn) {
+        i = fn(i);
+        if (!i) {
+          return;
+        }
+      }
     }
-    path = iconPath[i.path] || iconPath.path;
-    iEl = q(path.el, el);
-    if (iEl) {
-      drawIcon(iEl, i, path.attributes);
-    }
-    else {
-      el.innerHTML = '';
-      i = merge(merge({}, options.icon), i);
-      el.appendChild(draw(i));
-    }
+    setIcon(image, 'symbol', i, offset(i));
   }
 
-  function zindex() {
-    return el.style.zIndex;
-  }
-
-  options = merge({
+  options = Object.assign({
+    clickable: true,
     flat: true,
     icon: {}
   }, options);
-  options.icon = merge({
+  options.icon = Object.assign(options.icon.url ? {
+    scale: 1
+  } : {
     path: 'circle',
     strokeColor:  '#555555',
     strokeWeight: 2,
@@ -1827,29 +2427,18 @@ function marker(options) {
   }, options.icon);
   if (options.color !== undefined) {
     options.icon.fillColor = options.color;
-    options.icon.fillOpacity = 1;
+    options.icon.fillOpacity = options.icon.fillOpacity || 1;
   }
   else {
-    options.icon.fillOpacity = 0;
+    options.icon.fillOpacity = options.icon.fillOpacity || 0;
   }
-
-  el = document.createElement('div');
-
-  self = object({
+  self = layer({
     animation: animation,
-    add: add,
     icon: icon,
-    option: option,
     position: position,
-    remove: remove,
-    zindex: zindex
-  }, {
-    el: el
-  });
-
-  self._m = new mapboxgl.Marker(el, {
-    offset: offset(options.icon)
-  });
+    zindexLevel: 1000000
+  }, options);
+  self = draggable(self, options);
 
   self.icon(options.icon);
 
@@ -1864,7 +2453,8 @@ function marker(options) {
   return self;
 }
 
-},{"./object":24,"./util":28,"lodash.assign":37,"query":34}],24:[function(require,module,exports){
+},{"./draggable":21,"./layer":25}],28:[function(require,module,exports){
+var drag = require('../events').drag;
 var mouse = require('../events').mouse;
 var util = require('./util');
 
@@ -1877,53 +2467,54 @@ var events = {
 };
 
 function handleEvent(self, fn, e) {
-  if (e.stopPropagation) {
+  if (e && e.stopPropagation) {
     e.stopPropagation();
   }
   fn.call(self, e);
 }
 
 function handleMouseEvent(self, fn, e) {
-  if (e && e.lngLat) {
-    e.ll = util.mll2ll(e.lngLat);
-  }
-  else if (self._l) {
-    // layers are expected to have location
+  self.ll(e);
+  if (!e.ll) {
+    // mouse events are expected to have location
     return;
   }
   handleEvent(self, fn, e);
 }
 
+function ll(e) {
+  if (e && e.lngLat) {
+    e.ll = util.mll2ll(e.lngLat);
+  }
+}
+
 function init(self, options) {
-  var listeners = {}, el = options && options.el;
+  var listeners = {};
 
   function on(event, fn) {
-    var handler;
+    var handler, layer;
     event = events[event] || event;
-    if (el) {
-      handler = handleEvent.bind(undefined, self, fn);
-      el.addEventListener(event, handler);
+    if (mouse[event]) {
+      handler = handleMouseEvent.bind(undefined, self, fn);
     }
     else {
-      if (mouse[event]) {
-        handler = handleMouseEvent.bind(undefined, self, fn);
-      }
-      else {
-        handler = handleEvent.bind(undefined, self, fn);
-      }
+      handler = handleEvent.bind(undefined, self, fn);
+    }
+    if (!drag[event]) {
       if (self._l) {
+        layer = self._l && self._l.id;
         if (self._m) {
           self._m.on(event, self._l.id, handler);
         }
       }
-      else {
+      else if (self._m) {
         self._m.on(event, handler);
       }
     }
     listeners[event] = listeners[event] || [];
     listeners[event].push({
       event: event,
-      layer: self._l && self._l.id,
+      layer: layer,
       fn: fn,
       handler: handler
     });
@@ -1943,16 +2534,15 @@ function init(self, options) {
       event = events[event] || event;
       listeners[event].some(function (listener, i, listeners) {
         if (listener.fn === fn) {
-          if (el) {
-            el.removeEventListener(event, listener.handler);
-          }
-          else if (listener.layer) {
-            if (self._m) {
-              self._m.off(event, listener.layer, listener.handler);
+          if (!drag[event]) {
+            if (listener.layer) {
+              if (self._m) {
+                self._m.off(event, listener.layer, listener.handler);
+              }
             }
-          }
-          else {
-            self._m.off(event, listener.handler);
+            else {
+              self._m.off(event, listener.handler);
+            }
           }
           listeners.splice(i, 1);
           if (!listeners.length) {
@@ -1965,29 +2555,47 @@ function init(self, options) {
     return self;
   }
 
+  function fire(event, e) {
+    if (listeners[event]) {
+      listeners[event].forEach(function (listener) {
+        listener.handler(e);
+      });
+    }
+  }
+
   function add(map) {
     if (!self._m) {
       self._m = map._m;
       Object.keys(listeners).forEach(function(event) {
-        listeners[event].forEach(function (listener) {
-          if (listener.layer) {
-            self._m.on(listener.event, listener.layer, listener.handler);
-          }
-        });
-      });      
+        if (!drag[event]) {
+          listeners[event].forEach(function (listener) {
+            if (listener.layer) {
+              self._m.on(listener.event, listener.layer, listener.handler);
+            }
+            else {
+              self._m.on(listener.event, listener.handler);
+            }
+          });
+        }
+      });
       options.onadd();
     }
     return self;
   }
 
   function remove() {
-    if (self._m) {      
+    if (self._m) {
       Object.keys(listeners).forEach(function(event) {
-        listeners[event].forEach(function (listener) {
-          if (listener.layer) {
-            self._m.off(listener.event, listener.layer, listener.handler);
-          }
-        });
+        if (!drag[event]) {
+          listeners[event].forEach(function (listener) {
+            if (listener.layer) {
+              self._m.off(listener.event, listener.layer, listener.handler);
+            }
+            else {
+              self._m.off(listener.event, listener.handler);
+            }
+          });
+        }
       });
       options.onremove();
       delete self._m;
@@ -1997,6 +2605,8 @@ function init(self, options) {
 
   self.on = on;
   self.off = off;
+  self.fire = fire;
+  self.ll = self.ll || ll;
 
   if (options) {
     if (options.onadd) {
@@ -2010,8 +2620,7 @@ function init(self, options) {
   return self;
 }
 
-},{"../events":6,"./util":28}],25:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"../events":6,"./util":32}],29:[function(require,module,exports){
 var util = require('./util');
 
 module.exports = polygon;
@@ -2023,7 +2632,7 @@ var paint = {
 };
 
 function create(self, id, options) {
-  options = merge({
+  options = Object.assign({
     strokeOpacity: 0.8,
     strokeWeight: 4
   }, options);
@@ -2071,15 +2680,15 @@ function polygon(options) {
     self.update();
   }
 
-  self = layer(options);
-
-  self.path = path;
+  self = layer({
+    path: path
+  }, options);
 
   return self;
 }
 
-},{"./layer":21,"./util":28,"lodash.assign":37}],26:[function(require,module,exports){
-var merge = require('lodash.assign');
+},{"./layer":25,"./util":32}],30:[function(require,module,exports){
+var findPoint = require('../../util').findPoint;
 var util = require('./util');
 
 module.exports = polyline;
@@ -2108,7 +2717,9 @@ function validate(path) {
 }
 
 function create(self, id, options) {
-  options = merge({
+  var prop = '_l', s, zindex;
+
+  options = Object.assign({
     strokeOpacity: 0.8,
     strokeWeight: 4
   }, options);
@@ -2118,20 +2729,51 @@ function create(self, id, options) {
   if (typeof options.path === 'string') {
     options.path = util.decodePath(options.path);
   }
-  self._l = {
-    id: '' + id,
-    type: 'line',
-    source: {
-      type: 'geojson',
-      data: {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'LineString',
-          coordinates: validate(options.path)
-        }
+  self._s = {
+    type: 'geojson',
+    data: {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: validate(options.path)
       }
-    },
+    }
+  };
+  s = id = '' + id;
+  if (options.clickable) {
+    self._l = {
+      id: id,
+      type: 'line',
+      source: s,
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': options.strokeColor,
+        'line-opacity': 0,
+        'line-width': 2 * options.margin
+      }
+    };
+    id += '-';
+    prop = '_under';
+    zindex = options.zIndex;
+    options.zIndex = options.outlineZIndex;
+    if (options.zIndex === undefined) {
+      if (zindex === undefined) {
+        zindex = 0;
+      }
+      options.zIndex = zindex + 1;
+    }
+    else if (zindex === undefined) {
+      zindex = options.zIndex - 1;
+    }
+  }
+  self[prop] = {
+    id: id,
+    type: 'line',
+    source: s,
     layout: {
       'line-join': 'round',
       'line-cap': 'round'
@@ -2142,9 +2784,14 @@ function create(self, id, options) {
       'line-width': options.strokeWeight
     }
   };
+  if (zindex !== undefined) {
+    self[prop].metadata = {
+      zindex: zindex
+    };
+  }
 
   if (options.dashOpacity) {
-    merge(self._l.paint, paint.dashOpacity(options.dashOpacity));
+    Object.assign(self[prop].paint, paint.dashOpacity(options.dashOpacity));
   }
 
   return options;
@@ -2157,20 +2804,37 @@ function polyline(options) {
 
   function path(p) {
     if (p === undefined) {
-      return self._l.source.data.geometry.coordinates;
+      return self._s.data.geometry.coordinates;
     }
-    self._l.source.data.geometry.coordinates = validate(p);
+    self._s.data.geometry.coordinates = validate(p);
     self.update();
   }
 
-  self = layer(options);
+  function ll(e) {
+    var point;
+    if (e && e.lngLat) {
+      point = findPoint(util.mll2ll(e.lngLat), self.path());
+      if (point) {
+        e.ll = point.p;
+        e.pointOnPath = point;
+      }
+    }
+  }
 
-  self.path = path;
+  options = Object.assign({
+    margin: 10,
+    clickable: true
+  }, options);
+
+  self = layer({
+    ll: ll,
+    path: path
+  }, options);
 
   return self;
 }
 
-},{"./layer":21,"./util":28,"lodash.assign":37}],27:[function(require,module,exports){
+},{"../../util":34,"./layer":25,"./util":32}],31:[function(require,module,exports){
 var util = require('./util');
 
 module.exports = projection;
@@ -2178,8 +2842,8 @@ module.exports = projection;
 function projection(options) {
 
   function position(p) {
-    if (p._m) {
-      p = p._m.getLngLat();
+    if (p.position) {
+      p = p.position();
     }
     return options.map._m.project(p);
   }
@@ -2218,7 +2882,7 @@ function projection(options) {
     remove: remove
   };
 }
-},{"./util":28}],28:[function(require,module,exports){
+},{"./util":32}],32:[function(require,module,exports){
 var polyline = require('@pirxpilot/google-polyline');
 
 function mll2ll(mll) {
@@ -2242,7 +2906,7 @@ module.exports = {
   decodePath: decodePath
 };
 
-},{"@pirxpilot/google-polyline":31}],29:[function(require,module,exports){
+},{"@pirxpilot/google-polyline":35}],33:[function(require,module,exports){
 var distance = require('./util').distance;
 var posSeq = [ [0, 0], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-2, -1], [-2, 0],
     [-2, 1], [-2, 2], [-1, 2], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [2, -1], [2, -2], [1, -2], [0, -2], [-1, -2],
@@ -2362,22 +3026,87 @@ function spread(options) {
     calculate: calculate
   };
 }
-},{"./util":30}],30:[function(require,module,exports){
+},{"./util":34}],34:[function(require,module,exports){
+
 function distance(p1, p2) {
   return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
 
+function between(p, p1, p2, l) {
+  if (p1[l] <= p2[l]) {
+    return p[l] >= p1[l] && p[l] <= p2[l];
+  }
+  return p[l] >= p2[l] && p[l] <= p1[l];
+}
+
+function distanceSquare(p1, p2) {
+  return Math.pow((p1[0] - p2[0]), 2) + Math.pow((p1[1] - p2[1]), 2);
+}
+
+// http://stackoverflow.com/questions/5204619/how-to-find-the-point-on-an-edge-which-is-the-closest-point-to-another-point
+function pointOnLine(p, p1, p2) {
+  var m1, m2, x, y;
+  if (p1[0] === p2[0]) {
+    return [p1[0], p[1]];
+  }
+  if (p1[1] === p2[1]) {
+    return [p[0], p1[1]];
+  }
+  m1 = (p2[1] - p1[1]) / (p2[0] - p1[0]);
+  m2 = -1 / m1;
+  x = (m1 * p1[0] - m2 * p[0] + p[1] - p1[1]) / (m1 - m2);
+  y = m2 * (x - p[0]) + p[1];
+  return [x, y];
+}
+
+function closestPoint(res, p1, i, path) {
+  var p2, p, dist;
+  if (Math.abs(res.point[0] - p1[0]) < 1e-5 && Math.abs(res.point[1] - p1[1]) < 1e-5) {
+    p = p1;
+  }
+  else if (i < path.length - 1) {
+    p2 = path[i + 1];
+    p = pointOnLine(res.point, p1, p2);
+    p = between(p, p1, p2, 0) && between(p, p1, p2, 1) && p;
+  }
+  if (p) {
+    dist = distanceSquare(res.point, p);
+    if (dist < res.dist) {
+      res.dist = dist;
+      res.idx = i;
+      res.p = p;
+    }
+  }
+  return res;
+}
+
+function findPointOnPath(point, path) {
+  var result;
+  if (point && path) {
+    result = path.reduce(closestPoint, {
+      dist: Number.MAX_VALUE,
+      point: point
+    });
+    if (result.idx !== undefined) {
+      point = path[result.idx];
+      result.pol = result.p !== path[result.idx] && result.p !== path[result.idx];
+      return result;
+    }
+  }
+}
+
 module.exports = {
-  distance: distance
+  distance: distance,
+  findPoint: findPointOnPath
 };
 
-},{}],31:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = {
   encode: require( './lib/encode' ),
   decode: require( './lib/decode' ),
 }
 
-},{"./lib/decode":32,"./lib/encode":33}],32:[function(require,module,exports){
+},{"./lib/decode":36,"./lib/encode":37}],36:[function(require,module,exports){
 module.exports = decode
 
 function decode( value, factor ) {
@@ -2441,7 +3170,7 @@ function integers( value, fn ) {
   }
 }
 
-},{}],33:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = encode
 
 
@@ -2490,30 +3219,7 @@ function chars( str, value ) {
   str.push(String.fromCharCode( value + 63 ))
 }
 
-},{}],34:[function(require,module,exports){
-function one(selector, el) {
-  return el.querySelector(selector);
-}
-
-exports = module.exports = function(selector, el){
-  el = el || document;
-  return one(selector, el);
-};
-
-exports.all = function(selector, el){
-  el = el || document;
-  return el.querySelectorAll(selector);
-};
-
-exports.engine = function(obj){
-  if (!obj.one) throw new Error('.one callback required');
-  if (!obj.all) throw new Error('.all callback required');
-  one = obj.one;
-  exports.all = obj.all;
-  return exports;
-};
-
-},{}],35:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = function load(src, async) {
   var s = document.createElement('script');
   s.src = src;
@@ -2524,7 +3230,7 @@ module.exports = function load(src, async) {
   return s;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 "use strict";
 
 var exports;
@@ -2683,645 +3389,6 @@ function bd2wgs(bdLat, bdLng) {
 	return gcj2wgs(gcj.lat, gcj.lng);
 }
 exports.bd2wgs = bd2wgs;
-
-},{}],37:[function(require,module,exports){
-/**
- * lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright jQuery Foundation and other contributors <https://jquery.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]';
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-/**
- * A faster alternative to `Function#apply`, this function invokes `func`
- * with the `this` binding of `thisArg` and the arguments of `args`.
- *
- * @private
- * @param {Function} func The function to invoke.
- * @param {*} thisArg The `this` binding of `func`.
- * @param {Array} args The arguments to invoke `func` with.
- * @returns {*} Returns the result of `func`.
- */
-function apply(func, thisArg, args) {
-  switch (args.length) {
-    case 0: return func.call(thisArg);
-    case 1: return func.call(thisArg, args[0]);
-    case 2: return func.call(thisArg, args[0], args[1]);
-    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-  }
-  return func.apply(thisArg, args);
-}
-
-/**
- * The base implementation of `_.times` without support for iteratee shorthands
- * or max array length checks.
- *
- * @private
- * @param {number} n The number of times to invoke `iteratee`.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the array of results.
- */
-function baseTimes(n, iteratee) {
-  var index = -1,
-      result = Array(n);
-
-  while (++index < n) {
-    result[index] = iteratee(index);
-  }
-  return result;
-}
-
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/** Built-in value references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeKeys = overArg(Object.keys, Object),
-    nativeMax = Math.max;
-
-/** Detect if properties shadowing those on `Object.prototype` are non-enumerable. */
-var nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');
-
-/**
- * Creates an array of the enumerable property names of the array-like `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @param {boolean} inherited Specify returning inherited property names.
- * @returns {Array} Returns the array of property names.
- */
-function arrayLikeKeys(value, inherited) {
-  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
-  // Safari 9 makes `arguments.length` enumerable in strict mode.
-  var result = (isArray(value) || isArguments(value))
-    ? baseTimes(value.length, String)
-    : [];
-
-  var length = result.length,
-      skipIndexes = !!length;
-
-  for (var key in value) {
-    if ((inherited || hasOwnProperty.call(value, key)) &&
-        !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-/**
- * Assigns `value` to `key` of `object` if the existing value is not equivalent
- * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * for equality comparisons.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function assignValue(object, key, value) {
-  var objValue = object[key];
-  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
-      (value === undefined && !(key in object))) {
-    object[key] = value;
-  }
-}
-
-/**
- * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- */
-function baseKeys(object) {
-  if (!isPrototype(object)) {
-    return nativeKeys(object);
-  }
-  var result = [];
-  for (var key in Object(object)) {
-    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-/**
- * The base implementation of `_.rest` which doesn't validate or coerce arguments.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @returns {Function} Returns the new function.
- */
-function baseRest(func, start) {
-  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-  return function() {
-    var args = arguments,
-        index = -1,
-        length = nativeMax(args.length - start, 0),
-        array = Array(length);
-
-    while (++index < length) {
-      array[index] = args[start + index];
-    }
-    index = -1;
-    var otherArgs = Array(start + 1);
-    while (++index < start) {
-      otherArgs[index] = args[index];
-    }
-    otherArgs[start] = array;
-    return apply(func, this, otherArgs);
-  };
-}
-
-/**
- * Copies properties of `source` to `object`.
- *
- * @private
- * @param {Object} source The object to copy properties from.
- * @param {Array} props The property identifiers to copy.
- * @param {Object} [object={}] The object to copy properties to.
- * @param {Function} [customizer] The function to customize copied values.
- * @returns {Object} Returns `object`.
- */
-function copyObject(source, props, object, customizer) {
-  object || (object = {});
-
-  var index = -1,
-      length = props.length;
-
-  while (++index < length) {
-    var key = props[index];
-
-    var newValue = customizer
-      ? customizer(object[key], source[key], key, object, source)
-      : undefined;
-
-    assignValue(object, key, newValue === undefined ? source[key] : newValue);
-  }
-  return object;
-}
-
-/**
- * Creates a function like `_.assign`.
- *
- * @private
- * @param {Function} assigner The function to assign values.
- * @returns {Function} Returns the new assigner function.
- */
-function createAssigner(assigner) {
-  return baseRest(function(object, sources) {
-    var index = -1,
-        length = sources.length,
-        customizer = length > 1 ? sources[length - 1] : undefined,
-        guard = length > 2 ? sources[2] : undefined;
-
-    customizer = (assigner.length > 3 && typeof customizer == 'function')
-      ? (length--, customizer)
-      : undefined;
-
-    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-      customizer = length < 3 ? undefined : customizer;
-      length = 1;
-    }
-    object = Object(object);
-    while (++index < length) {
-      var source = sources[index];
-      if (source) {
-        assigner(object, source, index, customizer);
-      }
-    }
-    return object;
-  });
-}
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  length = length == null ? MAX_SAFE_INTEGER : length;
-  return !!length &&
-    (typeof value == 'number' || reIsUint.test(value)) &&
-    (value > -1 && value % 1 == 0 && value < length);
-}
-
-/**
- * Checks if the given arguments are from an iteratee call.
- *
- * @private
- * @param {*} value The potential iteratee value argument.
- * @param {*} index The potential iteratee index or key argument.
- * @param {*} object The potential iteratee object argument.
- * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
- *  else `false`.
- */
-function isIterateeCall(value, index, object) {
-  if (!isObject(object)) {
-    return false;
-  }
-  var type = typeof index;
-  if (type == 'number'
-        ? (isArrayLike(object) && isIndex(index, object.length))
-        : (type == 'string' && index in object)
-      ) {
-    return eq(object[index], value);
-  }
-  return false;
-}
-
-/**
- * Checks if `value` is likely a prototype object.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
- */
-function isPrototype(value) {
-  var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-
-  return value === proto;
-}
-
-/**
- * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * comparison between two values to determine if they are equivalent.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.eq(object, object);
- * // => true
- *
- * _.eq(object, other);
- * // => false
- *
- * _.eq('a', 'a');
- * // => true
- *
- * _.eq('a', Object('a'));
- * // => false
- *
- * _.eq(NaN, NaN);
- * // => true
- */
-function eq(value, other) {
-  return value === other || (value !== value && other !== other);
-}
-
-/**
- * Checks if `value` is likely an `arguments` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- *  else `false`.
- * @example
- *
- * _.isArguments(function() { return arguments; }());
- * // => true
- *
- * _.isArguments([1, 2, 3]);
- * // => false
- */
-function isArguments(value) {
-  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
-  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
-    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
-}
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-/**
- * Checks if `value` is array-like. A value is considered array-like if it's
- * not a function and has a `value.length` that's an integer greater than or
- * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- * @example
- *
- * _.isArrayLike([1, 2, 3]);
- * // => true
- *
- * _.isArrayLike(document.body.children);
- * // => true
- *
- * _.isArrayLike('abc');
- * // => true
- *
- * _.isArrayLike(_.noop);
- * // => false
- */
-function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
-}
-
-/**
- * This method is like `_.isArrayLike` except that it also checks if `value`
- * is an object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array-like object,
- *  else `false`.
- * @example
- *
- * _.isArrayLikeObject([1, 2, 3]);
- * // => true
- *
- * _.isArrayLikeObject(document.body.children);
- * // => true
- *
- * _.isArrayLikeObject('abc');
- * // => false
- *
- * _.isArrayLikeObject(_.noop);
- * // => false
- */
-function isArrayLikeObject(value) {
-  return isObjectLike(value) && isArrayLike(value);
-}
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 8-9 which returns 'object' for typed array and other constructors.
-  var tag = isObject(value) ? objectToString.call(value) : '';
-  return tag == funcTag || tag == genTag;
-}
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This method is loosely based on
- * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- * @example
- *
- * _.isLength(3);
- * // => true
- *
- * _.isLength(Number.MIN_VALUE);
- * // => false
- *
- * _.isLength(Infinity);
- * // => false
- *
- * _.isLength('3');
- * // => false
- */
-function isLength(value) {
-  return typeof value == 'number' &&
-    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/**
- * Assigns own enumerable string keyed properties of source objects to the
- * destination object. Source objects are applied from left to right.
- * Subsequent sources overwrite property assignments of previous sources.
- *
- * **Note:** This method mutates `object` and is loosely based on
- * [`Object.assign`](https://mdn.io/Object/assign).
- *
- * @static
- * @memberOf _
- * @since 0.10.0
- * @category Object
- * @param {Object} object The destination object.
- * @param {...Object} [sources] The source objects.
- * @returns {Object} Returns `object`.
- * @see _.assignIn
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * function Bar() {
- *   this.c = 3;
- * }
- *
- * Foo.prototype.b = 2;
- * Bar.prototype.d = 4;
- *
- * _.assign({ 'a': 0 }, new Foo, new Bar);
- * // => { 'a': 1, 'c': 3 }
- */
-var assign = createAssigner(function(object, source) {
-  if (nonEnumShadows || isPrototype(source) || isArrayLike(source)) {
-    copyObject(source, keys(source), object);
-    return;
-  }
-  for (var key in source) {
-    if (hasOwnProperty.call(source, key)) {
-      assignValue(object, key, source[key]);
-    }
-  }
-});
-
-/**
- * Creates an array of the own enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * for more details.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keys(new Foo);
- * // => ['a', 'b'] (iteration order is not guaranteed)
- *
- * _.keys('hi');
- * // => ['0', '1']
- */
-function keys(object) {
-  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-}
-
-module.exports = assign;
 
 },{}],"maps":[function(require,module,exports){
 module.exports = require('./lib');
