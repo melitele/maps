@@ -2,14 +2,15 @@
   "name": "maps-facade",
   "version": "1.0.4",
   "description": "façade for maps",
+  "author": "Damian Krzeminski <pirxpilot@furkot.com> (https://pirxpilot.me)",
+  "contributors": [
+    "Natalia Kowalczyk <melitele@furkot.com> (https://melitele.me)"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "make check"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/melitele/maps.git"
-  },
+  "repository": "melitele/maps",
   "keywords": [
     "browser",
     "maps"
@@ -31,14 +32,13 @@
     "load": "dynload",
     "query": "component-query"
   },
-  "author": {
-    "name": "Damian Krzeminski",
-    "email": "pirxpilot@furkot.com",
-    "url": "https://pirxpilot.me"
-  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/melitele/maps/issues"
   },
-  "homepage": "https://github.com/melitele/maps"
+  "homepage": "http://melitele.github.io/maps/",
+  "files": [
+    "index.js",
+    "lib"
+  ]
 }
