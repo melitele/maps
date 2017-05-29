@@ -44,6 +44,14 @@
       <div class="map osm"></div>
       <p>Sample markers on OSM map</p>
     </div>
+    <div class='example'>
+      <div class="map google"></div>
+      <p>Circle on Google map</p>
+    </div>
+    <div class='example'>
+      <div class="map osm"></div>
+      <p>Circle on OSM map</p>
+    </div>
     <script>
       function merge(to, from) {
         Object.keys(from).forEach(function (key) {
@@ -301,6 +309,21 @@
               setTimeout(mk.animation, 15 * 1000);
             }
           }
+        });
+        [mps[5], osmMps[3]].forEach(function (mp, m) {
+          var srv = m % 2 ? osmMaps : maps;
+          mp.center(points[0]);
+          mp.zoom(10);
+          srv.circle({
+            map: mp,
+            center: points[0],
+            radius: 10000,
+            strokeColor: 'blue',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            fillColor: 'yellow',
+            fillOpacity: 0.5
+          });
         });
       });
     </script>
