@@ -1,4 +1,16 @@
 
+1.0.6 / 2017-05-30
+==================
+
+ * resize circle
+ * geodesy 1.1.1
+ * drag circle
+ * send events when circle center or radius changes
+ * fix calculating circle radius
+ * circle demo
+ * don't optimize markers in demo
+ * polyfill Object.assign in demo
+
 1.0.5 / 2017-05-16
 ==================
 
