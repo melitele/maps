@@ -1,7 +1,7 @@
 <html>
   <head>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Object.assign"></script>
-    <script src="./build/build.js"></script>
+    <script src="./build/build.js" charset="utf-8"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.css' rel='stylesheet' />
   </head>
@@ -43,6 +43,14 @@
     <div class='example'>
       <div class="map osm"></div>
       <p>Sample markers on OSM map</p>
+    </div>
+    <div class='example'>
+      <div class="map google"></div>
+      <p>Circle on Google map</p>
+    </div>
+    <div class='example'>
+      <div class="map osm"></div>
+      <p>Circle on OSM map</p>
     </div>
     <script>
       function merge(to, from) {
@@ -301,6 +309,21 @@
               setTimeout(mk.animation, 15 * 1000);
             }
           }
+        });
+        [mps[5], osmMps[3]].forEach(function (mp, m) {
+          var srv = m % 2 ? osmMaps : maps;
+          mp.center(points[0]);
+          mp.zoom(10);
+          srv.circle({
+            map: mp,
+            center: points[0],
+            radius: 10000,
+            strokeColor: 'blue',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            fillColor: 'yellow',
+            fillOpacity: 0.5
+          });
         });
       });
     </script>
