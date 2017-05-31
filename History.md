@@ -1,4 +1,9 @@
 
+1.0.7 / 2017-05-30
+==================
+
+ * fix unregister all event handlers for an object
+
 1.0.6 / 2017-05-30
 ==================
 
