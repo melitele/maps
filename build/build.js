@@ -814,7 +814,7 @@ function marker(options) {
       return self._m.getPosition();
     }
     if (Array.isArray(p)) {
-      p = util.ll2gll(p);
+      p = util.ll2gll(p, _gcj02);
     }
     self._m.setPosition(p);
   }
@@ -1314,8 +1314,8 @@ function path2gpath(path, gcj02) {
   else if (Array.isArray(path)) {
     if (Array.isArray(path[0])) {
       path = path.gmPath = path.map(function (ll) {
-        return ll2gll(ll, gcj02);
-      });
+        return ll2gll.call(this, ll, gcj02);
+      }, this);
     }
   }
   else if (typeof path === 'string') {
@@ -2652,7 +2652,7 @@ function init(self, options) {
     if (event === undefined) {
       Object.keys(listeners).forEach(function(event) {
         listeners[event].forEach(function (listener) {
-          off(listener.event, listener.handler);
+          off(listener.event, listener.fn);
         });
       });
       listeners = {};

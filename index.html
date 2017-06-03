@@ -52,6 +52,14 @@
       <div class="map osm"></div>
       <p>Circle on OSM map</p>
     </div>
+    <div class='example'>
+      <div class="map google"></div>
+      <p>China on Google map</p>
+    </div>
+    <div class='example'>
+      <div class="map osm"></div>
+      <p>China on OSM map</p>
+    </div>
     <script>
       function merge(to, from) {
         Object.keys(from).forEach(function (key) {
@@ -76,7 +84,10 @@
 
       var maps = require('maps').init({
         libraries: 'geometry',
-        key: window.google_map_key_for_example || 'AIzaSyCc3mQKAZDKu5HCBpd_g4Jb9IUthtx3WA4'
+        key: window.google_map_key_for_example || 'AIzaSyCc3mQKAZDKu5HCBpd_g4Jb9IUthtx3WA4',
+        isGCJ02: function () {
+          return true;
+        }
       }, function () {
         var dataEl, points, bnds, path, mps, spread, collate, proj, osmMaps, osmMps, attribution;
 
@@ -324,6 +335,29 @@
             fillColor: 'yellow',
             fillOpacity: 0.5
           });
+        });
+        [mps[6], osmMps[4]].forEach(function (mp, m) {
+          var center = [116.383473, 39.903331], srv = m % 2 ? osmMaps : maps;
+          if (mp.gcj02) {
+            mp.gcj02(true);
+          }
+          mp.zoom(17);
+          srv.marker({
+            map: mp,
+            icon: {
+              strokeColor: '#0074D9', // azure
+              strokeWeight: 5,
+              path: 'circle',
+              scale: 8
+            }
+          }).position(center);
+          srv.polyline({
+            map: mp,
+            color: '#a21bab'
+          }).path([center, [center[0] + 0.001, center[1] + 0.001]]);
+          setTimeout(function () {
+            mp.center(center);
+          }, 1)
         });
       });
     </script>
