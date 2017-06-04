@@ -1,4 +1,9 @@
 
+1.0.10 / 2017-06-03
+===================
+
+ * default style and ability to set style after OSM map has been created
+
 1.0.9 / 2017-06-02
 ==================
 
