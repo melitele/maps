@@ -222,13 +222,143 @@
               position: 'RB'
             },
             backgroundColor: '#e5c7e6',
-            onReady: i <= 1 && function () {
-              osmMaps.polyline({
-                map: map,
-                color: '#a21bab',
-                path: path
-              });
-            }
+            onReady: function (i) {
+              if (i <= 1) {
+	              osmMaps.polyline({
+	                map: map,
+	                color: '#a21bab',
+	                path: path
+	              });
+              }
+              if (i === 0) {
+                // add markers directly to map 5
+                points.forEach(function (pt) {
+                  osmMaps.marker({
+                    map: osmMps[0],
+                    color: 'violet',
+                    position: pt
+                  });
+                });
+              }
+              else if (i === 1) {
+                // collate markers on map 6
+                collate = osmMaps.collate({
+                  map: osmMps[1]
+                });
+                points.forEach(function (pt, i) {
+                  collate.add(osmMaps.marker({
+                    map: osmMps[1],
+                    color: 'orange',
+                    position: pt
+                  }));
+                });
+                collate.calculate();
+                osmMps[1].on('bounds_changed', collate.calculate.bind(collate));
+              }
+              else if (i === 2) {
+                [mps[4], osmMps[2]].forEach(function (mp, m) {
+                  var i, srv = m % 2 ? osmMaps : maps, mk;
+                  mp.center([0.5, 0]);
+                  mp.zoom(9);
+                  for (i = 0; i <= 8; i += 1) {
+                    srv.marker({
+                      map: mp,
+                      position: [i / 8, 3 / 8],
+                      icon: {
+                        strokeColor: '#0074D9', // azure
+                        strokeWeight: 5,
+                        path: 'forward_closed_arrow',
+                        rotation: 45 * i,
+                        scale: 5
+                      }
+                    });
+                    mk = srv.marker({
+                      map: mp,
+                      position: [i / 8, 1 / 8],
+                      icon: {
+                        strokeColor: '#0074D9', // azure
+                        strokeWeight: 5,
+                        path: 'circle',
+                        scale: 1 + i
+                      }
+                    });
+                    if (i === 3) {
+                      mk.animation('bounce');
+                      setTimeout(mk.animation, 15 * 1000);
+                    }
+                    srv.marker({
+                      map: mp,
+                      position: [i / 8, -1 / 8],
+                      color: 'orange',
+                      icon: {
+                        path: 'M 2 0 L 2 0.28125 L 2 13.6875 L 2 14 L 0.59375 14 L 0 14 L 0 14.59375 L 0 15.375 L 0 16 '
+                            + 'L 0.59375 16 L 4.40625 16 L 5 16 L 5 15.375 L 5 14.59375 L 5 14 L 4.40625 14 L 3 14 L 3 13.6875 '
+                            + 'L 3 9 L 16 5.5 L 3 2 L 3 0.28125 L 3 0 L 2.6875 0 L 2.3125 0 L 2 0 z ',
+                        strokeColor: 'orange',
+                        strokeWeight: 1,
+                        scale: (i + 1) / 3,
+                        anchor: [1, 16]
+                      }
+                    });
+                    mk = srv.marker({
+                      map: mp,
+                      position: [i / 8, -3 / 8],
+                      icon: {
+                        url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTAgMEgyNlYyNkgxNkwxMyAzMEwxMCAyNkgwWiIgZmlsbD0iI2Y4MDAxMiIvPjxwYXRoIGQ9Ik0yIDJIMjRWMjRIMloiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjEuOCAxMC40TDcuNSA2LjZWNC40SDYuNFYxOS44SDQuMlYyMkg5LjdWMTkuOEg3LjVWMTQuM1oiIGZpbGw9IiNmODAwMTIiLz48L3N2Zz4=',
+                        size: [26, 30]
+                      },
+                      optimized: false
+                    });
+                    if (i === 4) {
+                      mk.animation('bounce');
+                      setTimeout(mk.animation, 15 * 1000);
+                    }
+                  }
+                });
+              }
+              else if (i === 3) {
+                [mps[5], osmMps[3]].forEach(function (mp, m) {
+                  var srv = m % 2 ? osmMaps : maps;
+                  mp.center(points[0]);
+                  mp.zoom(10);
+                  srv.circle({
+                    map: mp,
+                    center: points[0],
+                    radius: 10000,
+                    strokeColor: 'blue',
+                    strokeOpacity: 1,
+                    strokeWeight: 2,
+                    fillColor: 'yellow',
+                    fillOpacity: 0.5
+                  });
+                });
+              }
+              else if (i === 4) {
+                [mps[6], osmMps[4]].forEach(function (mp, m) {
+                  var center = [116.383473, 39.903331], srv = m % 2 ? osmMaps : maps;
+                  if (mp.gcj02) {
+                    mp.gcj02(true);
+                  }
+                  mp.zoom(17);
+                  srv.marker({
+                    map: mp,
+                    icon: {
+                      strokeColor: '#0074D9', // azure
+                      strokeWeight: 5,
+                      path: 'circle',
+                      scale: 8
+                    }
+                  }).position(center);
+                  srv.polyline({
+                    map: mp,
+                    color: '#a21bab'
+                  }).path([center, [center[0] + 0.001, center[1] + 0.001]]);
+                  setTimeout(function () {
+                    mp.center(center);
+                  }, 1)
+                });
+              }
+            }.bind(undefined, i)
           }, i ? {
             attributionControl: false,
             attribution: attribution
@@ -238,126 +368,6 @@
           }
           map.fitBounds(bnds);
           return map;
-        });
-
-        // add markers directly to map 5
-        points.forEach(function (pt) {
-          osmMaps.marker({
-            map: osmMps[0],
-            color: 'violet',
-            position: pt
-          });
-        });
-        // collate markers on map 6
-        collate = osmMaps.collate({
-          map: osmMps[1]
-        });
-        points.forEach(function (pt, i) {
-          collate.add(osmMaps.marker({
-            map: osmMps[1],
-            color: 'orange',
-            position: pt
-          }));
-        });
-        collate.calculate();
-        osmMps[1].on('bounds_changed', collate.calculate.bind(collate));
-
-        [mps[4], osmMps[2]].forEach(function (mp, m) {
-          var i, srv = m % 2 ? osmMaps : maps, mk;
-          mp.center([0.5, 0]);
-          mp.zoom(9);
-          for (i = 0; i <= 8; i += 1) {
-            srv.marker({
-              map: mp,
-              position: [i / 8, 3 / 8],
-              icon: {
-                strokeColor: '#0074D9', // azure
-                strokeWeight: 5,
-                path: 'forward_closed_arrow',
-                rotation: 45 * i,
-                scale: 5
-              }
-            });
-            mk = srv.marker({
-              map: mp,
-              position: [i / 8, 1 / 8],
-              icon: {
-                strokeColor: '#0074D9', // azure
-                strokeWeight: 5,
-                path: 'circle',
-                scale: 1 + i
-              }
-            });
-            if (i === 3) {
-              mk.animation('bounce');
-              setTimeout(mk.animation, 15 * 1000);
-            }
-            srv.marker({
-              map: mp,
-              position: [i / 8, -1 / 8],
-              color: 'orange',
-              icon: {
-                path: 'M 2 0 L 2 0.28125 L 2 13.6875 L 2 14 L 0.59375 14 L 0 14 L 0 14.59375 L 0 15.375 L 0 16 '
-                    + 'L 0.59375 16 L 4.40625 16 L 5 16 L 5 15.375 L 5 14.59375 L 5 14 L 4.40625 14 L 3 14 L 3 13.6875 '
-                    + 'L 3 9 L 16 5.5 L 3 2 L 3 0.28125 L 3 0 L 2.6875 0 L 2.3125 0 L 2 0 z ',
-                strokeColor: 'orange',
-                strokeWeight: 1,
-                scale: (i + 1) / 3,
-                anchor: [1, 16]
-              }
-            });
-            mk = srv.marker({
-              map: mp,
-              position: [i / 8, -3 / 8],
-              icon: {
-                url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTAgMEgyNlYyNkgxNkwxMyAzMEwxMCAyNkgwWiIgZmlsbD0iI2Y4MDAxMiIvPjxwYXRoIGQ9Ik0yIDJIMjRWMjRIMloiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjEuOCAxMC40TDcuNSA2LjZWNC40SDYuNFYxOS44SDQuMlYyMkg5LjdWMTkuOEg3LjVWMTQuM1oiIGZpbGw9IiNmODAwMTIiLz48L3N2Zz4=',
-                size: [26, 30]
-              },
-              optimized: false
-            });
-            if (i === 4) {
-              mk.animation('bounce');
-              setTimeout(mk.animation, 15 * 1000);
-            }
-          }
-        });
-        [mps[5], osmMps[3]].forEach(function (mp, m) {
-          var srv = m % 2 ? osmMaps : maps;
-          mp.center(points[0]);
-          mp.zoom(10);
-          srv.circle({
-            map: mp,
-            center: points[0],
-            radius: 10000,
-            strokeColor: 'blue',
-            strokeOpacity: 1,
-            strokeWeight: 2,
-            fillColor: 'yellow',
-            fillOpacity: 0.5
-          });
-        });
-        [mps[6], osmMps[4]].forEach(function (mp, m) {
-          var center = [116.383473, 39.903331], srv = m % 2 ? osmMaps : maps;
-          if (mp.gcj02) {
-            mp.gcj02(true);
-          }
-          mp.zoom(17);
-          srv.marker({
-            map: mp,
-            icon: {
-              strokeColor: '#0074D9', // azure
-              strokeWeight: 5,
-              path: 'circle',
-              scale: 8
-            }
-          }).position(center);
-          srv.polyline({
-            map: mp,
-            color: '#a21bab'
-          }).path([center, [center[0] + 0.001, center[1] + 0.001]]);
-          setTimeout(function () {
-            mp.center(center);
-          }, 1)
         });
       });
     </script>
