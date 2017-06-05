@@ -1,4 +1,10 @@
 
+1.0.11 / 2017-06-04
+===================
+
+ * use 'once' to call onReady when stylesheet is loaded
+ * assume all operations on the OSM map are done after style is loaded
+
 1.0.10 / 2017-06-03
 ===================
 
