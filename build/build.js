@@ -1771,7 +1771,6 @@ var object = require('./object');
 module.exports = layer;
 
 var id = 0;
-var loaded;
 var layers = [];
 
 function updateProperty(key) {
@@ -1806,7 +1805,7 @@ function afterLayer(l) {
 function layer(paint, create) {
 
   return function (self, options) {
-    var added, waiting;
+    var added;
 
     function data() {
       return (self._s || self._l.source).data;
@@ -1832,7 +1831,10 @@ function layer(paint, create) {
       }
     }
 
-    function doAdd() {
+    function onadd() {
+      if (added) {
+        return;
+      }
       if (!self._m) {
         // object removed from map before it was rendered
         return;
@@ -1851,24 +1853,8 @@ function layer(paint, create) {
       });
     }
 
-    function onadd() {
-      if (added) {
-        return;
-      }
-      loaded = loaded || self._m.loaded();
-      if (loaded) {
-        return doAdd();
-      }
-      waiting = true;
-      self._m.once('load', doAdd);
-    }
-
     function onremove() {
       if (!added) {
-        if (waiting) {
-          waiting = undefined;
-          self._m.off('load', doAdd);
-        }
         return;
       }
       added = undefined;
@@ -2161,7 +2147,6 @@ function map(node, options) {
   }
 
   function callback() {
-    self.off('styledata', callback);
     options.onReady();
   }
 
@@ -2200,7 +2185,12 @@ function map(node, options) {
   options = Object.assign({
     container: node,
     scaleControl: true,
-    mapTypeControl: false
+    mapTypeControl: false,
+    style: {
+      version: 8,
+      sources: {},
+      layers: []
+    }
   }, options);
 
   self = object({
@@ -2238,7 +2228,7 @@ function map(node, options) {
   ['flyTo', 'easeTo'].forEach(transition, self._m);
 
   if (options.onReady) {
-    self.on('styledata', callback);
+    self._m.once('styledata', callback);
   }
 
   if (options.mapTypeControl) {
