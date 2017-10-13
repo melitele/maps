@@ -1,4 +1,9 @@
 
+1.0.14 / 2017-10-13
+===================
+
+ * return marker position as 2-element array regardless of the service
+
 1.0.13 / 2017-06-11
 ===================
 
