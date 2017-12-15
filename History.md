@@ -1,4 +1,10 @@
 
+1.0.15 / 2017-12-14
+===================
+
+ * add support for fullscreenControl[Options] for google and OSM
+ * fix projection.position
+
 1.0.14 / 2017-10-13
 ===================
 
