@@ -1,4 +1,9 @@
 
+1.0.16 / 2018-01-23
+===================
+
+ * normalize longitude before checking if coordinates are in China
+
 1.0.15 / 2017-12-14
 ===================
 
