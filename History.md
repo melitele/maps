@@ -1,4 +1,11 @@
 
+1.1.0 / 2018-05-23
+==================
+
+ * implement marker labels in OSM maps
+ * fix spreading markers on OSM map
+ * refactor example separating code for google and osm maps
+
 1.0.17 / 2018-05-19
 ===================
 
