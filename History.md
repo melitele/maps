@@ -1,4 +1,11 @@
 
+1.1.1 / 2018-05-30
+==================
+
+ * animate zooming
+ * fix rendering of labels below markers
+ * change scale control units dynamically
+
 1.1.0 / 2018-05-23
 ==================
 
