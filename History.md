@@ -1,4 +1,9 @@
 
+1.1.2 / 2018-05-31
+==================
+
+ * fit map to bounds without animation if the style loading is not finished
+
 1.1.1 / 2018-05-30
 ==================
 
