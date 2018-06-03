@@ -1,4 +1,9 @@
 
+1.2.0 / 2018-06-02
+==================
+
+ * attribution callback as alternatve to element
+
 1.1.2 / 2018-05-31
 ==================
 
