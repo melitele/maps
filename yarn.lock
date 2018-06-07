@@ -2,10 +2,6 @@
 # yarn lockfile v1
 
 
-"@pirxpilot/eviltransform@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@pirxpilot/eviltransform/-/eviltransform-0.2.2.tgz#420241a1da6a3a85418c726cab34b51069b0fb1e"
-
 "@pirxpilot/google-polyline@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@pirxpilot/google-polyline/-/google-polyline-2.0.3.tgz#4049a0938485dda4ea42f93aaa5f2c0428e3be0b"
