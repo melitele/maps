@@ -8,7 +8,7 @@ describe('maps', function () {
 
   it('init', function () {
     maps.init();
-    [ 'collate', 'info', 'map', 'marker', 'outline', 'polyline', 'projection', 'spread', 'styles', 'util']
+    [ 'collate', 'map', 'marker', 'outline', 'polyline', 'projection', 'spread', 'util']
       .forEach(function (prop) {
         maps.should.have.property(prop);
       });
