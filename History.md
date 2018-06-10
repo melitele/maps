@@ -1,4 +1,12 @@
 
+1.2.1 / 2018-06-10
+==================
+
+ * upgrade mapbox-gl to 0.45.0 in example
+ * allow markers overlap
+ * separate layers that belong to different maps
+ * fix initializing images with more than one map on page
+
 1.2.0 / 2018-06-02
 ==================
 
