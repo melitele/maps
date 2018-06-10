@@ -1,8 +1,8 @@
 (function () {
 
-  if (!window.osm_map_style_url_for_example) {
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWVsaXRlbGUiLCJhIjoiY2oxZ3BlcmZtMDAzNzJxb2hicndlOTU0eSJ9.6WFMFozvFpKUJA6bhLeiSA';
-  }
+  mapboxgl.accessToken = 'pk.eyJ1IjoibWVsaXRlbGUiLCJhIjoiY2oxZ3BlcmZtMDAzNzJxb2hicndlOTU0eSJ9.6WFMFozvFpKUJA6bhLeiSA';
+  window.osm_map_style_url_for_example = window.osm_map_style_url_for_example || 'https://maps.tilehosting.com/styles/bright/style.json?key=urAu655ungsc0mBIRsEt';
+
   var maps = require('maps').init({
     service: 'mapbox'
   }, function () {
@@ -127,9 +127,10 @@
       }
     ];
 
-    Array.prototype.slice.call(document.querySelectorAll('.map.osm')).forEach(function (mapEl, i) {
+  ['mapbox', 'osm'].forEach(function (type) {
+    Array.prototype.slice.call(document.querySelectorAll('.map.' + type)).forEach(function (mapEl, i) {
       var map = maps.map(mapEl, merge({
-        style: window.osm_map_style_url_for_example || 'mapbox://styles/mapbox/streets-v9',
+        style: type === 'osm' ? window.osm_map_style_url_for_example : 'mapbox://styles/mapbox/streets-v9',
         zoomControl: true,
         zoomControlOptions: {
           position: 'RB'
@@ -153,5 +154,6 @@
       }
       map.fitBounds(bnds);
     });
+  });
   });
 })();
