@@ -17,13 +17,22 @@
     var onReady = [
       function (map) {
         // add markers directly to map 1
-        points.forEach(function (pt) {
-          maps.marker({
+        var markers = points.map(function (pt) {
+          return maps.marker({
             map: map,
-            color: 'violet',
             position: pt
           });
         });
+        setTimeout(function () {
+          markers.forEach(function (mk, i) {
+            mk.icon(i === 11 ? {
+              url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTAgMEgyNlYyNkgxNkwxMyAzMEwxMCAyNkgwWiIgZmlsbD0iI2Y4MDAxMiIvPjxwYXRoIGQ9Ik0yIDJIMjRWMjRIMloiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjEuOCAxMC40TDcuNSA2LjZWNC40SDYuNFYxOS44SDQuMlYyMkg5LjdWMTkuOEg3LjVWMTQuM1oiIGZpbGw9IiNmODAwMTIiLz48L3N2Zz4=',
+              size: [26, 30]
+            } : {
+              color: 'violet'
+            })
+          });
+        }, 3000);
       },
       function (map) {
         // spread markers on map 2
