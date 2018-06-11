@@ -13,6 +13,27 @@ var pinsStyle = {
       'circle-stroke-opacity': 1,
       'circle-stroke-width': 5
     }
+  }, {
+      id: 'marker',
+      type: 'symbol',
+      layout: {
+        'icon-image': {
+          property: 'path',
+          type: 'identity'
+        },
+        'icon-offset': {
+          property: 'offset',
+          type: 'identity'
+        },
+        'icon-rotate': {
+          property: 'rotation',
+          type: 'identity'
+        },
+        'icon-size': {
+          property: 'scale',
+          type: 'identity'
+        }
+      }
   }]
 };
 
