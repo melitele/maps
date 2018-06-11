@@ -103,7 +103,17 @@ function drawCircle(srv, mp, center) {
 }
 
 function sampleChina(srv, mp) {
-  var center = [116.383473, 39.903331];
+  var center = [116.383473, 39.903331], path = [
+    center,
+    [center[0] - 0.001, center[1] + 0.001],
+    [center[0] + 0.001, center[1] + 0.001],
+    center
+  ], poly = [
+    center,
+    [center[0] - 0.001, center[1] - 0.001],
+    [center[0] + 0.001, center[1] - 0.001],
+    center
+  ];
   if (mp.gcj02) {
     mp.gcj02(true);
   }
@@ -120,7 +130,13 @@ function sampleChina(srv, mp) {
   srv.polyline({
     map: mp,
     color: '#a21bab'
-  }).path([center, [center[0] + 0.001, center[1] + 0.001]]);
+  }).path(path);
+  srv.polygon({
+    map: mp,
+    fillColor: '#a21bab',
+    fillOpacity: 0.5,
+    strokeColor: '#0074D9'
+  }).path(poly);
   setTimeout(function () {
     mp.center(center);
   }, 1)
