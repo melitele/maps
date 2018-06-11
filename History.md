@@ -1,4 +1,10 @@
 
+1.2.2 / 2018-06-11
+==================
+
+ * allow markers with icons to overlap
+ * fix changing marker icon
+
 1.2.1 / 2018-06-10
 ==================
 
