@@ -135,15 +135,25 @@ var maps = require('..').init({
       });
       calculate();
     },
-    function (map) {
+    function (map, type) {
       // sample markers
-      common.sampleMarkers(maps, map);
+      if (type === 'osm') {
+        common.sampleMarkersArtifacts(maps, map);
+      }
+      else {
+        common.sampleMarkers(maps, map);
+      }
     },
     function (map) {
       common.drawCircle(maps, map, points[0]);
     },
-    function (map) {
-      common.sampleChina(maps, map);
+    function (map, type) {
+      if (type === 'osm') {
+        common.sampleChinaArtifacts(maps, map);
+      }
+      else {
+        common.sampleChina(maps, map);
+      }
     }
   ];
 
@@ -158,14 +168,16 @@ var maps = require('..').init({
         },
         fullscreenControl: i > 2,
         backgroundColor: '#e5c7e6',
-        onReady: i <= 3 ? (function (i) {
+        onReady: (i <= 3 ? function (i) {
           maps.polyline({
             map: map,
             color: '#a21bab',
             path: path
           });
           onReady[i](map);
-        }).bind(undefined, i) : onReady[i]
+        } : function(i) {
+          onReady[i](map, type);
+        }).bind(undefined, i)
       }, i ? {
         attributionControl: false,
         attribution: attribution

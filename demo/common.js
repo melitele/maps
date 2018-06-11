@@ -1,9 +1,13 @@
+var style = require('./style');
+
 module.exports = {
   merge: merge,
   bounds: bounds,
   sampleMarkers: sampleMarkers,
+  sampleMarkersArtifacts: sampleMarkersArtifacts,
   drawCircle: drawCircle,
-  sampleChina: sampleChina
+  sampleChina: sampleChina,
+  sampleChinaArtifacts: sampleChinaArtifacts
 };
 
 function merge(to, from) {
@@ -25,6 +29,26 @@ function bounds(points) {
     }
     return points;
   }, [points[0].slice(), points[0].slice()]);
+}
+
+function sampleMarkersArtifacts(srv, mp) {
+  var i, mk;
+  mp.center([0.5, 0]);
+  mp.zoom(9);
+  mp.addStyle(style.pins);
+  for (i = 0; i <= 8; i += 1) {
+    mk = srv.artifact({
+      map: mp,
+      layer: 'circle',
+      properties: {
+        scale: i
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [i / 8, 1 / 8]
+      }
+    });
+  }
 }
 
 function sampleMarkers(srv, mp) {
@@ -137,6 +161,49 @@ function sampleChina(srv, mp) {
     fillOpacity: 0.5,
     strokeColor: '#0074D9'
   }).path(poly);
+  setTimeout(function () {
+    mp.center(center);
+  }, 1)
+}
+
+function sampleChinaArtifacts(srv, mp) {
+  var center = [116.383473, 39.903331], path = [
+    center,
+    [center[0] - 0.001, center[1] + 0.001],
+    [center[0] + 0.001, center[1] + 0.001],
+    center
+  ], poly = [
+    center,
+    [center[0] - 0.001, center[1] - 0.001],
+    [center[0] + 0.001, center[1] - 0.001],
+    center
+  ];
+  if (mp.gcj02) {
+    mp.gcj02(true);
+  }
+  mp.zoom(17);
+  mp.addStyle(style.china);
+  srv.artifact({
+    map: mp,
+    layer: 'circle'
+  }).geometry({
+    type: 'Point',
+    coordinates: center
+  });
+  srv.artifact({
+    map: mp,
+    layer: 'polyline'
+  }).geometry({
+    type: 'LineString',
+    coordinates: path
+  });
+  srv.artifact({
+    map: mp,
+    layer: 'polygon'
+  }).geometry({
+    type: 'Polygon',
+    coordinates: [poly]
+  });
   setTimeout(function () {
     mp.center(center);
   }, 1)
