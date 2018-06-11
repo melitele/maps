@@ -19,6 +19,26 @@ function bounds(points) {
   }, [points[0].slice(), points[0].slice()]);
 }
 
+function samplePins(srv, mp) {
+  var i, mk;
+  mp.center([0.5, 0]);
+  mp.zoom(9);
+  mp.addStyle(pinsStyle);
+  for (i = 0; i <= 8; i += 1) {
+    mk = srv.artifact({
+      map: mp,
+      layer: 'circle',
+      properties: {
+        scale: i
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [i / 8, 1 / 8]
+      }
+    });
+  }
+}
+
 function sampleMarkers(srv, mp) {
   var i, mk;
   mp.center([0.5, 0]);
@@ -94,25 +114,67 @@ function drawCircle(srv, mp, center) {
   });
 }
 
-function sampleChina(srv, mp) {
-  var center = [116.383473, 39.903331];
+function sampleChina(srv, mp, adhocStyle) {
+  var center = [116.383473, 39.903331], path = [
+    center,
+    [center[0] - 0.001, center[1] + 0.001],
+    [center[0] + 0.001, center[1] + 0.001],
+    center
+  ], poly = [
+    center,
+    [center[0] - 0.001, center[1] - 0.001],
+    [center[0] + 0.001, center[1] - 0.001],
+    center
+  ];
   if (mp.gcj02) {
     mp.gcj02(true);
   }
   mp.zoom(17);
-  srv.marker({
-    map: mp,
-    icon: {
-      strokeColor: '#0074D9', // azure
-      strokeWeight: 5,
-      path: 'circle',
-      scale: 8
-    }
-  }).position(center);
-  srv.polyline({
-    map: mp,
-    color: '#a21bab'
-  }).path([center, [center[0] + 0.001, center[1] + 0.001]]);
+  if (adhocStyle) {
+    srv.marker({
+      map: mp,
+      icon: {
+        strokeColor: '#0074D9', // azure
+        strokeWeight: 5,
+        path: 'circle',
+        scale: 8
+      }
+    }).position(center);
+    srv.polyline({
+      map: mp,
+      color: '#a21bab'
+    }).path(path);
+    srv.polygon({
+      map: mp,
+      fillColor: '#a21bab',
+      fillOpacity: 0.5,
+      strokeColor: '#0074D9'
+    }).path(poly);
+  }
+  else {
+    mp.addStyle(chinaStyle);
+    srv.artifact({
+      map: mp,
+      layer: 'circle'
+    }).geometry({
+      type: 'Point',
+      coordinates: center
+    });
+    srv.artifact({
+      map: mp,
+      layer: 'polyline'
+    }).geometry({
+      type: 'LineString',
+      coordinates: path
+    });
+    srv.artifact({
+      map: mp,
+      layer: 'polygon'
+    }).geometry({
+      type: 'Polygon',
+      coordinates: [poly]
+    });
+  }
   setTimeout(function () {
     mp.center(center);
   }, 1)

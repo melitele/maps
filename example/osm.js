@@ -115,15 +115,20 @@
         });
         calculate();
       },
-      function (map) {
+      function (map, type) {
         // sample markers
-        sampleMarkers(maps, map);
+        if (type === 'mapbox') {
+          sampleMarkers(maps, map);
+        }
+        else {
+          samplePins(maps, map);
+        }
       },
       function (map) {
         drawCircle(maps, map, points[0]);
       },
-      function (map) {
-        sampleChina(maps, map);
+      function (map, type) {
+        sampleChina(maps, map, type === 'mapbox');
       }
     ];
 
@@ -143,8 +148,10 @@
             color: '#a21bab',
             path: path
           });
-          onReady[i](map);
-        }).bind(undefined, i) : onReady[i]
+          onReady[i](map, type);
+        }).bind(undefined, i) : (function (i) {
+          onReady[i](map, type)
+        }).bind(undefined, i)
       }, i ? {
         attributionControl: false,
         attribution: attribution
