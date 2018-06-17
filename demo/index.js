@@ -5,6 +5,11 @@ var osm_map_style_url_for_example = process.env.OSM_MAP_STYLE;
 
 var common = require('./common');
 
+var implementation = {
+  mapbox: mapboxgl
+};
+implementation.osm = require('@pirxpilot/mapbox-gl');
+
 var maps = require('..').init({
   service: 'mapbox'
 }, function () {
@@ -148,6 +153,7 @@ var maps = require('..').init({
   ['mapbox', 'osm'].forEach(function (type) {
     Array.prototype.slice.call(document.querySelectorAll('.map.' + type)).forEach(function (mapEl, i) {
       var map = maps.map(mapEl, common.merge({
+        mapboxgl: implementation[type],
         style: type === 'osm' ? osm_map_style_url_for_example : 'mapbox://styles/mapbox/streets-v9',
         zoomControl: true,
         zoomControlOptions: {
