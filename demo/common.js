@@ -1,3 +1,10 @@
+module.exports = {
+  merge: merge,
+  bounds: bounds,
+  sampleMarkers: sampleMarkers,
+  sampleChina: sampleChina
+};
+
 function merge(to, from) {
   Object.keys(from).forEach(function (key) {
     to[key] = from[key];
@@ -79,23 +86,18 @@ function sampleMarkers(srv, mp) {
   }
 }
 
-function drawCircle(srv, mp, center) {
-  mp.center(center);
-  mp.zoom(10);
-  srv.circle({
-    map: mp,
-    center: center,
-    radius: 10000,
-    strokeColor: 'blue',
-    strokeOpacity: 1,
-    strokeWeight: 2,
-    fillColor: 'yellow',
-    fillOpacity: 0.5
-  });
-}
-
 function sampleChina(srv, mp) {
-  var center = [116.383473, 39.903331];
+  var center = [116.383473, 39.903331], path = [
+    center,
+    [center[0] - 0.001, center[1] + 0.001],
+    [center[0] + 0.001, center[1] + 0.001],
+    center
+  ], poly = [
+    center,
+    [center[0] - 0.001, center[1] - 0.001],
+    [center[0] + 0.001, center[1] - 0.001],
+    center
+  ];
   if (mp.gcj02) {
     mp.gcj02(true);
   }
@@ -111,8 +113,15 @@ function sampleChina(srv, mp) {
   }).position(center);
   srv.polyline({
     map: mp,
-    color: '#a21bab'
-  }).path([center, [center[0] + 0.001, center[1] + 0.001]]);
+    color: '#a21bab',
+    dashOpacity: 1
+  }).path(path);
+  srv.polygon({
+    map: mp,
+    fillColor: '#a21bab',
+    fillOpacity: 0.5,
+    strokeColor: '#0074D9'
+  }).path(poly);
   setTimeout(function () {
     mp.center(center);
   }, 1)
