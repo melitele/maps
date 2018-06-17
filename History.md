@@ -1,4 +1,17 @@
 
+1.3.0 / 2018-06-16
+==================
+
+ * fix changing visibility of polylines
+ * fix changing icon of markers not added to map
+ * stop using built-in mapbox-gl controls
+ * add zoom control
+ * add scale control
+ * normalize screen coordinates of mouse events on polyline
+ * fix calculating point on polyline closest to mouse cursor
+ * marker icon getter
+ * make polyline draggable
+
 1.2.2 / 2018-06-11
 ==================
 
