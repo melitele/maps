@@ -1,7 +1,11 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <title>Maps Facade Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Object.assign"></script>
-    <script src="./build/build.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="build/build.css">
+    <script src="build/build.js" charset="utf-8"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
   </head>
@@ -68,43 +72,8 @@
       <div class="map osm"></div>
       <p>China</p>
     </div>
-    <script src="./example/common.js" charset="utf-8"></script>
-    <script src="./example/osm.js" charset="utf-8"></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
-      p {
-        margin: .5em 0;
-      }
-      body {
-        text-align: center;
-        margin: 20px auto;
-      }
-      .example {
-        text-align: left;
-        display: inline-block;
-        margin: 0 10px;
-        width: 400px;
-        vertical-align: top;
-      }
-      .map {
-        width: 400px;
-        height: 400px;
-      }
-      .marker-label span {
-        font-size: 1em;
-        font-weight: bold;
-        color: white;
-        letter-spacing: .1px;
-      }
-      .mapboxgl-ctrl-group > button.mapboxgl-ctrl-compass {
-        display: none;
-      }
-      #attribution {
-        text-align: right;
-      }
-    </style>
   </body>
+  <script type="text/javascript">
+    require('demo');
+  </script>
 </html>

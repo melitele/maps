@@ -1,3 +1,11 @@
+module.exports = {
+  merge: merge,
+  bounds: bounds,
+  sampleMarkers: sampleMarkers,
+  drawCircle: drawCircle,
+  sampleChina: sampleChina
+};
+
 function merge(to, from) {
   Object.keys(from).forEach(function (key) {
     to[key] = from[key];
