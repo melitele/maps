@@ -25,13 +25,26 @@
         });
         setTimeout(function () {
           markers.forEach(function (mk, i) {
-            mk.icon(i === 11 ? {
+            if (i < 10) {
+              mk.remove();
+            }
+            mk.icon((i === 11 || i === 5) ? {
               url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTAgMEgyNlYyNkgxNkwxMyAzMEwxMCAyNkgwWiIgZmlsbD0iI2Y4MDAxMiIvPjxwYXRoIGQ9Ik0yIDJIMjRWMjRIMloiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjEuOCAxMC40TDcuNSA2LjZWNC40SDYuNFYxOS44SDQuMlYyMkg5LjdWMTkuOEg3LjVWMTQuM1oiIGZpbGw9IiNmODAwMTIiLz48L3N2Zz4=',
               size: [26, 30]
             } : {
               color: 'violet'
             })
+            if (i < 10) {
+              mk.add(map);
+            }
           });
+          setTimeout(function () {
+            markers[5].remove();
+            markers[5].icon({
+              color: 'violet'
+            });
+            markers[5].add(map);
+          }, 3000)
         }, 3000);
       },
       function (map) {
