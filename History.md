@@ -1,4 +1,9 @@
 
+1.3.1 / 2018-06-18
+==================
+
+ * refresh marker after adding its image to sprite atlas
+
 1.3.0 / 2018-06-16
 ==================
 
