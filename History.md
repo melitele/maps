@@ -1,4 +1,11 @@
 
+1.3.2 / 2018-06-30
+==================
+
+ * support mouseenter and mouseleave as mouse events
+ * make area around marker sensitive to mouse
+ * cast mouse pointer onto polyline unless dragging
+
 1.3.1 / 2018-06-18
 ==================
 
