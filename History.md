@@ -1,4 +1,10 @@
 
+1.3.5 / 2018-07-03
+==================
+
+ * propagate click event for object with highest zindex
+ * change marker icon to be its active area
+
 1.3.4 / 2018-07-03
 ==================
 
