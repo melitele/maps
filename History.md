@@ -1,4 +1,9 @@
 
+1.3.4 / 2018-07-03
+==================
+
+ * replace eviltransform with @pirxpilot/eviltransform
+
 1.3.3 / 2018-06-30
 ==================
 
