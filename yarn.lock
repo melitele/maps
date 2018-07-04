@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@pirxpilot/eviltransform@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@pirxpilot/eviltransform/-/eviltransform-0.2.2.tgz#420241a1da6a3a85418c726cab34b51069b0fb1e"
+
 "@pirxpilot/google-polyline@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@pirxpilot/google-polyline/-/google-polyline-2.0.3.tgz#4049a0938485dda4ea42f93aaa5f2c0428e3be0b"
@@ -438,10 +442,6 @@ escape-string-regexp@1.0.5:
 events@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
-
-eviltransform@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/eviltransform/-/eviltransform-0.2.2.tgz#246c310edfca1c980103182c0c307f65ce00f270"
 
 evp_bytestokey@^1.0.0:
   version "1.0.0"
