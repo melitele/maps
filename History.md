@@ -1,4 +1,12 @@
 
+1.3.9 / 2018-07-16
+==================
+
+ * adjust pointer margin for touch events
+ * improve clicking and dragging stops on touch devices
+ * make touch/mouse events more forgiving
+ * simplify creation of geometry for queryRenderedFeatures
+
 1.3.8 / 2018-07-16
 ==================
 
