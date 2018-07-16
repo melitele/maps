@@ -1,4 +1,10 @@
 
+1.3.7 / 2018-07-15
+==================
+
+ * add support for OSM handling per feature events
+ * fix deleting empty array when all event handlers have been removed
+
 1.3.6 / 2018-07-07
 ==================
 
