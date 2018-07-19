@@ -1,4 +1,21 @@
 
+1.4.0 / 2018-07-19
+==================
+
+ * fire mouseenter and mouseover taking into account zindex
+ * delay handling events by map to give features the first chance
+ * use per feature events
+ * simplify handleClickEvent
+ * add support for per-feature events
+ * reduce number of layers by collating features
+ * change visiblity to opacity
+ * marker animation as updating layer option
+ * re-implement markers as data-driven layers
+ * parametrize layout and paint properties
+ * remove obsolete circle and drag handle controls
+ * unify defining sources for layers
+ * fix polygon
+
 1.3.9 / 2018-07-16
 ==================
 
