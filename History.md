@@ -1,4 +1,9 @@
 
+1.4.1 / 2018-07-19
+==================
+
+ * delay redrawing layer until a batch of features is collected
+
 1.4.0 / 2018-07-19
 ==================
 
