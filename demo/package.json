@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@pirxpilot/mapbox-gl": "0.45.3"
+  },
+  "devDependencies": {
+    "brfs": "^1.6.1",
+    "browserify": "^16.2.2",
+    "bubleify": "1.1.0",
+    "envlocalify": "^1.1.1",
+    "package-json-versionify": "^1.0.4",
+    "through2": "^2.0.3",
+    "unassertify": "^2.1.1"
+  }
+}
