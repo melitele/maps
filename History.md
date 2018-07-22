@@ -1,4 +1,13 @@
 
+2.0.0 / 2018-07-22
+==================
+
+ * compare original implementation of mapboxgl-js with @pirxpilot/mapbox-gl
+ * override global variable mapboxgl
+ * change example into a separate demo project
+ * compare Mapbox and OpenMapTiles in example page
+ * remove support for google maps
+
 1.4.1 / 2018-07-19
 ==================
 
