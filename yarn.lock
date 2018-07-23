@@ -407,10 +407,6 @@ duplexer2@^0.1.2, duplexer2@~0.1.0, duplexer2@~0.1.2:
   dependencies:
     readable-stream "^2.0.2"
 
-dynload@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/dynload/-/dynload-1.0.2.tgz#c6493d76d1f3cf86a9232abc7c4c258c41bf72df"
-
 elliptic@^6.0.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
@@ -456,10 +452,6 @@ fs.realpath@^1.0.0:
 function-bind@^1.0.2:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.0.tgz#16176714c801798e4e8f2cf7f7529467bb4a5771"
-
-geodesy@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/geodesy/-/geodesy-1.1.1.tgz#918c414a5cc247c8128332b7624050c467e98a5d"
 
 glob@7.0.5:
   version "7.0.5"

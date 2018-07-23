@@ -46,17 +46,16 @@ describe('listeners bag', function () {
     let bag = makeListenersBag();
 
     bag.add('click', 'l1', 'f1', h1);
-    bag.getListeners('click', 'l1', 'f1').should.eql([ h1 ]);
+    bag.getListeners('click', 'f1').should.eql([ h1 ]);
 
     bag.add('click', 'l1', 'f1', h2);
-    bag.getListeners('click', 'l1', 'f1').should.eql([ h1, h2 ]);
+    bag.getListeners('click', 'f1').should.eql([ h1, h2 ]);
 
     bag.remove('click', 'l1', 'f1', h1);
-    bag.getListeners('click', 'l1', 'f1').should.eql([ h2 ]);
+    bag.getListeners('click', 'f1').should.eql([ h2 ]);
 
     bag.remove('click', 'l1', 'f1', h2);
-    bag.getListeners('click', 'l1', 'f1').should.eql([]);
-
+    bag.getListeners('click', 'f1').should.eql([]);
   });
 
 });
