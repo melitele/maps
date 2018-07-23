@@ -1,4 +1,17 @@
 
+2.0.1 / 2018-07-23
+==================
+
+ * switch dependencies monitoring from gemnasium to david
+ * remove geodesy module
+ * remove dynload module
+ * update node version for travis
+ * register for map events using new feature event handler
+ * add support for map events
+ * add counting set
+ * add map listener bag
+ * optimize layers management in listeners bag
+
 2.0.0 / 2018-07-22
 ==================
 
