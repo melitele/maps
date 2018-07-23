@@ -17,7 +17,6 @@
   ],
   "dependencies": {
     "@pirxpilot/google-polyline": "^2.0.3",
-    "dynload": "^1.0.2",
     "geodesy": "^1.1.1",
     "map-scale-control": "^0.0.1",
     "map-zoom-control": "^0.0.1"
