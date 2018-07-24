@@ -1,4 +1,9 @@
 
+2.0.2 / 2018-07-24
+==================
+
+ * adjust icon position when dragging to account for icon offset
+
 2.0.1 / 2018-07-23
 ==================
 
