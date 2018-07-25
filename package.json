@@ -16,7 +16,6 @@
     "maps"
   ],
   "dependencies": {
-    "@pirxpilot/google-polyline": "^2.0.3",
     "map-scale-control": "^0.0.1",
     "map-zoom-control": "^0.0.1"
   },
