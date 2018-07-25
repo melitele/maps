@@ -1,5 +1,4 @@
 var util = require('../lib/util');
-var decodePath = require('../lib/service/mapbox/util').decodePath;
 
 describe('utils', function () {
 
@@ -31,16 +30,6 @@ describe('utils', function () {
       pol: false,
       p: [0, 1],
       point: [-0.04, 1.01]
-    });
-
-    var path = require('./fixtures/path');
-    findPoint([-89.42398369139788, 33.55483020029206], decodePath(path), [0.2, 0.2]).should.eql({
-      dist: 0.042578377843825475,
-      idx: 870,
-      margin: [0.2, 0.2],
-      p: [-89.26961, 33.41791],
-      point: [-89.42398369139788, 33.55483020029206],
-      pol: false
     });
   });
 
