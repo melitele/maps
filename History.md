@@ -1,4 +1,10 @@
 
+2.1.0 / 2018-07-25
+==================
+
+ * remove google-polyline module
+ * google polyline is no longer supported as input for drawing polylines and polygons
+
 2.0.2 / 2018-07-24
 ==================
 
