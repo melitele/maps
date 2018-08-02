@@ -1,4 +1,10 @@
 
+2.1.1 / 2018-08-02
+==================
+
+ * swap layer styling that depends on units
+ * delay invoking callback that map is ready until style is loaded
+
 2.1.0 / 2018-07-25
 ==================
 
