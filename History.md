@@ -1,4 +1,9 @@
 
+2.1.3 / 2018-08-02
+==================
+
+ * fix registering/unregistering map listeners
+
 2.1.2 / 2018-08-02
 ==================
 
