@@ -39,6 +39,25 @@ describe('listeners bag', function () {
     bag.forType('click').should.eql(['l2']);
   });
 
+  it('should move feature between layers', function() {
+    const h1 = () => {};
+
+    let bag = makeListenersBag();
+
+    bag.add('click', 'l1', 'f1', h1);
+    bag.add('touchend', 'l1', 'f1', h1);
+    bag.add('click', 'l2', 'f2', h1);
+
+    bag.forType('touchend').should.eql(['l1']);
+    bag.forType('click').should.eql(['l1', 'l2']);
+
+    bag.move('f1', 'l1', 'l2');
+
+    bag.forType('touchend').should.eql(['l2']);
+    bag.forType('click').should.eql(['l2']);
+  });
+
+
   it('should keep track of handlers', function() {
     const h1 = () => {};
     const h2 = () => {};
