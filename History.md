@@ -1,4 +1,11 @@
 
+2.1.4 / 2018-08-05
+==================
+
+ * add queryRenderedFeatures to map object
+ * switch mapbox/map.js to ES6
+ * remove special handling for click events
+
 2.1.3 / 2018-08-02
 ==================
 
