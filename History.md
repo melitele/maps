@@ -1,4 +1,9 @@
 
+2.2.1 / 2018-08-10
+==================
+
+ * consider standard static layers from style when calculating dynamic layer position based on zindex value
+
 2.2.0 / 2018-08-05
 ==================
 
