@@ -1,4 +1,10 @@
 
+2.2.2 / 2018-08-18
+==================
+
+ * generate dragcancel if map starts moving
+ * simplify draggable
+
 2.2.1 / 2018-08-10
 ==================
 
