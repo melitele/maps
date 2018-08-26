@@ -1,4 +1,12 @@
 
+2.2.3 / 2018-08-25
+==================
+
+ * disable map rotation
+ * handle `touchcancel` event
+ * `mouseenter` at the beginning of dragging is no longer needed
+ * generate `dragcancel` only on touch display
+
 2.2.2 / 2018-08-18
 ==================
 
