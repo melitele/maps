@@ -1,4 +1,10 @@
 
+2.2.4 / 2018-09-05
+==================
+
+ * reload tiles when a source changes
+ * init styles in the absence of initial callback
+
 2.2.3 / 2018-08-25
 ==================
 
