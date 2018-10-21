@@ -16,6 +16,7 @@
     "maps"
   ],
   "dependencies": {
+    "map-location-control": "^0.0.4",
     "map-scale-control": "^0.0.1",
     "map-zoom-control": "^0.0.1"
   },
