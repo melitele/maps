@@ -1,4 +1,11 @@
 
+2.3.0 / 2018-11-08
+==================
+
+ * expose changing visibility of layers
+ * remove support for obsolete forward arrow icon
+ * fix demo after removing unused service initialization parameters
+
 2.2.5 / 2018-10-25
 ==================
 
