@@ -31,20 +31,9 @@ function sampleMarkers(srv, mp) {
   mp.center([0.5, 0]);
   mp.zoom(9);
   for (i = 0; i <= 8; i += 1) {
-    srv.marker({
-      map: mp,
-      position: [i / 8, 3 / 8],
-      icon: {
-        strokeColor: '#0074D9', // azure
-        strokeWeight: 5,
-        path: 'forward_closed_arrow',
-        rotation: 45 * i,
-        scale: 5
-      }
-    });
     mk = srv.marker({
       map: mp,
-      position: [i / 8, 1 / 8],
+      position: [i / 8, 3 / 8],
       icon: {
         strokeColor: '#0074D9', // azure
         strokeWeight: 5,
@@ -58,7 +47,7 @@ function sampleMarkers(srv, mp) {
     }
     srv.marker({
       map: mp,
-      position: [i / 8, -1 / 8],
+      position: [i / 8, 1 / 8],
       color: 'orange',
       icon: {
         path: 'M 2 0 L 2 0.28125 L 2 13.6875 L 2 14 L 0.59375 14 L 0 14 L 0 14.59375 L 0 15.375 L 0 16 '
@@ -72,7 +61,7 @@ function sampleMarkers(srv, mp) {
     });
     mk = srv.marker({
       map: mp,
-      position: [i / 8, -3 / 8],
+      position: [i / 8, -1 / 8],
       icon: {
         url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTAgMEgyNlYyNkgxNkwxMyAzMEwxMCAyNkgwWiIgZmlsbD0iI2Y4MDAxMiIvPjxwYXRoIGQ9Ik0yIDJIMjRWMjRIMloiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjEuOCAxMC40TDcuNSA2LjZWNC40SDYuNFYxOS44SDQuMlYyMkg5LjdWMTkuOEg3LjVWMTQuM1oiIGZpbGw9IiNmODAwMTIiLz48L3N2Zz4=',
         size: [26, 30]
