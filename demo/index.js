@@ -10,9 +10,9 @@ var implementation = {
 };
 implementation.osm = require('@pirxpilot/mapbox-gl');
 
-var maps = require('..').init({
-  service: 'mapbox'
-}, function () {
+var maps = require('..').init();
+
+if (maps) {
 
   var dataEl = document.querySelector('#data');
   var points = JSON.parse(dataEl.getAttribute('data-markers'));
@@ -179,4 +179,4 @@ var maps = require('..').init({
       map.fitBounds(bnds);
     });
   });
-});
+}
