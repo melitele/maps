@@ -15,9 +15,7 @@
     "browser",
     "maps"
   ],
-  "dependencies": {
-    "map-zoom-control": "^0.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "browserify": "~14",
     "jshint": "^2.8.0",

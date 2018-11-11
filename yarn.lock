@@ -675,10 +675,6 @@ lodash@3.7.x:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.7.0.tgz#3678bd8ab995057c07ade836ed2ef087da811d45"
 
-map-zoom-control@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/map-zoom-control/-/map-zoom-control-0.0.1.tgz#38d23ddc0e9ec088b5265b9301d167dc47407345"
-
 miller-rabin@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/miller-rabin/-/miller-rabin-4.0.0.tgz#4a62fb1d42933c05583982f4c716f6fb9e6c6d3d"
