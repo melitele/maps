@@ -1,4 +1,13 @@
 
+2.4.0 / 2018-11-12
+==================
+
+ * add source hostname to event for collecting statistics
+ * collect attributions upon loading tiles and pass it on as event property
+ * remove map controls options
+ * remove `units` as unnecessary
+ * support metadata-driven visibility multi-property options `all` and `any`
+
 2.3.0 / 2018-11-08
 ==================
 
