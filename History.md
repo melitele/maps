@@ -1,4 +1,10 @@
 
+2.4.1 / 2018-11-16
+==================
+
+ * metadata-driven tile caching strategy
+ * refactor metadata-driven visibility to a separate file
+
 2.4.0 / 2018-11-12
 ==================
 
