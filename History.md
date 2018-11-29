@@ -1,4 +1,9 @@
 
+2.4.2 / 2018-11-28
+==================
+
+ * fix exception thrown when starting animation for default (circle) icon
+
 2.4.1 / 2018-11-16
 ==================
 
