@@ -1,4 +1,9 @@
 
+2.4.3 / 2019-01-19
+==================
+
+ * send out attribution only when source is in use
+
 2.4.2 / 2018-11-28
 ==================
 
