@@ -1,4 +1,9 @@
 
+2.4.6 / 2019-01-27
+==================
+
+ * reduce reloading source tileJSON to either once per session or everytime source is activated
+
 2.4.5 / 2019-01-25
 ==================
 
