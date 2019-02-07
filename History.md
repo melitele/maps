@@ -1,4 +1,9 @@
 
+2.5.0 / 2019-02-07
+==================
+
+ * generic map artifact based on layer defined in map style
+
 2.4.6 / 2019-01-27
 ==================
 
