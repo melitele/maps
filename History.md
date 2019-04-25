@@ -1,4 +1,9 @@
 
+2.5.1 / 2019-04-24
+==================
+
+ * include coordinates in features rendered at a point
+
 2.5.0 / 2019-02-07
 ==================
 
