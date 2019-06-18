@@ -1,4 +1,9 @@
 
+2.5.2 / 2019-06-18
+==================
+
+ * remove code enforcing zoom value to be integral
+
 2.5.1 / 2019-04-24
 ==================
 
