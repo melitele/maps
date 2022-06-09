@@ -1,4 +1,12 @@
 
+2.5.3 / 2022-06-09
+==================
+
+ * remove yarn.lock
+ * cancel dragging when removing layer
+ * cancel dragging if in progress when switching marker from draggable to stationary
+ * prevent default handling of mouse down event on draggable marker also during dragging
+
 2.5.2 / 2019-06-18
 ==================
 
