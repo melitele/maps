@@ -1,4 +1,10 @@
 
+2.5.4 / 2022-06-16
+==================
+
+ * cancel dragging when marker is truly removed not just re-added to change appearance
+ * fix attempting to cancel dragging a marker after it has already been removed
+
 2.5.3 / 2022-06-09
 ==================
 
