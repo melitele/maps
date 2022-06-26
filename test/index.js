@@ -1,8 +1,8 @@
-var mock = require('mock-require');
+const mock = require('mock-require');
 
 mock('dynload', function () {});
 
-var maps = require('../lib');
+const maps = require('../lib');
 
 describe('maps', function () {
 
