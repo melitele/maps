@@ -1,9 +1,9 @@
-var util = require('../lib/util');
+const util = require('../lib/util');
 
 describe('utils', function () {
 
   it('findPoint', function () {
-    var findPoint = util.findPoint;
+    const findPoint = util.findPoint;
 
     findPoint([0.55, 0.45], [[0, 0], [1, 1]], [0.05, 0.05]).should.eql({
       dist: 0.005000000000000003,
