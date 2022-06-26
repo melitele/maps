@@ -1,4 +1,10 @@
 
+2.5.5 / 2022-06-26
+==================
+
+ * stop waiting for loading image after images collection has been destroyed
+ * modernize code to ES6
+
 2.5.4 / 2022-06-16
 ==================
 
