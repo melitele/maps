@@ -1,3 +1,4 @@
+const { describe, it } = require('node:test');
 const mock = require('mock-require');
 
 mock('dynload', function () {});

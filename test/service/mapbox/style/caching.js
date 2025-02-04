@@ -1,3 +1,4 @@
+const { describe, it } = require('node:test');
 const { initCaching, evalCaching } = require('../../../../lib/service/mapbox/style/caching');
 
 describe('caching', function () {

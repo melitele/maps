@@ -1,3 +1,4 @@
+const { describe, it } = require('node:test');
 const util = require('../lib/util');
 
 describe('utils', function () {

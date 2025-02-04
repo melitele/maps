@@ -1,3 +1,4 @@
+const { describe, it } = require('node:test');
 const { initVisibility, evalVisibility } = require('../../../../lib/service/mapbox/style/visibility');
 
 describe('visibility', function () {
