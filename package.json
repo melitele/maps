@@ -10,7 +10,10 @@
   "scripts": {
     "test": "make check"
   },
-  "repository": "melitele/maps",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/melitele/maps.git"
+  },
   "keywords": [
     "browser",
     "maps"
