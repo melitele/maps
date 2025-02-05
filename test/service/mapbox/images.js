@@ -1,3 +1,4 @@
+const { before, after, describe, it } = require('node:test');
 const should = require('should');
 
 const create = require('../../../lib/service/mapbox/images');
@@ -15,7 +16,7 @@ describe('images', function () {
     this.jsdom();
   });
 
-  it('destroy', function (done) {
+  it('destroy', function (_, done) {
     let destroyed;
 
     const images = create();

@@ -10,7 +10,10 @@
   "scripts": {
     "test": "make check"
   },
-  "repository": "melitele/maps",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/melitele/maps.git"
+  },
   "keywords": [
     "browser",
     "maps"
@@ -18,13 +21,12 @@
   "dependencies": {},
   "devDependencies": {
     "browserify": "~14",
-    "canvas": "^2.9.3",
+    "canvas": "~3",
     "jsdom": "^20.0.0",
     "jsdom-global": "^3.0.2",
     "jshint": "^2.8.0",
-    "mocha": "^3.2.0",
     "mock-require": "^2.0.2",
-    "should": "^11.2.1"
+    "should": "~13"
   },
   "license": "MIT",
   "bugs": {

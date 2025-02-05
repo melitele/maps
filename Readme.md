@@ -1,5 +1,5 @@
 [![NPM version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
+[![Build Status][build-image]][build-url]
 [![Dependency Status][deps-image]][deps-url]
 
 # maps
@@ -18,11 +18,11 @@
 
   MIT © [Damian Krzeminski](https://pirxpilot.me)
 
-[npm-image]: https://img.shields.io/npm/v/maps-facade.svg
+[npm-image]: https://img.shields.io/npm/v/maps-facade
 [npm-url]: https://npmjs.org/package/maps-facade
 
-[travis-url]: https://travis-ci.org/melitele/maps
-[travis-image]: https://img.shields.io/travis/melitele/maps.svg
+[build-url]: https://github.com/melitele/maps/actions/workflows/check.yaml
+[build-image]: https://img.shields.io/github/actions/workflow/status/melitele/maps/check.yaml?branch=main
 
-[deps-image]: https://img.shields.io/david/melitele/maps.svg
-[deps-url]: https://david-dm.org/melitele/maps
+[deps-image]: https://img.shields.io/librariesio/release/npm/maps-facade
+[deps-url]: https://libraries.io/npm/maps-facade
