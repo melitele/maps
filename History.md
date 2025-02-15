@@ -1,4 +1,13 @@
 
+2.5.8 / 2025-02-14
+==================
+
+ * init SOURCE_LOADER_STRATEGY if necessary
+ * upgrade to ES 11
+ * replace Travis CI with github actions
+ * replace `mocha` with `node:test`
+ * upgrade canvas to ~3
+
 2.5.7 / 2025-02-04
 ==================
 
