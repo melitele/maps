@@ -1,4 +1,10 @@
 
+2.5.9 / 2025-03-04
+==================
+
+ * quick and dirty way of passing updated style to map when language changes
+ * remove references to source caching
+
 2.5.8 / 2025-02-14
 ==================
 
