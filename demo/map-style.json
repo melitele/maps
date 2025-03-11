@@ -2,6 +2,48 @@
   "version": 8,
   "name": "Demo",
   "sources": {
+    "_data": {
+      "data": {
+        "features": [],
+        "type": "FeatureCollection"
+      },
+      "type": "geojson"
+    },
+    "_spreader": {
+      "data": {
+        "features": [],
+        "type": "FeatureCollection"
+      },
+      "type": "geojson"
+    },
+    "_collator": {
+      "data": {
+        "features": [],
+        "type": "FeatureCollection"
+      },
+      "type": "geojson"
+    },
+    "_collator_spreader": {
+      "data": {
+        "features": [],
+        "type": "FeatureCollection"
+      },
+      "type": "geojson"
+    },
+    "_markers": {
+      "data": {
+        "features": [],
+        "type": "FeatureCollection"
+      },
+      "type": "geojson"
+    },
+    "_china": {
+      "data": {
+        "features": [],
+        "type": "FeatureCollection"
+      },
+      "type": "geojson"
+    },
     "tiles": {
       "type": "vector",
       "url": "https://tiles.openfreemap.org/planet"
@@ -2191,6 +2233,335 @@
       "source": "tiles",
       "source-layer": "place",
       "type": "symbol"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "markers_symbol"
+      ],
+      "id": "markers_symbol",
+      "layout": {
+        "icon-image": [
+          "get",
+          "image"
+        ],
+        "icon-offset": [
+          "get",
+          "offset"
+        ],
+        "icon-size": [
+          "get",
+          "size"
+        ]
+      },
+      "metadata": {},
+      "paint": {},
+      "source": "_markers",
+      "type": "symbol"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "china_line"
+      ],
+      "id": "china_line",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "metadata": {},
+      "paint": {
+        "line-color": "#a21bab",
+        "line-dasharray": [
+          2,
+          3
+        ],
+        "line-width": 4
+      },
+      "source": "_china",
+      "type": "line"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "china_polygon"
+      ],
+      "id": "china_polygon",
+      "layout": {},
+      "metadata": {},
+      "paint": {
+        "fill-color": "#A21BAB",
+        "fill-opacity": 0.5,
+        "fill-outline-color": "#0074D9"
+      },
+      "source": "_china",
+      "type": "fill"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "china_circle"
+      ],
+      "id": "china_circle",
+      "layout": {},
+      "metadata": {},
+      "paint": {
+        "circle-opacity": 0,
+        "circle-radius": 6,
+        "circle-stroke-color": "#0074D9",
+        "circle-stroke-width": 5
+      },
+      "source": "_china",
+      "type": "circle"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "polyline"
+      ],
+      "id": "polyline_data",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "metadata": {},
+      "paint": {
+        "line-color": "#a21bab",
+        "line-opacity": 0.8,
+        "line-width": 4
+      },
+      "source": "_data",
+      "type": "line"
+    },
+    {
+      "filter": [
+        "all",
+        [
+          "==",
+          "type",
+          "marker"
+        ],
+        [
+          "has",
+          "icon"
+        ]
+      ],
+      "id": "marker_symbol",
+      "layout": {
+        "icon-image": "marker_icon",
+        "icon-offset": [
+          0,
+          -30
+        ],
+        "icon-size": 0.5
+      },
+      "metadata": {},
+      "paint": {
+        "icon-opacity": [
+          "get",
+          "opacity"
+        ]
+      },
+      "source": "_data",
+      "type": "symbol"
+    },
+    {
+      "filter": [
+        "all",
+        [
+          "==",
+          "type",
+          "marker"
+        ],
+        [
+          "!has",
+          "icon"
+        ]
+      ],
+      "id": "marker_circle",
+      "layout": {},
+      "metadata": {},
+      "paint": {
+        "circle-color": [
+          "coalesce",
+          [
+            "get",
+            "color"
+          ],
+          "#000000"
+        ],
+        "circle-opacity": [
+          "case",
+          [
+            "boolean",
+            [
+              "has",
+              "color"
+            ],
+            true
+          ],
+          [
+            "get",
+            "opacity"
+          ],
+          0
+        ],
+        "circle-radius": 6,
+        "circle-stroke-color": "#555555",
+        "circle-stroke-opacity": [
+          "get",
+          "opacity"
+        ],
+        "circle-stroke-width": 2
+      },
+      "source": "_data",
+      "type": "circle"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "polyline"
+      ],
+      "id": "polyline_spreader",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "metadata": {},
+      "paint": {
+        "line-color": "#a21bab",
+        "line-opacity": 0.8,
+        "line-width": 4
+      },
+      "source": "_spreader",
+      "type": "line"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "circle_label"
+      ],
+      "id": "circle_label",
+      "layout": {
+        "icon-allow-overlap": true,
+        "icon-image": "circle_label",
+        "icon-size": 0.7,
+        "text-allow-overlap": true,
+        "text-field": "{label}",
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": 10
+      },
+      "metadata": {},
+      "paint": {
+        "text-color": "#FFFFFF",
+        "text-halo-width": 0.25,
+        "text-halo-color": "rgba(255,255,255,1)"
+      },
+      "source": "_spreader",
+      "type": "symbol"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "polyline"
+      ],
+      "id": "polyline_collator",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "metadata": {},
+      "paint": {
+        "line-color": "#a21bab",
+        "line-opacity": 0.8,
+        "line-width": 4
+      },
+      "source": "_collator",
+      "type": "line"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "circle"
+      ],
+      "id": "circle",
+      "layout": {},
+      "metadata": {},
+      "paint": {
+        "circle-color": "orange",
+        "circle-radius": 6,
+        "circle-stroke-color": "#555555",
+        "circle-stroke-width": 2
+      },
+      "source": "_collator",
+      "type": "circle"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "polyline"
+      ],
+      "id": "polyline_collator_spreader",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "metadata": {},
+      "paint": {
+        "line-color": "#a21bab",
+        "line-opacity": 0.8,
+        "line-width": 4
+      },
+      "source": "_collator_spreader",
+      "type": "line"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "circle_orange"
+      ],
+      "id": "circle_orange",
+      "layout": {},
+      "metadata": {},
+      "paint": {
+        "circle-color": "orange",
+        "circle-radius": 6,
+        "circle-stroke-color": "#555555",
+        "circle-stroke-width": 2
+      },
+      "source": "_collator_spreader",
+      "type": "circle"
+    },
+    {
+      "filter": [
+        "==",
+        "type",
+        "circle_teal"
+      ],
+      "id": "circle_teal",
+      "layout": {},
+      "metadata": {},
+      "paint": {
+        "circle-color": "teal",
+        "circle-radius": 6,
+        "circle-stroke-color": "#555555",
+        "circle-stroke-width": 2
+      },
+      "source": "_collator_spreader",
+      "type": "circle"
     }
   ]
 }

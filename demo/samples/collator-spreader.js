@@ -1,10 +1,19 @@
 module.exports = addedWithCollatorAndSpreader;
 
-function addedWithCollatorAndSpreader(maps, map, points, path) {
-  maps.polyline({
+function addedWithCollatorAndSpreader(maps, map, source, points, path) {
+  maps.feature({
     map,
-    color: '#a21bab',
-    path
+    source,
+    data: {
+      properties: {
+        type: 'polyline'
+      },
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: path
+      }
+    }
   });
   // spread AND collate markers on map
   function calculate() {
@@ -28,21 +37,39 @@ function addedWithCollatorAndSpreader(maps, map, points, path) {
   points.forEach((pt, i) => {
     let m;
     if (i % 2) {
-      m = maps.marker({
+      m = maps.feature({
         map,
-        color: 'orange',
-        position: pt,
-        zIndex: 1
+        source,
+        data: {
+          properties: {
+            type: 'circle_orange',
+          },
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: pt
+          }
+        }
       });
+      m.zindex = () => 1;
       collate.add(m);
     }
     else {
-      m = maps.marker({
+      m = maps.feature({
         map,
-        color: 'teal',
-        position: pt,
-        zIndex: 2
+        source,
+        data: {
+          properties: {
+            type: 'circle_teal',
+          },
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: pt
+          }
+        }
       });
+      m.zindex = () => 2;
       spread.add(m);
       collate.add(m, true);
     }

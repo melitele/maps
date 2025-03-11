@@ -1,21 +1,41 @@
 module.exports = addedWithCollator;
 
-function addedWithCollator(maps, map, points, path) {
-  maps.polyline({
+function addedWithCollator(maps, map, source, points, path) {
+  maps.feature({
     map,
-    color: '#a21bab',
-    path
+    source,
+    data: {
+      properties: {
+        type: 'polyline'
+      },
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: path
+      }
+    }
   });
   // collate markers on map
   const collate = maps.collate({
     map
   });
   points.forEach(pt => {
-    collate.add(maps.marker({
+    const ft = maps.feature({
       map,
-      color: 'orange',
-      position: pt
-    }));
+      source,
+      data: {
+        properties: {
+          type: 'circle'
+        },
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: pt
+        }
+      }
+    });
+    ft.zindex = () => 1;
+    collate.add(ft);
   });
   collate.calculate();
 }

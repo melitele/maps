@@ -1,6 +1,6 @@
 module.exports = sampleChina;
 
-function sampleChina(srv, map) {
+function sampleChina(srv, map, source) {
   const center = [116.383473, 39.903331];
   const path = [
     center,
@@ -14,27 +14,49 @@ function sampleChina(srv, map) {
     center
   ];
   map.zoom(17);
-  srv.marker({
+  srv.feature({
     map,
-    icon: {
-      strokeColor: '#0074D9', // azure
-      strokeWeight: 5,
-      path: 'circle',
-      scale: 8
+    source,
+    data: {
+      properties: {
+        type: 'china_circle'
+      },
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: center
+      }
     }
-  }).position(center);
-  srv.polyline({
+  });
+  srv.feature({
     map,
-    color: '#a21bab',
-    dashOpacity: 1
-  }).path(path);
-  srv.polygon({
+    source,
+    data: {
+      properties: {
+        type: 'china_line'
+      },
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: path
+      }
+    }
+  });
+  srv.feature({
     map,
-    fillColor: '#a21bab',
-    fillOpacity: 0.5,
-    strokeColor: '#0074D9'
-  }).path(poly);
-  setTimeout(() =>{
+    source,
+    data: {
+      properties: {
+        type: 'china_polygon'
+      },
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [poly]
+      }
+    }
+  });
+  setTimeout(function () {
     map.center(center);
   }, 1)
 }
