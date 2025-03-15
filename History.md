@@ -1,4 +1,15 @@
 
+2.6.0 / 2025-03-14
+==================
+
+ * rewrite demo to use only styled features
+ * implement shape that can be added to a source predefined in a map style
+ * expose registering icons
+ * replace callback with promise when registering an icon
+ * modernize demo to use MapLibre GL JS and OpenFreeMap
+ * organize layers by source after mapboxgl processed the style
+ * upgrade jshint to be able to use newer ES features
+
 2.5.9 / 2025-03-04
 ==================
 
