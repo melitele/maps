@@ -1,9 +1,11 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Object.assign"></script>
-    <script src="./build/build.js" charset="utf-8"></script>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.css' rel='stylesheet' />
+    <title>Maps Facade Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="build/build.css">
+    <script src='https://unpkg.com/maplibre-gl/dist/maplibre-gl.js'></script>
+    <link href='https://unpkg.com/maplibre-gl/dist/maplibre-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="data"
@@ -11,401 +13,30 @@
        data-polyline="cqmrEn`|xOlDlJnAfErC|KrAdHrGfa@lBfJrCpJ|DjK|B~DnBdChBrBlCzB|ExC|VfKvGxClC`BhE`EfFjGbEtHvJhXfDhIlFxJdPpWpBzErAxDvAtGnHpg@nBtKxBfI`EnMxDrJhRz`@vFdP|AjGZvBdAzClCxMzEvYvFne@VbDpAhKxAbJtC~K`ArChIjSfDrJlD`QxB|TjF|UhDjMlC~RbCvHtApCrC`E~NrPlEhFx@vAtBtBpDzA|A\\~@FpLDhBv@rBTdSiChFD|GIhD\\~PhF~TrDpE|BbCzB|BrC`BdDvDtL`B`HnDlJzHtMxCbEvLrNzCfObChH~EzHpCrHrFfKpEfDlFlCbIp@dJLvJC|Yh@tY_EbB?xUzFjNj@hInD|KfMnKpGbBdAr@h@dAlAbA`BfA`Ch@hBvBdI|DtGfUpGbKfNxKbF~CzAtKfEj@TfKbFlAl@jLnLtDjH\\v@j@`B`@jAb@zA^|AdAfCx@fBt@tA`ClDn@fA`@`A^hAVbAb@fCLhB^|JNhBZhDVzANpAVvAZ|AxBzIp@~C`@tBRnA\\`CRvBTlCHpBFnB@~@@fAAlBOtDSlDk@`Fs@zDg@~BgAlEeAtE}EdZiAzAsBzNi@xBeBhPRdAc@fBm@|IOpGE|P^rLn@rG|AnLvDhM|CtFtElMRpAxBtG|B~FlKjSpExKnB|FlAvCxCvFlCvDbLtNtFhK|FtNrE|WbCnKdAjCxFbQ`BlKlAbPbCzFDp@xBzD`FpEjHvJtCjEfChKhBtQtAlFlCzEhCrCpFjErCtCjCdDtBfDt@dBvBtDdFdFzB~@bE`C|CzEbDzHx@vDn@fIxBdN|C~NdAtGXzB~AfVbC~Q^hEb@tCb@pFPfF`@f`@t@`PH|EPfTq@pV}Crg@HfN~BbM`ErJtCrIrAhMl@zC~BvElBfChAlBzAxD^`B`BfKnBzG~BtF~GzMdEdKxAfEfB`GlCfMx@fFd@bE|@lNn@zFb@~BjErO`AzFtA|Ob@lCnA`EpD~GhBlCtAvCvAhFnA~GtAlD|@~ArKnL`EfFvD`G|E`JzFhNtDpG`EtFhBxD|GjTnNdZxF`NfBfFvDxLrEdRbEzOtDtLtHzTrCtJx@fDn@rCbAlGnA~JlAnHR~@b@pBj@xBlIzTn@hDLbBDfESdEIjHfDpPBxFo@vNTxCPxAJb@dBlGj@nB`@hBb@xC\\xDXbFTbBb@zBL^X|@x@hBpAnBfA`BP`@`@z@\\fAXrALhAJpABjAC~AGbCCnD@|CH`FBhB@hB@xAE`BMjCOfBgAnIa@lDStBIvBGbCAv@ClCDbDj@pIb@zFTlGnBbQ|ApIj@hB`GjMbEzF`HhP|FfGxEnHjClIhBrG~AnO|AxZxC~PjE~Rz@dCvHlOlA|DdGfNbO|W`BlB`RlKzInH|ApBdC`FzHnShAdBbBbBhBbAbCl@bCz@nBbAbA~@fFfHrBnBhAp@hE~AfEr@fIxBlI`DdLlHfItElBx@pDjAhEdAtDxApAf@|E~BrCdBlEfDbDzC|BdC~D~EpHzKdJpLnCvC|FlFzEfFhE`F`FfHlFxGzCzB`D~AfE`BlCpArIbHrAv@|Ap@~A`@jKjAxGnApEhA|DfBrDzClBdCtCtHh@rEZfHtAdIdAnDvB~EdBfGlB`K^dAn@fAhAtAfB|AnAt@dBn@lEn@bEdApB|@bBhAxArAlAvAtDfG|C`EhRbQ`J`LxFxJlDzHjElHbCtCdDpCjElCn@D|JfFbMfF|OxEb_@pHtSlF~IvCfJlDjLxEhPbIbSxHvYtIbFjAtT~ChEbAdR~FtLrElHvCxCzAtBbAfFzCv@f@XRhDjC|FhFxBvAdApA`HpJ~MtVfFvKvEdIlDnF`FpGfCtCnLtKnJjHlGhElFrCjJlEbOrFnHfBxCj@zE|@zBXpBV`Db@xEhAXFzBX`Gf@zA\\`LvClBd@~Bx@rKtEfIjDlBpAxJnFtJdGpCjBtKvHbCjBhEbE~QjO|QpPpNxJ|OtIpOfHpYhMtY`Jvr@zR|`@bO~f@vUpLpGjGpDxWlP`\\|UlSnP`KzIlYtT`HtEtTdN~UbMpQzHrNrFjd@vNfHlC`FxB`LjGvGnEvWfTpKfKpHfIlHvIrDlF|EfIfE~HpIdQtIlN~FrI`NpOtE~EnQhO|LfJhP`LrOlIvFfCjLfEpPrEpFdAvMlBnLrAdMlB|FxAzHjC`MvFfUjN`HtEvKfGjIxDzOhFxOvDdNhCnPp@~FE|\\mAlJKlKPtMtA|Ev@pG~A~]`LxRtHvi@nVf^nQ|RtKbXvOxRxLzFfDjKvEjJdEVJrJbExEhBxFnBnKxCz@TrD~@~I|A|ATfKz@zK`ArIr@tEl@zFdAz@R`KpCrBv@`IpDhDhBtD`C|AdAdD|BhXjZbC`CzL`IhThKlGjCtPzHvDlCvEfEbBlBhCpDbEtGzInPtKnPdDlErMnNfKxIbHlEzLhGjDxAhQvFvE~@`CZdG^~CKrJm@nUuFlDeA`e@cPzVeFb[aEbc@eDfJQfIb@zFd@vJtBjJdDpFxCbVdQ~LzJna@|a@~YzXbOpLpS`OrOnIjAx@tU`JfF~A~SzC|V~CpNvAr\\nBtMb@zQ?bO_@hXqAvKJ~HX`JrA~IvBn@PrBz@dAh@`DfB|B|AvGhEl@^vEnE~GxHpF~GrKhPzJfOfEfGzGzI`J~J`UdSpJjHlHnElRrH~v@nW`J~DbGzDrAj@bHbE`VlPhQtOjK`KxH`IzZx]zH~GpXhTlFnDfTrM`PnI~MfGvKlEpShHn]lJhMrCj]xG|y@tMpj@zEhR`C~YdGlQxElWlIlUbJ~OtH|VfNfKzEnNjEpIlBtN~B|UrAlM^dJt@fK|AjH~AzMbErRrHdOdFzGzApLlB|Hx@dMh@p[JpKZhSxAtJjAdGdA|GzAjPjEzNnFjGrCzJzFlG~DvGfFrItHxN`O`HlJlIbMpIlP|DnIvEhLrApCvBbDXb@tB~CzArBtB|BzEvE`C`Cz@r@fBzAtCtBjBjAzCrBdB~@fCvAdB~@dAf@dDzAfC~@zHbCfJ~B~JxArGp@bIp@lHz@nC\\dDb@lFp@nCh@fKvBlKjDTHdFlBpHbDdHlD|@l@lGxDxF`ExJdInFbFvI|In@r@hDjDbFpGvFrH|E|HjCxEzEfJvJtT`D|FxKzQhI`LzRnTfUnTlIlHfFtDnM~GpUzIp^vHxi@~JxNzDlK~D~HlD~DrBxLlHjPfL`N|IbTpL~KpFdQrHzZ`Llh@tVvIxEjLfHnMhJfHtF`I~G|VvVnB`Cj\\hb@~d@ps@lSdYrYn\\pEhExV`Udn@td@jIjF|GrDzR|LrCrA|bAfi@rTlN|IxG~PnNxMzLlq@tu@~PvQtItI|SxQvYvWnUbUxK~KtPxQpL|MfX|[bRzVjSdYlVd^lR~ZrHrMtJtNdKvLdNzLrFxDlElC|GpD|EzBjE`BbJpCjKzBvHhAnL`AtMXrWP|BLnE^jHdAhEt@`D|@fGfCbHrD`DdChE`ExElGdIzLlDtEfHxHbD`CvExCvF`CrCbA~W`G`ExAx@XjHtE~B|BhE|GdGrNrBrF|C|JhErOx@vDbFdPl@`BlHhPtHbSx@lCpArGlAnJx@rJ^bWXvYhAlLnBvL|B~I~@zCpEfLxD`HlFxItItMvLhOfT|V|HlIlD|CjAvA`K`JfOlLz`@~VhG`FdG`FdPlP~NhMbKfH`GvD`GnCrCdAbD`AfGlAzGbAbHr@lFz@bOdFfDpBbMnIlAjArFjGfCjD|G`L|ChH~ApElDnLxObx@|A~F`CnHjEnJdCjEvClElEfFfFdFbCnBbDzB|ErCrDbBlHhClb@`KrHvBz]tMvUnLjc@tXfXdNhPvG`JzCxOrEl[hHnKdDzS`KlP`LxOhPnEnGh_@rm@tQ`TjOjLvRjLxSpJtPpGhLfE|OlEfTlFrR`EjO~B|V`DlT~@~e@Grf@XrWxAvShCdVxDx\\fIfI~DtNnIrHzEd[xTzGpGtSxQjNhO~MfMfHfGtNdL|TtNpk@bZdEpBfXfO~ZlTpJjIzInIpA~@bSnThMtLf\\vS~NtGxR`HtMrDv[xJtHrC~PlHfLxF~L`HlN`JdOhL~RfR~FnE`FtG~EpHpHhM`HvNtQjc@pLzVpCnFjLvSrEjHzOvUtIbLdM`OdNfO`L|KxNzMnQ`OrUzP|g@`\\hGdFjIbIvJdLjDzEvHtLnQvWvLfPfFzFzLlMzEnEtFxE`E~CxOvJdLdF|FxBbJlCjK~Bx`A`MzKhBhTbErXhHvm@nRd`@zKvSxDdIlAbXjD`LbAnPhA|Y`A`IJzO?p_@Yv`@q@tYHvMZnc@~Bf[zCbQ~B`[nF~NbDzLxCrJlCbSnGfW`KjHdD`YhN|MxH~O`KnShNtK`IzLvJbOpMvGfGdOhOda@nc@nMxMfIbIpMnLlDhCfIzGhQvMfIxF`YbQzPfJnLxFlXnK~UlHv|@|QtXrHdQxFjLhEzOrGbKxEdt@p^xXlK|SbGpUxFbYdEbQ`BvWlA~e@xAfWRhS?jQUrPi@fW_@rH[ru@}Bnc@a@`GDrX`@zTjA`PxA~OxBxFrA`EjAlG`CfHlDhN`KlYtVzJhIvGdFbIzFdKrGhOvI`M~FfMjFnJnDjRfGfXrHtL`EhNzFd@BnM`GbO`IxHtEzMzJlFrEjFrFxF~HhClE`BtCbEfJhE`MvAzFrCzIhDfJ|F`MvClFxEzHlDfFhKlNhKhMvUnWvItKrFrH~IvMxQp[vKzUlCnGlElLvGpRpHpWxFhQfDlIrCdGlDzGrElHfHbKtK`MfJlJvClDzB~CdGbKbF`LvDzKhC`JfDnOfC`P~Dxa@hAxIxB`LhAnElCfIbCfGbEfItBlDvBnCvD|DxCzBxBvArEnBvDjAlEx@nTrAtFp@xFtAjGvBrErBrH`FjEfD|C~C|FlHvGvMpJtTdDlGlBlChMzOhFrFpGtFzK`Irc@|YbKlI`TzQtOnO`HnHvKlMjNhQzMxRtKlQrNxXxSlg@dFxNzDnM`\\tpApK~`@dKx_@zKn_@nFhP`JtVdKdWdMbYbRj`@bJbPzIhQzJdTrRjc@dO~[`IrPvGbLbElGzIhLrHfInLzN|GfJpGrKvJvQ|FhLpE~H|E~F|DfEpIzH`LfJ|AzAhBfCjBdEh@pBl@|CXpDTbLRfDx@~EdBrF~BtEzBvCjAhAlBvAhCvAvFfB|D`AzKdBvCp@nBh@hChA`DfBxC`ClGrGrDdFvCnFbEhJbB|ElAhEzArH^dDXtGIzF_AlMK`C@~CLxBx@`Gz@dDfAtCxBzDdA|ArAxA|BnB~EdDtE~Brm@~SpMrFvOxIfGjEhI|GpFlF|ExGvCrE~DfI`DpH|CxItCzJlA~ElC|NnEn]fBtKn@fDdDbM`DzIxApDfFpKxDhG`DlEbI|ItJ~I|IhHdHdFfHnEnNdHfHtCxTfIdRlFpFrAld@lJvJtCpJdE|ErClIhGvEhEbChCtAdB~GbKvHfObBdExAlEnBhJt@tINrIGrJg@`IeBhQwBvPuAvPs@xS_@rU?`Uf@nZZdJhB`\\d@pMHrFInOYdHk@nJ}BxWmA~JcFv[iCvQo@dF_@hF_@vGi@|Wi@tNmAjN}@fHQ~CU`IJlINhD|@|HrGr\\h@xD~AbQrB|M|CzMrGfS`BrH~AhPn@zElAxG~@lDxG|Rx@zDl@zE`AdOj@zF~@lG~@zEbCxIbEpKfCrFpCpHdBzF|DbPhBlFnBfEbC`ErAhB`HtHfEfFhHpKvEdGlBpBlLjKrCjDlDnFlGlNbDlGpExGvGnHzFzHdCrE`D`ItBlHp@vCj@vB`AjD^fAN`@d@hA|@rBx@`B`A`B|AtBxBhCxAzAtD~C|EdFjAtAlBnCnEhHfAzAnA~A~BfCzAvA|BdBbEbCdAd@v@\\b@F\\N~HzBxBv@pAr@tAdA~AfBPRXd@^p@FJVp@Vv@Rl@Lh@TpABNHb@XjDFrC?LL`EHdBLhAJbAVvA`@`B^lAZ|@b@bA`@z@Zj@d@x@z@hBzAlD\\~@`ArCr@jCl@`CV|@f@|Av@zB`@bAN\\`ApBlAxBf@z@`AdBt@|Aj@pAj@rAzF`QbCzEtClExOnQ`DlF~BnG`@hBn@vCz@vEr@~CPp@xBtGrAzClB~CpIjL|BpEnAfDr@~BdArF|AhK~BnKpExObCtL~@`Hn@rGdAdTl@jGrAbHjAxE|@xEb@lDZtD?`THhEXvETnBxApHbA`DxBfJ|DdXhB`H~AzE`F~JfD`IhCbInCdL`C`HfBtD`FvHtDnExErEfGrE`HzD|GlCfIvCj[tJtL`FlGfDhAv@nMdLfPfP|PbS`LbOjG~IbIlMdZpj@bElGrBjCzLnMtPnO|JtJdLxLxKhMzMlQpGtJdFlI~FhKdChFlCpHvCvLtAxJ^tEl@xMj@pQb@de@NxDnAtNlBzLhC|LpEzNpRll@pD|NrAvGhA`IdAhJ|@hL|Chz@~@`NnBbSrBfOhDjRlB~IhB`HrAfFlBnFbJhSxInMl[t[jL|MxGtLjElLhCrIxMfk@`EnLfCfGjElIrZle@vDbJxExOpJfd@vCnL|DlLrD`JzEtJfHzKfHlJlKtK|d@f_@dL`KxJdLzGfJpG~JnUnb@`FtHrDrFpE~Fzc@`h@zEfH~CnFjF`KrC`HnClIbCzI|BhLvFz_@xBbNzF|WpBfIlC|IhNh`@xDpJ`HnN|GpL~MdSvHxJjWrZlLxOrFhJxKtS|HxXnB~J|BpRvBbUfArIl@lD|@zCxC`JjApC`BxCj^zi@xGfMpFhMbCrGvB`HxChLlDrPxChMrAzExDtLzErLbD`HfCzEdRp[`L`VlD|LhBlH^dC|AbM`Gtj@zBfObB`JfHjWjIpXn@vCb@`EbArGnFzj@fCjPt@bDrBfHrEvKlCdFlFfIzGrHzBtBdGxEz[~UhDvCrH`IvGrJpF|J|AlDxVzq@hEzKhMnYvHdOlKlRbPvUlE~FrEhFjE`E|FlEvFjDzKhFf\\jL|K`FhEzBbG|DlEpEnCdDbCdEfEzIrFlMnBvDvBbDtAzAzDdDpHrF|H`GxA~AxB|ClB~Dn@pBnAbGbBfJhAjErB`Fx@~AbB`ChCrCnG~EvLhGbGvEfDrDlGnItCrEnG`HjB`BfD|BfEzBzIrDrIlEfCzBhF|FbBtBx@`BdKnVdC~D|DxEtGvGhExDpJrRfEhHrAvAdAn@~JpEfI`Dnj@zVdDfA`[zElGjBjNbGzGrDrGdEdKnElFxAlFp@j`@fGvDrAbGjCdIhGxAvApJ`M|IvJ~MnL~a@vYrRrPzMzNfEfFhH`K~J~O|CfGrF~MjEzN|D|RnDpSbClPnFld@bBpRvAhShA`V`@hKV|NJvMKxSSxNkAlUyF||@GpENtGLrCv@zGrAfGt@jCn@jBtB|ExC`FlBdCdP`RrEhIbCzGbC|FhDtFhD`E`DjCzC`Bf\\lLbF~BjC~AzE`EvB`CjObU`ArAbD~CpAjAhR|MrM`I`P`InElB|IxCzJ`CjWdErJtBvEtAtHnCjLzFtJvGrEnDrDpDzI|JnErE~QtOzCxCvDrFjDpHfCrGfHfT|D|M|EfRfFnUbErUNv@`AxEv@nCbAxCTl@R`@r@jAR^RZhA|Av@z@v@p@~@t@h@\\x@`@vB~@hBl@rAb@xPvCrQxB~Bf@~IzC`PdHfDlAjCpAhPhJjRlLtFxE~H`IbEzFhIlNlC`ExBbC~GdGpC`BpU`LjClBnDpDdA~AzBhDlB|DvEbI|F~HfHzGnDrCdEtCzJbGbUtK~[hMj]hL|FdAhOpB`JzBjCz@jDhBvJ`G`E`BbDj@nLnA`Id@zIfCdDhB~AdAfEbFfAdB`BhDbIlWtCtFjErEjLtH~AvA~EbGdDzHrGlSpClFhBxCnC`DpDnDvLxI|KxI|LvLvCxA|CjAvG~AfF^nQdClErAvMfFlS`KbItEzNtKrCdChG|GjBjCbDxFnAjCjDvL~AjDdNdRxBdDhItNrG|NnCxInBlEdBdDdF|GtDpDfOjKdJpHtJlJ`ItJvIzL|HtNhIpRhF`PpCtKhCnNx@nIpBb^|@lGjBbHfBpEtFtJlBzDjAfEb@pDJ`FmBvTQvGJjFPxB^jDnChMhInQ`J|OfUt\\fJfJxOfHlc@|LbElBvE|FbA|Et@rHNdCd@hCl@rBdAnB|B|BzAjAlF~AbBFdCO|Cq@dEk@fCk@jLBvEf@bGpAhMrFnDh@tCVjBA~Gq@bv@aLvF[hJUdNDjT|B~l@vLrLjBfNxAvRnA`g@tAvWrAxP|B`QjDnPxF`NbIjHjFxE~EfFpEfN~O|IbLzLrQzKvRpFbLdFtJfGdGjNhHtJ|BfJrA~WFhJg@hP_BvCMfHHdEb@tDt@bDbAzCnA|CrBnQ~L`NzLdCzC|K`QzDxE|L|KnIzFlI~HlFlHzAxCxEtLpAfGpBnMz@lDn@dBrBzDpIrJbBxBlFtJxAnEzAfGfAdGp@|Rn@`MlBtLr@xC~AxEhClEjGtFnGzD~GpCpJlEzD~CfBfBbDdElEfJnBfD`BlBlDzBvDpB|Ar@bB`@`C^|DXnIMvHy@dAAfCFrCd@bBl@pBdApGtFdD~BdD`BzGdChEdC`E`E~@~AjBlE`BnFhAbCdAtA|ErEl@v@hA|Bp@pBZdBXfCT`Fb@zCfAdD~@~Ap@x@pAjArAx@|D`BrBjAxC`CnDlD`BjA~Ar@tAZhFh@~Bf@nBl@|CjBlHnHhBvA|ClBlCdChBrBhAlBxClHjB~ChBtBzHxFfEzDbCrClBvC`AbBlBxEvA~FZnCLrGqAzQFfJv@rIx@hE|@~C~BzF`H`Mv@jBz@lCzBzL`CzGbBrCjBzBnC~BhGxD`CxBbAtAjA|BpAbEl@rDb@jHXlCjDhNl@lDVpCPhH]hOFrGTrDf@lDz@dEl@hBp@hBbCtEnHbK`D|FvCbIlC`LfA~CrItPxAlEn@bDn@vFLbF?xNb@zI`AbJnB`K">
     </div>
     <div class='example'>
-      <div class="map google"></div>
+      <div class="map"></div>
       <p>Markers added directly to map: depending on the scale they can hide each other.</p>
     </div>
     <div class='example'>
-      <div class="map google"></div>
+      <div class="map"></div>
       <p>Markers added to map through spreader: if several markers overlap they are displayed next to each other.</p>
       <p>Also: check out the labels!</p>
     </div>
     <div class='example'>
-      <div class="map google"></div>
+      <div class="map"></div>
       <p>Markers added to map through collator: out of several overlapping markers, the one with the highest z-index is displayed</p>
     </div>
     <div class='example'>
-      <div class="map google"></div>
+      <div class="map"></div>
       <p>Both spreader and collator used here: orange markers are collated while teal markers are spread.</p>
     </div>
     <div class='example'>
-      <div class="map osm"></div>
-      <p>OSM map with markers added directly to the map</p>
+      <div class="map"></div>
+      <p>Sample markers</p>
     </div>
     <div class='example'>
-      <div class="map osm"></div>
-      <div id="attribution"></div>
-      <p>OSM map with collated markers</p>
+      <div class="map"></div>
+      <p>Marker, polyline, and polygon in China</p>
     </div>
-    <div class='example'>
-      <div class="map google"></div>
-      <p>Sample markers on Google map</p>
-    </div>
-    <div class='example'>
-      <div class="map osm"></div>
-      <p>Sample markers on OSM map</p>
-    </div>
-    <div class='example'>
-      <div class="map google"></div>
-      <p>Circle on Google map</p>
-    </div>
-    <div class='example'>
-      <div class="map osm"></div>
-      <p>Circle on OSM map</p>
-    </div>
-    <div class='example'>
-      <div class="map google"></div>
-      <p>China on Google map</p>
-    </div>
-    <div class='example'>
-      <div class="map osm"></div>
-      <p>China on OSM map</p>
-    </div>
-    <script>
-      function merge(to, from) {
-        Object.keys(from).forEach(function (key) {
-          to[key] = from[key];
-        });
-        return to;
-      }
-
-      function bounds(points) {
-        return points.reduce(function(points, pt) {
-          var i;
-          for (i = 0; i < 2; i++) {
-            if(pt[i] < points[0][i]) {
-              points[0][i] = pt[i];
-            } else if (pt[i] > points[1][i]) {
-              points[1][i] = pt[i];
-            }
-          }
-          return points;
-        }, [points[0].slice(), points[0].slice()]);
-      }
-
-      var maps = require('maps').init({
-        libraries: 'geometry',
-        key: window.google_map_key_for_example || 'AIzaSyCc3mQKAZDKu5HCBpd_g4Jb9IUthtx3WA4',
-        isGCJ02: function () {
-          return true;
-        }
-      }, function () {
-        var dataEl, points, bnds, path, mps, spread, collate, proj, osmMaps, osmMps, attribution;
-
-        dataEl = document.querySelector('#data');
-        points = JSON.parse(dataEl.getAttribute('data-markers'));
-        bnds = bounds(points);
-        path = dataEl.getAttribute('data-polyline');
-
-        // create 4 maps with polyline
-        mps = Array.prototype.slice.call(document.querySelectorAll('.map.google')).map(function (mapEl, i) {
-          var map = maps.map(mapEl, {
-            scrollwheel: false,
-            zoomControl: true,
-            zoomControlOptions: {
-              position: 'RB'
-            },
-            mapTypeControl: false,
-            backgroundColor: '#e5c7e6',
-            mapTypeId: 'roadmap'
-          });
-          if (i > 3) {
-            return map;
-          }
-          map.fitBounds(bnds);
-          maps.polyline({
-            map: map,
-            color: '#a21bab',
-            path: path
-          });
-          return map;
-        });
-
-        // add markers directly to map 1
-        points.forEach(function (pt) {
-          maps.marker({
-            map: mps[0],
-            color: 'violet',
-            position: pt
-          });
-        });
-
-        // spread markers on map 2
-        spread = maps.spread({
-          map: mps[1],
-          threshold: 20
-        });
-        points.forEach(function (pt, i) {
-          spread.add(maps.marker({
-            map: mps[1],
-            icon: {
-              path: 'circle',
-              fillColor: 'teal',
-              fillOpacity: 1,
-              strokeWeight: 0,
-              scale: 10
-            },
-            position: pt,
-            label: i + 1
-          }));
-        });
-        spread.calculate();
-
-        // collate markers on map 3
-        collate = maps.collate({
-          map: mps[2]
-        });
-        points.forEach(function (pt, i) {
-          collate.add(maps.marker({
-            map: mps[2],
-            color: 'orange',
-            position: pt
-          }));
-        });
-        collate.calculate();
-
-        // spread AND collate markers on map 4
-        spread = collate = undefined;
-        function calculate() {
-          if (spread && collate) {
-            spread.calculate();
-            collate.calculate();
-          }
-        }
-        proj = maps.projection({
-          map: mps[3],
-          calculate: calculate
-        });
-        spread = maps.spread({
-          map: mps[3],
-          projection: proj
-        });
-        collate = maps.collate({
-          map: mps[3],
-          projection: proj
-        });
-        points.forEach(function (pt, i) {
-          var m;
-          if (i % 2) {
-            m = maps.marker({
-              map: mps[3],
-              color: 'orange',
-              position: pt,
-              zIndex: 1
-            });
-            collate.add(m);
-          }
-          else {
-            m = maps.marker({
-              map: mps[3],
-              color: 'teal',
-              position: pt,
-              zIndex: 2
-            });
-            spread.add(m);
-            collate.add(m, true);
-          }
-        });
-        calculate();
-
-        if (!window.osm_map_style_url_for_example) {
-          mapboxgl.accessToken = 'pk.eyJ1IjoibWVsaXRlbGUiLCJhIjoiY2oxZ3BlcmZtMDAzNzJxb2hicndlOTU0eSJ9.6WFMFozvFpKUJA6bhLeiSA';
-        }
-        osmMaps = require('maps').init({
-          service: 'mapbox'
-        }, function () {});
-        attribution = document.getElementById('attribution');
-        osmMps = Array.prototype.slice.call(document.querySelectorAll('.map.osm')).map(function (mapEl, i) {
-          var map = osmMaps.map(mapEl, merge({
-            style: window.osm_map_style_url_for_example || 'mapbox://styles/mapbox/streets-v9',
-            zoomControl: true,
-            zoomControlOptions: {
-              position: 'RB'
-            },
-            backgroundColor: '#e5c7e6',
-            onReady: function (i) {
-              if (i <= 1) {
-	              osmMaps.polyline({
-	                map: map,
-	                color: '#a21bab',
-	                path: path
-	              });
-              }
-              if (i === 0) {
-                // add markers directly to map 5
-                points.forEach(function (pt) {
-                  osmMaps.marker({
-                    map: osmMps[0],
-                    color: 'violet',
-                    position: pt
-                  });
-                });
-              }
-              else if (i === 1) {
-                // collate markers on map 6
-                collate = osmMaps.collate({
-                  map: osmMps[1]
-                });
-                points.forEach(function (pt, i) {
-                  collate.add(osmMaps.marker({
-                    map: osmMps[1],
-                    color: 'orange',
-                    position: pt
-                  }));
-                });
-                collate.calculate();
-                osmMps[1].on('bounds_changed', collate.calculate.bind(collate));
-              }
-              else if (i === 2) {
-                [mps[4], osmMps[2]].forEach(function (mp, m) {
-                  var i, srv = m % 2 ? osmMaps : maps, mk;
-                  mp.center([0.5, 0]);
-                  mp.zoom(9);
-                  for (i = 0; i <= 8; i += 1) {
-                    srv.marker({
-                      map: mp,
-                      position: [i / 8, 3 / 8],
-                      icon: {
-                        strokeColor: '#0074D9', // azure
-                        strokeWeight: 5,
-                        path: 'forward_closed_arrow',
-                        rotation: 45 * i,
-                        scale: 5
-                      }
-                    });
-                    mk = srv.marker({
-                      map: mp,
-                      position: [i / 8, 1 / 8],
-                      icon: {
-                        strokeColor: '#0074D9', // azure
-                        strokeWeight: 5,
-                        path: 'circle',
-                        scale: 1 + i
-                      }
-                    });
-                    if (i === 3) {
-                      mk.animation('bounce');
-                      setTimeout(mk.animation, 15 * 1000);
-                    }
-                    srv.marker({
-                      map: mp,
-                      position: [i / 8, -1 / 8],
-                      color: 'orange',
-                      icon: {
-                        path: 'M 2 0 L 2 0.28125 L 2 13.6875 L 2 14 L 0.59375 14 L 0 14 L 0 14.59375 L 0 15.375 L 0 16 '
-                            + 'L 0.59375 16 L 4.40625 16 L 5 16 L 5 15.375 L 5 14.59375 L 5 14 L 4.40625 14 L 3 14 L 3 13.6875 '
-                            + 'L 3 9 L 16 5.5 L 3 2 L 3 0.28125 L 3 0 L 2.6875 0 L 2.3125 0 L 2 0 z ',
-                        strokeColor: 'orange',
-                        strokeWeight: 1,
-                        scale: (i + 1) / 3,
-                        anchor: [1, 16]
-                      }
-                    });
-                    mk = srv.marker({
-                      map: mp,
-                      position: [i / 8, -3 / 8],
-                      icon: {
-                        url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTAgMEgyNlYyNkgxNkwxMyAzMEwxMCAyNkgwWiIgZmlsbD0iI2Y4MDAxMiIvPjxwYXRoIGQ9Ik0yIDJIMjRWMjRIMloiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjEuOCAxMC40TDcuNSA2LjZWNC40SDYuNFYxOS44SDQuMlYyMkg5LjdWMTkuOEg3LjVWMTQuM1oiIGZpbGw9IiNmODAwMTIiLz48L3N2Zz4=',
-                        size: [26, 30]
-                      },
-                      optimized: false
-                    });
-                    if (i === 4) {
-                      mk.animation('bounce');
-                      setTimeout(mk.animation, 15 * 1000);
-                    }
-                  }
-                });
-              }
-              else if (i === 3) {
-                [mps[5], osmMps[3]].forEach(function (mp, m) {
-                  var srv = m % 2 ? osmMaps : maps;
-                  mp.center(points[0]);
-                  mp.zoom(10);
-                  srv.circle({
-                    map: mp,
-                    center: points[0],
-                    radius: 10000,
-                    strokeColor: 'blue',
-                    strokeOpacity: 1,
-                    strokeWeight: 2,
-                    fillColor: 'yellow',
-                    fillOpacity: 0.5
-                  });
-                });
-              }
-              else if (i === 4) {
-                [mps[6], osmMps[4]].forEach(function (mp, m) {
-                  var center = [116.383473, 39.903331], srv = m % 2 ? osmMaps : maps;
-                  if (mp.gcj02) {
-                    mp.gcj02(true);
-                  }
-                  mp.zoom(17);
-                  srv.marker({
-                    map: mp,
-                    icon: {
-                      strokeColor: '#0074D9', // azure
-                      strokeWeight: 5,
-                      path: 'circle',
-                      scale: 8
-                    }
-                  }).position(center);
-                  srv.polyline({
-                    map: mp,
-                    color: '#a21bab'
-                  }).path([center, [center[0] + 0.001, center[1] + 0.001]]);
-                  setTimeout(function () {
-                    mp.center(center);
-                  }, 1)
-                });
-              }
-            }.bind(undefined, i)
-          }, i ? {
-            attributionControl: false,
-            attribution: attribution
-          } : {}));
-          if (i > 3) {
-            return map;
-          }
-          map.fitBounds(bnds);
-          return map;
-        });
-      });
-    </script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
-      p {
-        margin: .5em 0;
-      }
-      body {
-        text-align: center;
-        margin: 20px auto;
-      }
-      .example {
-        text-align: left;
-        display: inline-block;
-        margin: 0 10px;
-        width: 400px;
-        vertical-align: top;
-      }
-      .map {
-        width: 400px;
-        height: 400px;
-      }
-      .marker-label span {
-        font-size: 1em;
-        font-weight: bold;
-        color: white;
-        letter-spacing: .1px;
-      }
-      .mapboxgl-ctrl-group > button.mapboxgl-ctrl-compass {
-        display: none;
-      }
-      #attribution {
-        text-align: right;
-      }
-    </style>
+    <script type="text/javascript" src="build/build.js"></script>
   </body>
 </html>
