@@ -1,4 +1,9 @@
 
+2.6.1 / 2025-03-15
+==================
+
+ * fix reloading map style when localization option changes
+
 2.6.0 / 2025-03-14
 ==================
 
