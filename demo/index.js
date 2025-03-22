@@ -54,7 +54,7 @@ if (maps) {
     if (i > els.length - 3) {
       return;
     }
-    map.fitBounds(bnds);
+    map.bounds(bnds);
   });
 }
 
