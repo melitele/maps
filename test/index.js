@@ -1,17 +1,11 @@
 const { describe, it } = require('node:test');
-const mock = require('mock-require');
-
-mock('dynload', function () {});
-
 const maps = require('../lib');
 
 describe('maps', function () {
 
   it('init', function () {
-    maps.init();
+    const m = maps.init();
     [ 'collate', 'feature', 'map', 'outline', 'projection', 'spread', 'util']
-      .forEach(function (prop) {
-        maps.should.have.property(prop);
-      });
+      .forEach(prop => m.should.have.property(prop));
   });
 });
