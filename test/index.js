@@ -9,7 +9,7 @@ describe('maps', function () {
 
   it('init', function () {
     maps.init();
-    [ 'collate', 'feature', 'map', 'marker', 'outline', 'polyline', 'projection', 'spread', 'util']
+    [ 'collate', 'feature', 'map', 'outline', 'projection', 'spread', 'util']
       .forEach(function (prop) {
         maps.should.have.property(prop);
       });
