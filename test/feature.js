@@ -1,5 +1,5 @@
 const { describe, it } = require('node:test');
-const feature = require('../../../lib/service/mapbox/feature');
+const feature = require('../lib/feature');
 
 describe('feature', () => {
   it('create', () => {

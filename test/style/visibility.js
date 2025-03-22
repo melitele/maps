@@ -1,5 +1,5 @@
 const { describe, it } = require('node:test');
-const { initVisibility, evalVisibility } = require('../../../../lib/service/mapbox/style/visibility');
+const { initVisibility, evalVisibility } = require('../../lib/style/visibility');
 
 describe('visibility', function () {
   let map = {
