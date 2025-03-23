@@ -31,10 +31,15 @@ if (maps) {
     [ sampleChina, '_china' ]
   ];
 
+  const styleArray = require('./map-style.json');
   Array.prototype.slice.call(document.querySelectorAll('.example .map')).forEach((mapEl, i, els) => {
+    const { layers, sources } = styleArray[i + 1];
+    const style = Object.assign(styleArray[i + 1], styleArray[0]);
+    style.layers = style.layers.concat(layers);
+    style.sources = Object.assign(style.sources, sources);
     const map = maps.map(mapEl, merge({
       mapboxgl: maplibregl,
-      style: createUrl(require('./map-style.json')),
+      style: createUrl(style),
       zoomControl: true,
       zoomControlOptions: {
         position: 'RB'
