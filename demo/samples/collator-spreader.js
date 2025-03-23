@@ -51,7 +51,6 @@ function addedWithCollatorAndSpreader(maps, map, source, points, path) {
           }
         }
       });
-      m.zindex = () => 1;
       collate.add(m);
     }
     else {
