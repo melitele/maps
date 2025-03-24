@@ -32,12 +32,12 @@ if (maps) {
   ];
 
   const styleArray = require('./map-style.json');
-  Array.prototype.slice.call(document.querySelectorAll('.example .map')).forEach((mapEl, i, els) => {
+  Array.prototype.slice.call(document.querySelectorAll('.example .map')).forEach(async (mapEl, i, els) => {
     const { layers, sources } = styleArray[i + 1];
     const style = Object.assign(styleArray[i + 1], styleArray[0]);
     style.layers = style.layers.concat(layers);
     style.sources = Object.assign(style.sources, sources);
-    const map = maps.map(mapEl, merge({
+    const map = await maps.map(mapEl, merge({
       mapboxgl: maplibregl,
       style: createUrl(style),
       zoomControl: true,
@@ -45,12 +45,12 @@ if (maps) {
         position: 'RB'
       },
       fullscreenControl: i > 2,
-      backgroundColor: '#e5c7e6',
-      onReady: () => onReady[i][0](maps, map, onReady[i][1], points, path)
+      backgroundColor: '#e5c7e6'
     }, i ? {
       attributionControl: false,
       attribution: attribution
     } : {}));
+    onReady[i][0](maps, map, onReady[i][1], points, path);
     if (i > els.length - 3) {
       return;
     }
