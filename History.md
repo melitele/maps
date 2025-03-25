@@ -1,4 +1,13 @@
 
+3.0.0 / 2025-03-24
+==================
+
+ * change creation of map to async function
+ * use position of layer as zindex
+ * reorganize the source tree
+ * remove obsolete functions and fields
+ * fix zooming polygon demo
+
 2.6.1 / 2025-03-15
 ==================
 
