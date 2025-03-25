@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const makeListenersBag = require('../../../../lib/service/mapbox/feature-event-handler/listeners-bag');
+const makeListenersBag = require('../../lib/feature-event-handler/listeners-bag');
 
 describe('listeners bag', function () {
   it('should add/remove listeners', function() {

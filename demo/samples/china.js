@@ -13,7 +13,6 @@ function sampleChina(srv, map, source) {
     [center[0] + 0.001, center[1] - 0.001],
     center
   ];
-  map.zoom(17);
   srv.feature({
     map,
     source,
@@ -57,6 +56,7 @@ function sampleChina(srv, map, source) {
     }
   });
   setTimeout(function () {
+    map.zoom(17);
     map.center(center);
-  }, 1)
+  }, 0)
 }
