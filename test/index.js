@@ -1,11 +1,11 @@
 const { describe, it } = require('node:test');
 const maps = require('../lib');
 
-describe('maps', function () {
-  it('init', function () {
+describe('maps', () => {
+  it('init', t => {
     const m = maps.init();
     ['collate', 'feature', 'map', 'outline', 'projection', 'spread', 'util'].forEach(prop =>
-      m.should.have.property(prop)
+      t.assert.ok(prop in m, `map should have property: ${prop}`)
     );
   });
 });

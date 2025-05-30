@@ -2,7 +2,7 @@ const { describe, it } = require('node:test');
 const feature = require('../lib/feature');
 
 describe('feature', () => {
-  it('create', () => {
+  it('create', t => {
     const data = {
       type: 'Feature',
       geometry: {
@@ -14,12 +14,12 @@ describe('feature', () => {
       source: '_source',
       data
     });
-    ft.should.have.property('_data');
-    ft._data.should.deepEqual(data);
-    ft.should.have.property('_source', '_source');
+    t.assert.ok('_data' in ft);
+    t.assert.deepEqual(ft._data, data);
+    t.assert.equal(ft._source, '_source');
   });
 
-  it('position', () => {
+  it('position', t => {
     const data = {
       type: 'Feature',
       geometry: {
@@ -31,8 +31,8 @@ describe('feature', () => {
       source: '_source',
       data
     });
-    ft.position().should.deepEqual([0, 0]);
+    t.assert.deepEqual(ft.position(), [0, 0]);
     ft.position([1, 1]);
-    ft.position().should.deepEqual([1, 1]);
+    t.assert.deepEqual(ft.position(), [1, 1]);
   });
 });
