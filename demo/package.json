@@ -6,8 +6,6 @@
   },
   "devDependencies": {
     "@pirxpilot/jshint": "~3",
-    "esbuild": "^0.25.1",
-    "through2": "^2.0.3",
-    "unassertify": "^2.1.1"
+    "esbuild": "^0.25.1"
   }
 }
