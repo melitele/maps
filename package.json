@@ -20,9 +20,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "canvas": "~3",
-    "jsdom": "^20.0.0",
-    "jsdom-global": "^3.0.2",
+    "jsdom": "~26",
+    "jsdom-global": "~3",
     "@pirxpilot/jshint": "~3",
     "mock-require": "^2.0.2",
     "should": "~13"
