@@ -20,7 +20,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@pirxpilot/jshint": "~3",
+    "@biomejs/biome": "^1.9.4",
     "jsdom": "~26",
     "jsdom-global": "~3",
     "should": "~13"

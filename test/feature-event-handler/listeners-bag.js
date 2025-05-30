@@ -3,11 +3,11 @@ const assert = require('node:assert/strict');
 const makeListenersBag = require('../../lib/feature-event-handler/listeners-bag');
 
 describe('listeners bag', function () {
-  it('should add/remove listeners', function() {
+  it('should add/remove listeners', function () {
     const h1 = () => {};
     const h2 = () => {};
 
-    let bag = makeListenersBag();
+    const bag = makeListenersBag();
 
     assert.ok(bag.add('click', 'l1', 'f1', h1), 'first listener for click');
     assert.ok(!bag.add('click', 'l1', 'f1', h2), 'second listener for click');
@@ -19,11 +19,10 @@ describe('listeners bag', function () {
     assert.ok(bag.remove('click', 'l1', 'f1', h2), 'last listener for click');
   });
 
-
-  it('should keep track of layers', function() {
+  it('should keep track of layers', function () {
     const h1 = () => {};
 
-    let bag = makeListenersBag();
+    const bag = makeListenersBag();
 
     bag.forType('click').should.eql([]);
 
@@ -40,23 +39,22 @@ describe('listeners bag', function () {
     bag.forType('click').should.eql(['l2']);
   });
 
-  it('should keep track of handlers', function() {
+  it('should keep track of handlers', function () {
     const h1 = () => {};
     const h2 = () => {};
 
-    let bag = makeListenersBag();
+    const bag = makeListenersBag();
 
     bag.add('click', 'l1', 'f1', h1);
-    bag.getListeners('click', 'f1').should.eql([ h1 ]);
+    bag.getListeners('click', 'f1').should.eql([h1]);
 
     bag.add('click', 'l1', 'f1', h2);
-    bag.getListeners('click', 'f1').should.eql([ h1, h2 ]);
+    bag.getListeners('click', 'f1').should.eql([h1, h2]);
 
     bag.remove('click', 'l1', 'f1', h1);
-    bag.getListeners('click', 'f1').should.eql([ h2 ]);
+    bag.getListeners('click', 'f1').should.eql([h2]);
 
     bag.remove('click', 'l1', 'f1', h2);
     bag.getListeners('click', 'f1').should.eql([]);
   });
-
 });

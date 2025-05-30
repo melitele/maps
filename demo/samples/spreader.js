@@ -21,30 +21,34 @@ function addedWithSpreader(maps, map, source, points, path) {
     threshold: 20
   });
 
-  map.registerImage('circle_label', {
-    path: 'M 15 8 A 7 7 0 1 0 1 8 A 7 7 0 1 0 15 8',
-    fillColor: 'teal',
-    strokeColor: '#0074D9',
-    strokeWeight: 0,
-    scale: 10
-  }).then(() => {
-    points.forEach((pt, i) => {
-      spread.add(maps.feature({
-        map,
-        source,
-        data: {
-          properties: {
-            type: 'circle_label',
-            label: '' + (i + 1)
-          },
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: pt
-          }
-        }
-      }));
+  map
+    .registerImage('circle_label', {
+      path: 'M 15 8 A 7 7 0 1 0 1 8 A 7 7 0 1 0 15 8',
+      fillColor: 'teal',
+      strokeColor: '#0074D9',
+      strokeWeight: 0,
+      scale: 10
+    })
+    .then(() => {
+      points.forEach((pt, i) => {
+        spread.add(
+          maps.feature({
+            map,
+            source,
+            data: {
+              properties: {
+                type: 'circle_label',
+                label: '' + (i + 1)
+              },
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: pt
+              }
+            }
+          })
+        );
+      });
+      spread.calculate();
     });
-    spread.calculate();
-  });
 }
