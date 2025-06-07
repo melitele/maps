@@ -42,7 +42,7 @@ function addedWithCollatorAndSpreader(maps, map, source, points, path) {
         source,
         data: {
           properties: {
-            type: 'circle_orange',
+            type: 'circle_orange'
           },
           type: 'Feature',
           geometry: {
@@ -52,14 +52,13 @@ function addedWithCollatorAndSpreader(maps, map, source, points, path) {
         }
       });
       collate.add(m);
-    }
-    else {
+    } else {
       m = maps.feature({
         map,
         source,
         data: {
           properties: {
-            type: 'circle_teal',
+            type: 'circle_teal'
           },
           type: 'Feature',
           geometry: {

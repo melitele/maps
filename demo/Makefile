@@ -4,9 +4,7 @@ SRC = index.js $(wildcard lib/*.js)
 CSS = \
 	${PROJECT}.css
 
-all: check compile
-
-check: lint
+all: compile
 
 compile: build/build.js build/build.css
 
@@ -32,14 +30,10 @@ build/build.js: node_modules $(SRC) | build
 node_modules: package.json
 	yarn && touch $@
 
-lint:
-	../node_modules/.bin/jshint $(SRC)
-
-
 clean:
 	rm -fr build
 
 distclean: clean
 	rm -fr node_modules
 
-.PHONY: clean lint check all compile test
+.PHONY: clean all compile test

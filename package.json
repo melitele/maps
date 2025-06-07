@@ -20,13 +20,9 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "browserify": "~14",
-    "canvas": "~3",
-    "jsdom": "^20.0.0",
-    "jsdom-global": "^3.0.2",
-    "@pirxpilot/jshint": "~3",
-    "mock-require": "^2.0.2",
-    "should": "~13"
+    "@biomejs/biome": "^1.9.4",
+    "jsdom": "~26",
+    "jsdom-global": "~3"
   },
   "license": "MIT",
   "bugs": {

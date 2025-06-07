@@ -1,62 +1,59 @@
 const { describe, it } = require('node:test');
-const assert = require('node:assert/strict');
 const makeListenersBag = require('../../lib/feature-event-handler/listeners-bag');
 
-describe('listeners bag', function () {
-  it('should add/remove listeners', function() {
+describe('listeners bag', () => {
+  it('should add/remove listeners', t => {
     const h1 = () => {};
     const h2 = () => {};
 
-    let bag = makeListenersBag();
+    const bag = makeListenersBag();
 
-    assert.ok(bag.add('click', 'l1', 'f1', h1), 'first listener for click');
-    assert.ok(!bag.add('click', 'l1', 'f1', h2), 'second listener for click');
+    t.assert.ok(bag.add('click', 'l1', 'f1', h1), 'first listener for click');
+    t.assert.ok(!bag.add('click', 'l1', 'f1', h2), 'second listener for click');
 
-    assert.ok(bag.add('mouseover', 'l1', 'f1', h1), 'first listener for mouseover');
-    assert.ok(bag.remove('mouseover', 'l1', 'f1', h1), 'last listener for mouseover');
+    t.assert.ok(bag.add('mouseover', 'l1', 'f1', h1), 'first listener for mouseover');
+    t.assert.ok(bag.remove('mouseover', 'l1', 'f1', h1), 'last listener for mouseover');
 
-    assert.ok(!bag.remove('click', 'l1', 'f1', h1), '1 listener for click remaining');
-    assert.ok(bag.remove('click', 'l1', 'f1', h2), 'last listener for click');
+    t.assert.ok(!bag.remove('click', 'l1', 'f1', h1), '1 listener for click remaining');
+    t.assert.ok(bag.remove('click', 'l1', 'f1', h2), 'last listener for click');
   });
 
-
-  it('should keep track of layers', function() {
+  it('should keep track of layers', t => {
     const h1 = () => {};
 
-    let bag = makeListenersBag();
+    const bag = makeListenersBag();
 
-    bag.forType('click').should.eql([]);
+    t.assert.deepEqual(bag.forType('click'), []);
 
     bag.add('click', 'l1', 'f1', h1);
 
-    bag.forType('click').should.eql(['l1']);
+    t.assert.deepEqual(bag.forType('click'), ['l1']);
 
     bag.add('click', 'l2', 'f1', h1);
 
-    bag.forType('click').should.eql(['l1', 'l2']);
+    t.assert.deepEqual(bag.forType('click'), ['l1', 'l2']);
 
     bag.remove('click', 'l1', 'f1', h1);
 
-    bag.forType('click').should.eql(['l2']);
+    t.assert.deepEqual(bag.forType('click'), ['l2']);
   });
 
-  it('should keep track of handlers', function() {
+  it('should keep track of handlers', t => {
     const h1 = () => {};
     const h2 = () => {};
 
-    let bag = makeListenersBag();
+    const bag = makeListenersBag();
 
     bag.add('click', 'l1', 'f1', h1);
-    bag.getListeners('click', 'f1').should.eql([ h1 ]);
+    t.assert.deepEqual(bag.getListeners('click', 'f1'), [h1]);
 
     bag.add('click', 'l1', 'f1', h2);
-    bag.getListeners('click', 'f1').should.eql([ h1, h2 ]);
+    t.assert.deepEqual(bag.getListeners('click', 'f1'), [h1, h2]);
 
     bag.remove('click', 'l1', 'f1', h1);
-    bag.getListeners('click', 'f1').should.eql([ h2 ]);
+    t.assert.deepEqual(bag.getListeners('click', 'f1'), [h2]);
 
     bag.remove('click', 'l1', 'f1', h2);
-    bag.getListeners('click', 'f1').should.eql([]);
+    t.assert.deepEqual(bag.getListeners('click', 'f1'), []);
   });
-
 });

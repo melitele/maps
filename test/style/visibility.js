@@ -1,58 +1,58 @@
 const { describe, it } = require('node:test');
 const { initVisibility, evalVisibility } = require('../../lib/style/visibility');
 
-describe('visibility', function () {
-  let map = {
+describe('visibility', () => {
+  const map = {
     getLayer: () => true,
-    setLayoutProperty: function (id, prop, value) {
+    setLayoutProperty: function (_id, prop, value) {
       this[prop] = value;
     }
   };
 
-  it('visibility single field', function () {
-    let visibility = [ initVisibility('id', 'field') ];
+  it('visibility single field', t => {
+    const visibility = [initVisibility('id', 'field')];
 
     evalVisibility(map, visibility, {
       field: true
     });
-    map.visibility.should.eql('visible');
+    t.assert.equal(map.visibility, 'visible');
 
     evalVisibility(map, visibility, {});
-    map.visibility.should.eql('none');
+    t.assert.equal(map.visibility, 'none');
   });
 
-  it('visibility all', function () {
-    let visibility = [ initVisibility('id', ['all', 'field1', 'field2']) ];
+  it('visibility all', t => {
+    const visibility = [initVisibility('id', ['all', 'field1', 'field2'])];
 
     evalVisibility(map, visibility, {});
-    map.visibility.should.eql('none');
+    t.assert.equal(map.visibility, 'none');
 
     evalVisibility(map, visibility, {
       field1: true,
       field2: true
     });
-    map.visibility.should.eql('visible');
+    t.assert.equal(map.visibility, 'visible');
 
     evalVisibility(map, visibility, {
       field1: true
     });
-    map.visibility.should.eql('none');
+    t.assert.equal(map.visibility, 'none');
   });
 
-  it('visibility any', function () {
-    let visibility = [ initVisibility('id', ['any', 'field1', 'field2']) ];
+  it('visibility any', t => {
+    const visibility = [initVisibility('id', ['any', 'field1', 'field2'])];
 
     evalVisibility(map, visibility, {
       field1: true
     });
-    map.visibility.should.eql('visible');
+    t.assert.equal(map.visibility, 'visible');
 
     evalVisibility(map, visibility, {});
-    map.visibility.should.eql('none');
+    t.assert.equal(map.visibility, 'none');
 
     evalVisibility(map, visibility, {
       field2: true
     });
-    map.visibility.should.eql('visible');
+    t.assert.equal(map.visibility, 'visible');
   });
 });

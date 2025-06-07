@@ -2,17 +2,8 @@ module.exports = sampleChina;
 
 function sampleChina(srv, map, source) {
   const center = [116.383473, 39.903331];
-  const path = [
-    center,
-    [center[0] - 0.001, center[1] + 0.001],
-    [center[0] + 0.001, center[1] + 0.001],
-    center
-  ], poly = [
-    center,
-    [center[0] - 0.001, center[1] - 0.001],
-    [center[0] + 0.001, center[1] - 0.001],
-    center
-  ];
+  const path = [center, [center[0] - 0.001, center[1] + 0.001], [center[0] + 0.001, center[1] + 0.001], center];
+  const poly = [center, [center[0] - 0.001, center[1] - 0.001], [center[0] + 0.001, center[1] - 0.001], center];
   srv.feature({
     map,
     source,
@@ -58,5 +49,5 @@ function sampleChina(srv, map, source) {
   setTimeout(function () {
     map.zoom(17);
     map.center(center);
-  }, 0)
+  }, 0);
 }
