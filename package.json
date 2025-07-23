@@ -18,7 +18,9 @@
     "browser",
     "maps"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@mapwhit/map-gestures": "^0.0.2"
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "jsdom": "~26",
