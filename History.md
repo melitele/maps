@@ -1,4 +1,12 @@
 
+3.0.1 / 2025-07-23
+==================
+
+ * instantiate map gestures component to work with map object
+ * use `biome` as a linter and formatter
+ * upgrade JSDOM
+ * remove unused dependencies
+
 3.0.0 / 2025-03-24
 ==================
 
