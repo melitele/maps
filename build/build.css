@@ -26,9 +26,7 @@ body {
   color: white;
   letter-spacing: .1px;
 }
-.mapboxgl-ctrl-group > button.mapboxgl-ctrl-compass {
-  display: none;
-}
 #attribution {
   text-align: right;
+  margin-right: 2em;
 }
