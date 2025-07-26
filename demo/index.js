@@ -1,7 +1,7 @@
-global.mapboxgl = maplibregl;
+const mapboxgl = require('@mapwhit/tilerenderer');
 
 const { decode } = require('@pirxpilot/google-polyline');
-const { bounds, merge } = require('./common');
+const { bounds } = require('./common');
 const {
   addedDirectly,
   addedWithCollator,
@@ -10,15 +10,18 @@ const {
   sampleChina,
   sampleMarkers
 } = require('./samples');
+const { mapStyle } = require('@mapwhit/map-style');
 const maps = require('..').init();
+
+global.mapboxgl = mapboxgl; // Make sure mapboxgl is globally available
+
+mapboxgl.config.WORKER_URL = 'build/worker.js'; // Set the worker URL
 
 if (maps) {
   const dataEl = document.querySelector('#data');
   const points = JSON.parse(dataEl.getAttribute('data-markers'));
   const bnds = bounds(points);
   const path = decode(dataEl.getAttribute('data-polyline'));
-
-  const attribution = document.getElementById('attribution');
 
   const onReady = [
     [addedDirectly, '_data'],
@@ -35,27 +38,11 @@ if (maps) {
     const style = Object.assign(styleArray[i + 1], styleArray[0]);
     style.layers = style.layers.concat(layers);
     style.sources = Object.assign(style.sources, sources);
-    const map = await maps.map(
-      mapEl,
-      merge(
-        {
-          mapboxgl: maplibregl,
-          style: createUrl(style),
-          zoomControl: true,
-          zoomControlOptions: {
-            position: 'RB'
-          },
-          fullscreenControl: i > 2,
-          backgroundColor: '#e5c7e6'
-        },
-        i
-          ? {
-              attributionControl: false,
-              attribution: attribution
-            }
-          : {}
-      )
-    );
+    const map = await maps.map(mapEl, {
+      mapboxgl,
+      style: await mapStyle(createUrl(style)),
+      backgroundColor: '#e5c7e6'
+    });
     onReady[i][0](maps, map, onReady[i][1], points, path);
     if (i > els.length - 3) {
       return;

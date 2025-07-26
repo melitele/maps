@@ -1,14 +1,6 @@
 module.exports = {
-  merge,
   bounds
 };
-
-function merge(to, from) {
-  Object.keys(from).forEach(function (key) {
-    to[key] = from[key];
-  });
-  return to;
-}
 
 function bounds(points) {
   return points.reduce(

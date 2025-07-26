@@ -47,7 +47,6 @@ function sampleChina(srv, map, source) {
     }
   });
   setTimeout(function () {
-    map.zoom(17);
-    map.center(center);
+    map.move({ zoom: 17, center: center }, false);
   }, 0);
 }

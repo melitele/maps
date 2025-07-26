@@ -1,0 +1,1 @@
+require('@mapwhit/tilerenderer/worker');

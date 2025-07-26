@@ -6,7 +6,7 @@ CSS = \
 
 all: compile
 
-compile: build/build.js build/build.css
+compile: build/build.js build/worker.js build/build.css
 
 build:
 	mkdir -p $@
@@ -25,7 +25,18 @@ build/build.js: node_modules $(SRC) | build
 		--outfile=$@ \
 		index.js
 
-.DELETE_ON_ERROR: build/build.js
+build/worker.js: node_modules $(SRC) | build
+	$(NODE_BIN)/esbuild \
+		--bundle \
+		--define:DEBUG="true" \
+		--define:global=globalThis \
+		--external:fs \
+		--external:path \
+		--global-name=$(PROJECT) \
+		--outfile=$@ \
+		worker.js
+
+.DELETE_ON_ERROR: build/build.js build/worker.js
 
 node_modules: package.json
 	yarn && touch $@
