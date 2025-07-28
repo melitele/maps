@@ -1,4 +1,11 @@
 
+3.0.2 / 2025-07-27
+==================
+
+ * upgrade map-gestures 1.0.0
+ * use `@mapwhit/tilerenderer` module in demo
+ * function `move` to change map center, zoom and other properties together
+
 3.0.1 / 2025-07-23
 ==================
 
