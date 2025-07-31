@@ -19,6 +19,7 @@
     "maps"
   ],
   "dependencies": {
+    "@mapwhit/features": "git+https://github.com/mapwhit/features.git",
     "@mapwhit/map-gestures": "^1.0.0"
   },
   "devDependencies": {
