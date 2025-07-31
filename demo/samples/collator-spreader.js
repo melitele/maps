@@ -1,8 +1,10 @@
+const { default: initFeatures } = require('@mapwhit/features');
+
 module.exports = addedWithCollatorAndSpreader;
 
 function addedWithCollatorAndSpreader(maps, map, source, points, path) {
-  maps.feature({
-    map,
+  const features = initFeatures({ map: map._m });
+  features.add({
     source,
     data: {
       properties: {
@@ -37,8 +39,7 @@ function addedWithCollatorAndSpreader(maps, map, source, points, path) {
   points.forEach((pt, i) => {
     let m;
     if (i % 2) {
-      m = maps.feature({
-        map,
+      m = features.add({
         source,
         data: {
           properties: {
@@ -53,8 +54,7 @@ function addedWithCollatorAndSpreader(maps, map, source, points, path) {
       });
       collate.add(m);
     } else {
-      m = maps.feature({
-        map,
+      m = features.add({
         source,
         data: {
           properties: {

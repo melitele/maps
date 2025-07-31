@@ -1,8 +1,10 @@
+const { default: initFeatures } = require('@mapwhit/features');
+
 module.exports = addedDirectly;
 
-function addedDirectly(maps, map, source, points, path) {
-  const poly = maps.feature({
-    map,
+function addedDirectly(_, map, source, points, path) {
+  const features = initFeatures({ map: map._m });
+  const poly = features.add({
     source,
     data: {
       properties: {
@@ -24,8 +26,7 @@ function addedDirectly(maps, map, source, points, path) {
     .then(() => {
       // add markers directly to map
       const markers = points.map(pt => {
-        return maps.feature({
-          map,
+        return features.add({
           source,
           data: {
             properties: {
