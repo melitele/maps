@@ -1,8 +1,10 @@
+const { default: initFeatures } = require('@mapwhit/features');
+
 module.exports = addedWithCollator;
 
 function addedWithCollator(maps, map, source, points, path) {
-  maps.feature({
-    map,
+  const features = initFeatures({ map: map._m });
+  features.add({
     source,
     data: {
       properties: {
@@ -20,8 +22,7 @@ function addedWithCollator(maps, map, source, points, path) {
     map
   });
   points.forEach(pt => {
-    const ft = maps.feature({
-      map,
+    const ft = features.add({
       source,
       data: {
         properties: {

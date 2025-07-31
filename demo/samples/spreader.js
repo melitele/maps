@@ -1,8 +1,10 @@
+const { default: initFeatures } = require('@mapwhit/features');
+
 module.exports = addedWithSpreader;
 
 function addedWithSpreader(maps, map, source, points, path) {
-  maps.feature({
-    map,
+  const features = initFeatures({ map: map._m });
+  features.add({
     source,
     data: {
       properties: {
@@ -30,8 +32,7 @@ function addedWithSpreader(maps, map, source, points, path) {
   });
   points.forEach((pt, i) => {
     spread.add(
-      maps.feature({
-        map,
+      features.add({
         source,
         data: {
           properties: {
