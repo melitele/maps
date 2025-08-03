@@ -10,6 +10,9 @@
     },
     "sprite": "https://tiles.openfreemap.org/sprites/ofm_f384/ofm",
     "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
+    "state": {
+      "lineColor": { "default": "#A21BAB" }
+    },
     "layers": [
       {
         "id": "background",
@@ -1100,7 +1103,7 @@
         },
         "metadata": {},
         "paint": {
-          "line-color": "#a21bab",
+          "line-color": ["global-state", "lineColor"],
           "line-opacity": 0.8,
           "line-width": 4
         },
@@ -1160,7 +1163,7 @@
         },
         "metadata": {},
         "paint": {
-          "line-color": "#a21bab",
+          "line-color": ["global-state", "lineColor"],
           "line-opacity": 0.8,
           "line-width": 4
         },
@@ -1210,7 +1213,7 @@
         },
         "metadata": {},
         "paint": {
-          "line-color": "#a21bab",
+          "line-color": ["global-state", "lineColor"],
           "line-opacity": 0.8,
           "line-width": 4
         },
@@ -1253,7 +1256,7 @@
         },
         "metadata": {},
         "paint": {
-          "line-color": "#a21bab",
+          "line-color": ["global-state", "lineColor"],
           "line-opacity": 0.8,
           "line-width": 4
         },
@@ -1336,7 +1339,7 @@
         },
         "metadata": {},
         "paint": {
-          "line-color": "#a21bab",
+          "line-color": ["coalesce", ["get", "color"], ["global-state", "lineColor"]],
           "line-dasharray": [2, 3],
           "line-width": 4
         },
@@ -1349,7 +1352,7 @@
         "layout": {},
         "metadata": {},
         "paint": {
-          "fill-color": "#A21BAB",
+          "fill-color": ["global-state", "lineColor"],
           "fill-opacity": 0.5,
           "fill-outline-color": "#0074D9"
         },
