@@ -49,4 +49,7 @@ function sampleChina(_, map, source) {
   setTimeout(function () {
     map.move({ zoom: 17, center: center }, false);
   }, 0);
+  setTimeout(function () {
+    map._m.setGlobalStateProperty('lineColor', '#ff0000');
+  }, 5000);
 }
