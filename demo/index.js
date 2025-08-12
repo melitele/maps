@@ -1,4 +1,7 @@
-const mapboxgl = require('@mapwhit/tilerenderer');
+const MAPLIBRE = false; // Set to true if using MapLibre instead of Mapwhit GL JS
+
+const mapwhitgl = require('@mapwhit/tilerenderer');
+const maplibregl = require('maplibre-gl');
 
 const { decode } = require('@pirxpilot/google-polyline');
 const { bounds } = require('./common');
@@ -13,9 +16,14 @@ const {
 const { mapStyle } = require('@mapwhit/map-style');
 const maps = require('..').init();
 
-global.mapboxgl = mapboxgl; // Make sure mapboxgl is globally available
-
-mapboxgl.config.WORKER_URL = 'build/worker.js'; // Set the worker URL
+// Make sure mapboxgl is globally available
+let mapboxgl;
+if (MAPLIBRE) {
+  mapboxgl = global.mapboxgl = maplibregl; // Use MapLibre GL JS if MAPLIBRE is true
+} else {
+  mapboxgl = global.mapboxgl = mapwhitgl; // Use Mapwhit GL JS if MAP
+  mapboxgl.config.WORKER_URL = 'build/worker.js'; // Set the worker URL
+}
 
 if (maps) {
   const dataEl = document.querySelector('#data');
@@ -35,12 +43,15 @@ if (maps) {
   const styleArray = require('./map-style.json');
   Array.prototype.slice.call(document.querySelectorAll('.example .map')).forEach(async (mapEl, i, els) => {
     const { layers, sources } = styleArray[i + 1];
-    const style = Object.assign(styleArray[i + 1], styleArray[0]);
+    let style = Object.assign(styleArray[i + 1], styleArray[0]);
     style.layers = style.layers.concat(layers);
     style.sources = Object.assign(style.sources, sources);
+    if (!MAPLIBRE) {
+      style = await mapStyle(createUrl(style))
+    }
     const map = await maps.map(mapEl, {
       mapboxgl,
-      style: await mapStyle(createUrl(style)),
+      style,
       backgroundColor: '#e5c7e6'
     });
     onReady[i][0](maps, map, onReady[i][1], points, path);
