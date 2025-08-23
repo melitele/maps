@@ -26,6 +26,9 @@
     "jsdom": "~26",
     "jsdom-global": "~3"
   },
+  "peerDependencies": {
+    "@mapwhit/tilerenderer": "^1.0.0"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/melitele/maps/issues"
