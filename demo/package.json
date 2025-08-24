@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@mapwhit/map-style": "^0.0.9",
-    "@mapwhit/tilerenderer": "^0.51.1",
+    "@mapwhit/tilerenderer": "^1.0.0",
     "@pirxpilot/google-polyline": "^3.0.2"
   },
   "devDependencies": {
