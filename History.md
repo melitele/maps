@@ -1,4 +1,12 @@
 
+3.1.0 / 2025-08-23
+==================
+
+ * use @mapwhit/tilerenderer 1.0.0 in demo
+ * add `@mapwhit/tilerenderer` as a peer dependency
+ * don't wait for images to fully load prior to creating markers in demo
+ * pass to tilerenderer images that has been created but not necesserily loaded yet
+
 3.0.3 / 2025-07-30
 ==================
 
