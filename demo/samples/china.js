@@ -1,11 +1,13 @@
+const { default: initFeatures } = require('@mapwhit/features');
+
 module.exports = sampleChina;
 
-function sampleChina(srv, map, source) {
+function sampleChina(_, map, source) {
   const center = [116.383473, 39.903331];
   const path = [center, [center[0] - 0.001, center[1] + 0.001], [center[0] + 0.001, center[1] + 0.001], center];
   const poly = [center, [center[0] - 0.001, center[1] - 0.001], [center[0] + 0.001, center[1] - 0.001], center];
-  srv.feature({
-    map,
+  const features = initFeatures({ map: map._m });
+  features.add({
     source,
     data: {
       properties: {
@@ -18,8 +20,7 @@ function sampleChina(srv, map, source) {
       }
     }
   });
-  srv.feature({
-    map,
+  features.add({
     source,
     data: {
       properties: {
@@ -32,8 +33,7 @@ function sampleChina(srv, map, source) {
       }
     }
   });
-  srv.feature({
-    map,
+  features.add({
     source,
     data: {
       properties: {

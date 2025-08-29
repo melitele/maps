@@ -1,8 +1,11 @@
+const { default: initFeatures } = require('@mapwhit/features');
+
 module.exports = sampleMarkers;
 
-function sampleMarkers(srv, map, source) {
+function sampleMarkers(_, map, source) {
   let i;
   let mk;
+  const features = initFeatures({ map: map._m });
   map.center([0.5, 0]);
   map.zoom(9);
   map.registerImage('markers_circle', {
@@ -27,8 +30,7 @@ function sampleMarkers(srv, map, source) {
   );
   for (i = 0; i <= 8; i += 1) {
     let animate = i === 3;
-    mk = srv.feature({
-      map,
+    mk = features.add({
       source,
       animation: animate && 'offset',
       data: {
@@ -50,8 +52,7 @@ function sampleMarkers(srv, map, source) {
       mk.animation('bounce');
       setTimeout(mk.animation, 15 * 1000);
     }
-    srv.feature({
-      map,
+    features.add({
       source,
       data: {
         properties: {
@@ -68,8 +69,7 @@ function sampleMarkers(srv, map, source) {
       }
     });
     animate = i === 4;
-    mk = srv.feature({
-      map,
+    mk = features.add({
       source,
       animation: animate && 'offset',
       data: {

@@ -1,12 +1,12 @@
-const { describe, it } = require('node:test');
-const makeMapListenersBag = require('../../lib/feature-event-handler/map-listeners-bag');
+import test from 'node:test';
+import makeListenersBag from '../../lib/event-handler/listeners-bag.js';
 
-describe('map listeners bag', () => {
-  it('should add/remove listeners', t => {
+test('map listeners bag', async t => {
+  await t.test('should add/remove listeners', t => {
     const h1 = () => {};
     const h2 = () => {};
 
-    const bag = makeMapListenersBag();
+    const bag = makeListenersBag();
 
     t.assert.ok(bag.add('click', h1), 'first listener for click');
     t.assert.ok(!bag.add('click', h2), 'second listener for click');
@@ -18,11 +18,11 @@ describe('map listeners bag', () => {
     t.assert.ok(bag.remove('click', h2), 'last listener for click');
   });
 
-  it('should keep track of handlers', t => {
+  await t.test('should keep track of handlers', t => {
     const h1 = () => {};
     const h2 = () => {};
 
-    const bag = makeMapListenersBag();
+    const bag = makeListenersBag();
 
     bag.add('click', h1);
     t.assert.deepEqual(bag.getListeners('click'), [h1]);
