@@ -1,4 +1,10 @@
 
+4.0.0 / 2025-08-29
+==================
+
+ * move managing features to `@mapwhit/features`
+ * change demo to use `@mapwhit/features` to manage features
+
 3.2.0 / 2025-08-26
 ==================
 
