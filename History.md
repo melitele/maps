@@ -1,4 +1,10 @@
 
+4.0.1 / 2025-08-30
+==================
+
+ * ignore event if feature is handling it
+ * remove unused functions
+
 4.0.0 / 2025-08-29
 ==================
 
