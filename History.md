@@ -1,4 +1,10 @@
 
+5.0.0 / 2025-09-08
+==================
+
+ * remove handling visibility expressions in layer metadata
+ * `global-state` in demo
+
 4.0.1 / 2025-08-30
 ==================
 
